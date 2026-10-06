@@ -440,6 +440,30 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
   .secnav { top: 0; }
   .card-canvas { max-height: 60vh; }
 }
+/* ---------- embedded in another page (iframe) ----------
+   Hosts that size the frame to its content make 100dvh grow with the page,
+   and fixed overlays then cover the whole tall frame while their box sits far
+   off screen. In a frame: no viewport-based sizes, and dialogs and toasts are
+   placed next to whatever the user just clicked. */
+.embed .app { min-height: 0; }
+.embed figure { width: min(100%, 560px); }
+.embed .stage-inner { position: static; }
+.embed .card-canvas { will-change: auto; }
+.embed .toast { position: absolute; bottom: auto; top: var(--anchor-y, 24px); }
+.embed .viewer { position: absolute; inset: 0 0 auto 0; height: var(--doc-h, 100%); place-items: start center; overflow: visible; }
+.embed .viewer-box { margin-top: var(--anchor-y, 24px); max-height: none; overflow: visible; }
+.embed .db-box { min-height: 0; }
+.embed .db-top { position: static; }
+.embed .fw-qr img { max-height: 300px; }
+@media (max-width: 880px) {
+  .embed .stage { position: relative; }
+  .embed .secnav { top: 0; }
+  .embed .card-canvas { max-height: 240px; }
+  .embed .exportbar { position: static; border-radius: var(--r-lg); }
+  .embed .panel { padding-bottom: 48px; }
+  .embed .about { padding-bottom: 56px; }
+  .embed .db-box { border-radius: var(--r-xl); }
+}
 @media (max-width: 520px) { .spec, .brand-by { display: none; } }
 @media (max-width: 420px) {
   .fields { grid-template-columns: 1fr; }
@@ -756,6 +780,26 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
 <script>
 (() => {
   const $ = (id) => document.getElementById(id);
+  // Running inside a frame (a website embed or a preview pane): see the .embed styles
+  let EMBED = false;
+  try { EMBED = window.self !== window.top; } catch { EMBED = true; }
+  if (EMBED) document.documentElement.classList.add("embed");
+  // Where the user last pointed or tabbed to, in page coordinates
+  let anchorY = 0;
+  const noteAnchor = (y) => { if (Number.isFinite(y)) anchorY = y; };
+  document.addEventListener("pointerdown", (e) => noteAnchor(e.pageY), true);
+  document.addEventListener("focusin", (e) => { const t = e.target; if (t && t.getBoundingClientRect && !t.closest(".viewer")) noteAnchor(t.getBoundingClientRect().top + window.scrollY); }, true);
+  // Show a dialog overlay; in a frame, put its box beside the control that opened it
+  function openModal(ov) {
+    ov.hidden = false;
+    if (!EMBED) return;
+    const docH = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
+    ov.style.setProperty("--doc-h", docH + "px");
+    const box = ov.querySelector(".viewer-box"), bh = box ? box.offsetHeight : 0;
+    const y = Math.max(16, Math.min(anchorY - 120, docH - bh - 16));
+    ov.style.setProperty("--anchor-y", y + "px");
+    if (box) try { box.scrollIntoView({ block: "nearest" }); } catch { }
+  }
   // Optional translations, injected by the build for other-language editions
   const L10N = window.CARD_L10N || null;
   const FONT_SAMPLE = (L10N && L10N.fontSample) || "Aa0@";
@@ -2150,7 +2194,7 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
     $("viewerMsg").textContent = msg ? msg : kind === "pdf"
       ? "PDF downloads aren't available in this view. Right-click or long-press each image to save it as a 300 dpi PNG instead."
       : "Downloads aren't available in this view. Right-click or long-press the image to save it.";
-    $("viewer").hidden = false; $("viewerClose").focus();
+    openModal($("viewer")); $("viewerClose").focus({ preventScroll: EMBED });
   }
   $("viewerClose").addEventListener("click", () => { $("viewer").hidden = true; });
   $("viewer").addEventListener("click", (e) => { if (e.target === $("viewer")) $("viewer").hidden = true; });
@@ -2182,7 +2226,7 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
   });
 
   let toastT = 0;
-  function toast(msg) { const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 2600); }
+  function toast(msg) { const t = $("toast"); t.textContent = msg; if (EMBED) t.style.setProperty("--anchor-y", Math.max(16, anchorY + 48) + "px"); t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 2600); }
 
   $("forgetBtn").addEventListener("click", () => { $("forgetBtn").hidden = true; $("forgetConfirm").hidden = false; $("forgetNo").focus(); });
   $("forgetNo").addEventListener("click", () => { $("forgetConfirm").hidden = true; $("forgetBtn").hidden = false; });
@@ -2378,7 +2422,7 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
     $("fwSteps").innerHTML = g.steps.map(t => "<li>" + t + "</li>").join("");
     $("fwQr").src = fwCanvas.toDataURL("image/png");
     $("fwCap").textContent = g.onDevice.test(navigator.userAgent) ? g.here : g.elsewhere;
-    $("freeWallet").hidden = false; $("fwClose").focus();
+    openModal($("freeWallet")); $("fwClose").focus({ preventScroll: EMBED });
   }
   $("fwClose").addEventListener("click", () => { $("freeWallet").hidden = true; });
   $("freeWallet").addEventListener("click", (e) => { if (e.target === $("freeWallet")) $("freeWallet").hidden = true; });
@@ -2494,7 +2538,7 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
   function openBrowser() {
     const i = ALL_DESIGNS.findIndex(x => x.id === state.template);
     db.page = db.cat === "All" && !db.q && i >= 0 ? Math.floor(i / DB_PER) + 1 : db.page;
-    renderBrowser(); $("designBrowser").hidden = false; dbToTop(); $("dbSearch").focus({ preventScroll: true });
+    renderBrowser(); openModal($("designBrowser")); dbToTop(); $("dbSearch").focus({ preventScroll: true });
   }
   $("browseBtn").addEventListener("click", openBrowser);
   $("dbClose").addEventListener("click", () => { $("designBrowser").hidden = true; });
