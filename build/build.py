@@ -101,9 +101,7 @@ def build(eid, ed, eds, minify=True):
     if lang == 'bn':
         import bn as bn  # src/i18n/bn.py
         art = bn.translate(art)
-    if alt:   # link to the other language in the header
-        art = art.replace('<div class="spec" id="spec">',
-                          f'<a class="lang-link" href="{alt["site"]}" hreflang="{alt["lang"]}" lang="{alt["lang"]}">{TEXT[alt["lang"]]["lang_label"]}</a>\n  <div class="spec" id="spec">', 1)
+    # No visible language switch: each edition stands on its own. The hreflang tags in <head> still pair them for search engines.
     a = art.index('  const EXAMPLE = {'); b = art.index('};', a) + 2
     art = art[:a] + '  const EXAMPLE = ' + json.dumps(ed['example'], ensure_ascii=False) + ';' + art[b:]
     assert art.count('const KEY = "cardpress.v2";') == 1

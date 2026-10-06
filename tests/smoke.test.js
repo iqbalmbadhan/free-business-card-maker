@@ -49,13 +49,35 @@ function check(label, ok, detail = '') {
     check('page language', await p.getAttribute('html', 'lang') === e.lang);
     check('cards are drawn', await p.evaluate(() => document.getElementById('cvFront').width > 300 && document.getElementById('cvBack').width > 300));
 
-    // section bar jumps to Print and highlights it
-    await p.click('#secnav button[data-to="g-print"]'); await p.waitForTimeout(900);
-    const gap = await p.evaluate(() => document.getElementById('g-print').getBoundingClientRect().top - document.getElementById('secnav').getBoundingClientRect().bottom);
-    check('section bar scrolls to a section', gap >= -2 && gap < 40, `gap ${Math.round(gap)}px`);
-    check('section bar highlights it', await p.evaluate(() => document.querySelector('#secnav [aria-current="true"]')?.dataset.to) === 'g-print');
+    const phone = s.name === 'iphone';
+    // on a phone each section is its own screen, picked from the bottom tab bar
+    const tab = async (t) => { if (phone) { await p.click(`#tabbar button[data-tab="${t}"]`); await p.waitForTimeout(350); } };
+    const overlap = (a, b) => p.evaluate(([a, b]) => { const r = document.querySelector(a).getBoundingClientRect(), q = document.querySelector(b).getBoundingClientRect(); return r.bottom > q.top + 1 && q.bottom > r.top + 1; }, [a, b]);
+
+    if (!phone) {
+      // section bar jumps to Print and highlights it
+      await p.click('#secnav button[data-to="g-print"]'); await p.waitForTimeout(900);
+      const gap = await p.evaluate(() => document.getElementById('g-print').getBoundingClientRect().top - document.getElementById('secnav').getBoundingClientRect().bottom);
+      check('section bar scrolls to a section', gap >= -2 && gap < 40, `gap ${Math.round(gap)}px`);
+      check('section bar highlights it', await p.evaluate(() => document.querySelector('#secnav [aria-current="true"]')?.dataset.to) === 'g-print');
+      check('no tab bar on a computer', !(await p.isVisible('#tabbar')));
+    } else {
+      check('app tab bar shown, section bar hidden', await p.isVisible('#tabbar') && !(await p.isVisible('#secnav')));
+      check('first screen shows only Details', await p.isVisible('#g-details') && !(await p.isVisible('#g-print')));
+      await tab('export');
+      check('Download tab shows its screen', await p.isVisible('#g-export') && await p.isVisible('#g-print') && !(await p.isVisible('#g-details')));
+      check('Download tab is highlighted', await p.getAttribute('#tabbar button[data-tab="export"]', 'aria-current') === 'page');
+      check('new screen starts under the card', await p.evaluate(() => { const g = document.getElementById('g-export').getBoundingClientRect().top, st = document.querySelector('.stage').getBoundingClientRect().bottom; return g >= st - 1 && g < st + 60; }));
+      // nothing pinned covers anything else, at the top and deep in the page
+      for (const y of [0, 600, 99999]) {
+        await p.evaluate(y => scrollTo(0, y), y); await p.waitForTimeout(300);
+        check(`no overlap: top bar / card / tab bar (scroll ${y === 99999 ? 'end' : y})`, !(await overlap('.top', '.stage')) && !(await overlap('.stage', '#tabbar')) && !(await overlap('.top', '#tabbar')));
+      }
+      await p.evaluate(() => scrollTo(0, 0));
+    }
 
     // design browser: opens, pages, applies a design
+    await tab('design');
     await p.click('#browseBtn'); await p.waitForSelector('#dbGrid .db-item');
     check('design browser shows 12 designs', await p.locator('#dbGrid .db-item').count() === 12);
     await p.click(`#dbPager button:has-text("${e.next}")`); await p.waitForTimeout(400);
@@ -81,13 +103,15 @@ function check(label, ok, detail = '') {
     await p.fill('#f-mono', ''); await p.click('.tpl[data-v="ledger"]'); await p.waitForTimeout(300);
 
     // social links reach the back of the card
+    await tab('back');
     await p.click('#backSeg button[data-v="pro"]'); await p.waitForTimeout(200);
     const backBefore = await p.evaluate(() => document.getElementById('cvBack').toDataURL());
+    await tab('info');
     await p.fill('#s-linkedin', 'https://www.linkedin.com/in/test-user/'); await p.waitForTimeout(300);
     check('social link changes the back', backBefore !== await p.evaluate(() => document.getElementById('cvBack').toDataURL()));
 
     // "Light" back stays light with a dark color set
-    await p.click('#swatches button[data-v="midnight"]'); await p.click('#backSeg button[data-v="light"]'); await p.waitForTimeout(300);
+    await tab('style'); await p.click('#swatches button[data-v="midnight"]'); await tab('back'); await p.click('#backSeg button[data-v="light"]'); await p.waitForTimeout(300);
     const lum = await p.evaluate(() => {
       const c = document.getElementById('cvBack'), d = c.getContext('2d').getImageData(Math.round(c.width * 0.1), Math.round(c.height * 0.15), 4, 4).data;
       return (0.2126 * d[0] + 0.7152 * d[1] + 0.0722 * d[2]) / 255;
@@ -103,7 +127,7 @@ function check(label, ok, detail = '') {
     }
 
     // print-ready PDF
-    const [dl] = await Promise.all([p.waitForEvent('download', { timeout: 20000 }).catch(() => null), p.click('#exPdf')]);
+    const [dl] = await Promise.all([p.waitForEvent('download', { timeout: 20000 }).catch(() => null), phone ? (async () => { await tab('export'); await p.click('[data-proxy="exPdf"]'); })() : p.click('#exPdf')]);
     if (dl) {
       const buf = fs.readFileSync(await dl.path());
       check('PDF downloads and is valid', buf.slice(0, 5).toString() === '%PDF-' && buf.length > 50000, `${buf.length} bytes`);

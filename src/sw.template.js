@@ -1,6 +1,6 @@
 // Business Card Maker – AiInfos: service worker for offline use.
 // Bump VERSION whenever you upload a new index.html so installed copies pick it up.
-const VERSION = "__PREFIX__-v15";
+const VERSION = "__PREFIX__-v17";
 const APP_CACHE = VERSION + "-app";
 const FONT_CACHE = "__PREFIX__-fonts";
 

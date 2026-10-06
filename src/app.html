@@ -84,8 +84,6 @@ body { font-family: var(--f-ui); font-size: 14px; line-height: 1.5; -webkit-font
 }
 .brand-mark::after { content: ""; position: absolute; right: 4px; top: 5px; width: 9px; height: 1.5px; background: rgba(255,255,255,0.85); box-shadow: 0 3.5px 0 rgba(255,255,255,0.55), 0 7px 0 rgba(255,255,255,0.55); border-radius: 1px; }
 .brand-by { font-weight: 500; font-size: 12px; color: var(--muted); letter-spacing: 0; padding: 3px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--field); }
-.lang-link { margin-left: auto; font-size: 13px; font-weight: 500; color: var(--accent); text-decoration: none; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--field); transition: border-color 150ms ease, background-color 150ms ease; }
-@media (hover: hover) and (pointer: fine) { .lang-link:hover { border-color: var(--accent); background: var(--accent-soft); } }
 .spec { font-family: var(--f-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
 
 /* ---------- layout ---------- */
@@ -281,6 +279,7 @@ input:focus-visible, select:focus-visible, input:focus, select:focus { outline: 
 .forget-confirm { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 13px; }
 .side-toggle { display: none; }
 
+.tabbar, .m-only { display: none; }
 /* ---------- toast and dialogs ---------- */
 .toast {
   position: fixed; left: 50%; transform: translateX(-50%);
@@ -440,6 +439,67 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
   .secnav { top: 0; }
   .card-canvas { max-height: 60vh; }
 }
+/* ---------- phone: app layout ----------
+   One top bar, the card pinned under it, one screen per section and a bottom
+   tab bar (Download is a tab). Nothing else is pinned, so nothing overlaps. */
+@media (max-width: 880px) {
+  body { overscroll-behavior-y: none; }
+  .top {
+    position: sticky; top: 0; z-index: 8; flex-wrap: nowrap; gap: 8px;
+    min-height: 56px; padding: env(safe-area-inset-top, 0px) 12px 0 16px;
+    background: color-mix(in srgb, var(--panel) 94%, transparent);
+    backdrop-filter: saturate(1.4) blur(14px); -webkit-backdrop-filter: saturate(1.4) blur(14px);
+  }
+  .brand { min-width: 0; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+  .brand .brand-mark { display: inline-block; vertical-align: -4px; margin-right: 10px; }
+  .spec, .brand-by { display: none; }
+  .top-actions { flex: none; }
+  #installBtn { position: relative; width: 38px; height: 38px; padding: 0; border-radius: 12px; font-size: 0; color: transparent; overflow: hidden; }
+  #installBtn::after { content: ""; position: absolute; inset: 0; margin: auto; width: 20px; height: 20px; background: var(--accent);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='6' y='2.5' width='12' height='19' rx='2.5'/%3E%3Cpath d='M12 8.5v6M9 11.5h6'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='6' y='2.5' width='12' height='19' rx='2.5'/%3E%3Cpath d='M12 8.5v6M9 11.5h6'/%3E%3C/svg%3E") center / contain no-repeat; }
+  .stage { top: 56px; padding: 10px 16px 14px; border-bottom: 0; border-radius: 0 0 22px 22px; box-shadow: 0 10px 24px -14px rgba(6,20,15,0.6); }
+  .card-canvas { max-height: 26vh; }
+  .secnav, .stage .exportbar, .export-note { display: none; }
+  .m-only { display: flex; }
+  .panel { background: transparent; padding: 14px 12px calc(96px + env(safe-area-inset-bottom, 0px)); }
+  .group { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow-sm); scroll-margin-top: calc(var(--stage-h) + 64px); }
+  .group:last-child { border-bottom: 1px solid var(--line); }
+  .group h2::before { display: none; }
+  .group.m-off { display: none !important; }
+  .group.m-in { animation: m-in 280ms var(--ease-out) both; }
+  .m-export { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .m-export .btn { min-height: 48px; font-size: 14.5px; }
+  .m-export .primary { grid-column: 1 / -1; min-height: 52px; font-size: 15.5px; }
+  .tabbar {
+    display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2px;
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: var(--z-bar);
+    padding: 6px 6px calc(6px + env(safe-area-inset-bottom, 0px));
+    background: color-mix(in srgb, var(--panel) 92%, transparent);
+    backdrop-filter: saturate(1.5) blur(18px); -webkit-backdrop-filter: saturate(1.5) blur(18px);
+    border-top: 1px solid var(--line); user-select: none; -webkit-user-select: none;
+  }
+  .tabbar button {
+    display: flex; flex-direction: column; align-items: center; gap: 3px; min-height: 54px; padding: 4px 0 2px;
+    background: none; border: 0; color: var(--muted); font: 500 11.5px/1.1 var(--f-ui); cursor: pointer;
+    -webkit-tap-highlight-color: transparent; touch-action: manipulation; transition: color 160ms ease;
+  }
+  .tabbar .ti { display: grid; place-items: center; width: 58px; height: 30px; border-radius: 15px; transition: background-color 220ms var(--ease-out), transform 160ms var(--ease-out); }
+  .tabbar svg { width: 22px; height: 22px; }
+  .tabbar .tl { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tabbar button:active .ti { transform: scale(0.92); }
+  .tabbar button[aria-current="page"] { color: var(--accent); font-weight: 600; }
+  .tabbar button[aria-current="page"] .ti { background: var(--accent-soft); }
+  .toast { bottom: calc(env(safe-area-inset-bottom, 0px) + 84px); }
+  .about { padding-block: 40px calc(110px + env(safe-area-inset-bottom, 0px)); }
+}
+@keyframes m-in { from { opacity: 0; transform: translateY(10px); } }
+@media (prefers-reduced-motion: reduce) { .group.m-in { animation: none; } }
+@media (max-width: 880px) and (max-height: 520px) {
+  .top { position: static; }
+  .stage { position: static; }
+}
+@media (max-width: 360px) { .tabbar .tl { font-size: 10.5px; } .tabbar .ti { width: 48px; } }
 /* ---------- embedded in another page (iframe) ----------
    Hosts that size the frame to its content make 100dvh grow with the page,
    and fixed overlays then cover the whole tall frame while their box sits far
@@ -459,12 +519,12 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
 .embed .db-top { position: static; }
 .embed .fw-qr img { max-height: 300px; }
 @media (max-width: 880px) {
-  .embed .stage { position: relative; }
-  .embed .secnav { top: 0; }
-  .embed .card-canvas { max-height: 240px; }
-  .embed .exportbar { position: static; border-radius: var(--r-lg); }
-  .embed .panel { padding-bottom: 48px; }
-  .embed .about { padding-bottom: 56px; }
+  .autoh .top, .autoh .stage { position: relative; top: 0; }
+  .autoh .card-canvas { max-height: 240px; }
+  .autoh .app { grid-template-areas: "stage" "tabs" "panel"; }
+  .autoh .tabbar { position: relative; grid-area: tabs; margin: 12px 12px 0; border: 1px solid var(--line); border-radius: 18px; padding-bottom: 6px; box-shadow: var(--shadow-sm); }
+  .autoh .panel { padding-bottom: 24px; }
+  .autoh .about { padding-bottom: 56px; }
   .embed .db-box { border-radius: var(--r-xl); }
 }
 @media (max-width: 520px) { .spec, .brand-by { display: none; } }
@@ -540,7 +600,7 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
       <button type="button" data-to="walletGroup" data-wallet-nav hidden>Wallet</button>
       <button type="button" data-to="g-saved">Saved</button>
     </nav>
-    <div class="group" id="g-details">
+    <div class="group" id="g-details" data-tab="info">
       <div class="group-head"><h2>Details</h2><span><button class="linkbtn" id="loadExample" type="button">Reset to default</button> · <button class="linkbtn" id="clearAll" type="button">Clear</button></span></div>
       <div class="fields">
         <div class="field wide"><label for="f-name">Full name</label><input type="text" id="f-name" autocomplete="name"></div>
@@ -554,13 +614,13 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
       </div>
     </div>
 
-    <div class="group" id="g-social">
+    <div class="group" id="g-social" data-tab="info">
       <div class="group-head"><h2>Social links</h2><button class="linkbtn" id="socialClear" type="button" hidden>Clear links</button></div>
       <div class="fields social-fields" id="socialFields"></div>
       <p class="hint">Type a username or paste a link. Links appear on the back of the card and go into the QR code, so they're saved with your contact.</p>
     </div>
 
-    <div class="group" id="g-logo">
+    <div class="group" id="g-logo" data-tab="design">
       <div class="group-head"><h2>Logo</h2></div>
       <div class="logo-row">
         <div class="logo-thumb" id="logoThumb">None</div>
@@ -570,7 +630,7 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
       <p class="hint">A transparent PNG or SVG works best. Without a logo, the card uses your company name or initials.</p>
     </div>
 
-    <div class="group" id="g-design">
+    <div class="group" id="g-design" data-tab="design">
       <div class="group-head"><h2>Design</h2></div>
       <div class="design-current">
         <canvas id="curThumb" aria-hidden="true"></canvas>
@@ -586,12 +646,12 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
       <div class="tpls" id="tpls"></div>
     </div>
 
-    <div class="group" id="g-type">
+    <div class="group" id="g-type" data-tab="style">
       <div class="group-head"><h2>Typeface</h2></div>
       <div class="seg" id="pairs"></div>
     </div>
 
-    <div class="group" id="g-text">
+    <div class="group" id="g-text" data-tab="style">
       <div class="group-head"><h2>Text size and weight</h2><button class="linkbtn" id="tsReset" type="button">Reset</button></div>
       <div class="trows" id="trows"></div>
       <div class="showrow">
@@ -605,7 +665,7 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
       <p class="hint">Hidden details still go into the QR code. Text that gets too long for its space shrinks to fit.</p>
     </div>
 
-    <div class="group" id="g-color">
+    <div class="group" id="g-color" data-tab="style">
       <div class="group-head"><h2>Color</h2></div>
       <div class="swatches" id="swatches"></div>
       <div class="pickers">
@@ -615,12 +675,12 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
       </div>
     </div>
 
-    <div class="group" id="g-back">
+    <div class="group" id="g-back" data-tab="back">
       <div class="group-head"><h2>Back style</h2></div>
       <div class="seg" id="backSeg"></div>
     </div>
 
-    <div class="group" id="g-qr">
+    <div class="group" id="g-qr" data-tab="back">
       <div class="group-head"><h2>QR code on back</h2></div>
       <div class="seg three" id="qrSeg">
         <button type="button" data-v="vcard">Save contact</button>
@@ -630,7 +690,17 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
       <p class="hint" id="qrHint">Scanning adds you straight to the phone's contacts (vCard).</p>
     </div>
 
-    <div class="group" id="g-print">
+    <div class="group m-only" id="g-export" data-tab="export">
+      <div class="group-head"><h2>Download your card</h2></div>
+      <div class="m-export">
+        <button class="btn primary" type="button" data-proxy="exPdf">Download print PDF</button>
+        <button class="btn" type="button" data-proxy="exFront">Front PNG</button>
+        <button class="btn" type="button" data-proxy="exBack">Back PNG</button>
+      </div>
+      <p class="hint">300 dpi images. The PDF holds both sides, one per page, ready for a print shop.</p>
+    </div>
+
+    <div class="group" id="g-print" data-tab="export">
       <div class="group-head"><h2>Print</h2></div>
       <div class="field">
         <label for="p-size">Card size</label>
@@ -645,7 +715,7 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
       <p class="hint">Most print shops ask for bleed. Turn it off only for digital use, like email or WhatsApp.</p>
     </div>
 
-    <div class="group wallet-group" id="walletGroup" hidden>
+    <div class="group wallet-group" id="walletGroup" data-tab="export" hidden>
       <div class="group-head"><h2>Add to phone wallet</h2></div>
       <div class="walletbar">
         <button class="btn wallet-btn apple" type="button" data-wallet="apple"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 10h18" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="13" width="4" height="2.4" rx="1" fill="currentColor"/></svg><span>Add to Apple Wallet</span></button>
@@ -655,7 +725,7 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
       <p class="hint">Keeps your card on your phone, ready to show. Anyone who scans its QR code gets your contact.</p>
     </div>
 
-    <div class="group" id="g-saved">
+    <div class="group" id="g-saved" data-tab="export">
       <div class="group-head"><h2>Saved design</h2></div>
       <p class="hint" id="saveNote">Your design is saved in this browser as you edit and kept for 30 days after your last change.</p>
       <div class="forget-row">
@@ -668,6 +738,13 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
       </div>
     </div>
   </aside>
+  <nav class="tabbar" id="tabbar" aria-label="Card sections">
+    <button type="button" data-tab="info" aria-current="page"><span class="ti"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1.2-3.6 4-5.5 7-5.5s5.8 1.9 7 5.5"/></svg></span><span class="tl">Details</span></button>
+    <button type="button" data-tab="design"><span class="ti"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M3.5 9.5h17M9.5 9.5v11"/></svg></span><span class="tl">Design</span></button>
+    <button type="button" data-tab="style"><span class="ti"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5a8.5 8.5 0 1 0 0 17c1.2 0 1.8-.8 1.8-1.7 0-1.2-1-1.6-1-2.6 0-1 .8-1.7 1.9-1.7h2.2a3.6 3.6 0 0 0 3.6-3.6C20.5 6.8 16.7 3.5 12 3.5Z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10.5" cy="7.5" r="1"/><circle cx="15" cy="7.8" r="1"/></svg></span><span class="tl">Style</span></button>
+    <button type="button" data-tab="back"><span class="ti"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><path d="M14 14h2v2h-2zM18 18h2v2h-2zM14 19.5h1.5M18.5 14H20"/></svg></span><span class="tl">Back</span></button>
+    <button type="button" data-tab="export"><span class="ti"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19.5h14"/></svg></span><span class="tl">Download</span></button>
+  </nav>
 </main>
 
 <section class="about" id="about" aria-labelledby="about-title">
@@ -828,6 +905,8 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
     }
     function start() {
       stop();
+      // the outer page scrolls this frame: nothing can be pinned (see .autoh styles)
+      root.classList.toggle("autoh", autoHeight());
       if (!autoHeight() || !wide()) return;
       root.classList.add("follow");
       io = new IntersectionObserver((entries) => {
@@ -2640,6 +2719,44 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
     };
     addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(spy); } }, { passive: true });
     spy();
+  })();
+
+  // ---------- phone: one screen per section, switched from the bottom tab bar ----------
+  (function appTabs() {
+    const bar = $("tabbar"); if (!bar) return;
+    const mq = matchMedia("(max-width: 880px)"), root = document.documentElement;
+    const btns = [...bar.querySelectorAll("button[data-tab]")];
+    const groups = [...document.querySelectorAll(".panel .group[data-tab]")];
+    let cur = "info";
+    function show(tab, user) {
+      cur = tab;
+      btns.forEach(b => b.setAttribute("aria-current", b.dataset.tab === tab ? "page" : "false"));
+      const phone = mq.matches;
+      groups.forEach(g => {
+        const off = phone && g.dataset.tab !== tab;
+        g.classList.toggle("m-off", off);
+        g.classList.remove("m-in");
+        if (phone && !off && user) { void g.offsetWidth; g.classList.add("m-in"); }
+      });
+      if (!phone || !user) return;
+      if (root.classList.contains("autoh")) { try { bar.scrollIntoView({ block: "nearest" }); } catch { } return; }
+      // start the new screen just under the pinned card
+      const pinned = (document.querySelector(".top").offsetHeight || 0) + (document.querySelector(".stage").offsetHeight || 0);
+      const y = $("panel").getBoundingClientRect().top + window.scrollY - pinned;
+      if (Math.abs(window.scrollY - y) > 2) window.scrollTo({ top: Math.max(0, y), behavior: "auto" });
+    }
+    btns.forEach(b => b.addEventListener("click", () => show(b.dataset.tab, true)));
+    // tab bar keyboard support: arrow keys move between tabs
+    bar.addEventListener("keydown", (e) => {
+      const i = btns.indexOf(document.activeElement); if (i < 0) return;
+      const n = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0; if (!n) return;
+      e.preventDefault(); const nb = btns[(i + n + btns.length) % btns.length]; nb.focus(); show(nb.dataset.tab, true);
+    });
+    const sync = () => show(cur, false);
+    mq.addEventListener ? mq.addEventListener("change", sync) : mq.addListener(sync);
+    sync();
+    // download buttons on the phone's Download screen press the real ones
+    document.querySelectorAll("[data-proxy]").forEach(b => b.addEventListener("click", () => { const t = $(b.dataset.proxy); if (t) t.click(); }));
   })();
 
   // ---------- phone layout: keep the section bar just under the pinned preview ----------
