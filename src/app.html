@@ -447,7 +447,10 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
    placed next to whatever the user just clicked. */
 .embed .app { min-height: 0; }
 .embed figure { width: min(100%, 560px); }
-.embed .stage-inner { position: static; }
+.io-strip { position: absolute; left: 0; width: 1px; opacity: 0; pointer-events: none; }
+.follow .app { position: relative; }
+.follow figure { width: min(100%, calc((var(--vis-h, 800px) - 270px) / 2 * 1.68)); }
+.follow .stage-inner { position: relative; top: 0; transition: transform 260ms var(--ease-out); will-change: transform; }
 .embed .card-canvas { will-change: auto; }
 .embed .toast { position: absolute; bottom: auto; top: var(--anchor-y, 24px); }
 .embed .viewer { position: absolute; inset: 0 0 auto 0; height: var(--doc-h, 100%); place-items: start center; overflow: visible; }
@@ -790,6 +793,60 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
   document.addEventListener("pointerdown", (e) => noteAnchor(e.pageY), true);
   document.addEventListener("focusin", (e) => { const t = e.target; if (t && t.getBoundingClientRect && !t.closest(".viewer")) noteAnchor(t.getBoundingClientRect().top + window.scrollY); }, true);
   // Show a dialog overlay; in a frame, put its box beside the control that opened it
+  // Keep the card preview beside the form while scrolling.
+  // CSS sticky does this on a normal page and in fixed-height frames. A host that
+  // grows the frame to fit its content scrolls the outer page instead, where
+  // sticky has no effect, so the visible part of the frame is measured with
+  // thin invisible strips and the preview is moved to its top.
+  (function followPreview() {
+    if (!EMBED || !("IntersectionObserver" in window)) return;
+    const root = document.documentElement, app = document.querySelector(".app");
+    const stage = document.querySelector(".stage"), inner = document.querySelector(".stage-inner");
+    if (!app || !stage || !inner) return;
+    const STEP = 40, seen = new Map();
+    let io = null, strips = [], raf = 0, lastVis = 0;
+    const autoHeight = () => window.innerHeight >= root.scrollHeight - 4 && window.innerHeight > 900;
+    const wide = () => window.matchMedia("(min-width: 881px)").matches;
+    function place() {
+      raf = 0;
+      let top = Infinity, bottom = -Infinity;
+      seen.forEach((r) => { if (r) { if (r.top < top) top = r.top; if (r.bottom > bottom) bottom = r.bottom; } });
+      if (top === Infinity) return;
+      // size the preview to the visible height, like 100dvh does on a normal page
+      const visH = Math.round(Math.max(560, Math.min(1400, bottom - top)) / 20) * 20;
+      if (visH > lastVis && (bottom - top) > 400) { lastVis = visH; root.style.setProperty("--vis-h", visH + "px"); }
+      const stageTop = stage.getBoundingClientRect().top;
+      const pad = parseFloat(getComputedStyle(stage).paddingTop) || 0;
+      const room = stage.clientHeight - inner.offsetHeight - pad * 2;
+      const y = Math.max(0, Math.min(top + 20 - stageTop - pad, room));
+      inner.style.transform = "translateY(" + Math.round(y) + "px)";
+    }
+    function stop() {
+      if (io) io.disconnect(); io = null;
+      strips.forEach((el) => el.remove()); strips = []; seen.clear(); lastVis = 0; root.style.removeProperty("--vis-h");
+      root.classList.remove("follow"); inner.style.transform = "";
+    }
+    function start() {
+      stop();
+      if (!autoHeight() || !wide()) return;
+      root.classList.add("follow");
+      io = new IntersectionObserver((entries) => {
+        entries.forEach((en) => seen.set(en.target, en.isIntersecting ? en.intersectionRect : null));
+        if (!raf) raf = requestAnimationFrame(place);
+      }, { threshold: [0, 0.25, 0.5, 0.75, 1] });
+      for (let y = 0, h = app.offsetHeight; y < h; y += STEP) {
+        const el = document.createElement("div");
+        el.className = "io-strip"; el.setAttribute("aria-hidden", "true");
+        el.style.top = y + "px"; el.style.height = Math.min(STEP, h - y) + "px";
+        app.appendChild(el); strips.push(el); io.observe(el);
+      }
+    }
+    let t = 0;
+    const later = () => { clearTimeout(t); t = setTimeout(start, 250); };
+    if ("ResizeObserver" in window) new ResizeObserver(later).observe(app);
+    window.addEventListener("resize", later);
+    later();
+  })();
   function openModal(ov) {
     ov.hidden = false;
     if (!EMBED) return;
