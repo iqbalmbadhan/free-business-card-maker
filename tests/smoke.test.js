@@ -134,9 +134,10 @@ function check(label, ok, detail = '') {
     check('sheet fits the screen', await p.evaluate(() => { const r = document.querySelector('#helpSheet .sheet-box').getBoundingClientRect(); return r.top >= -1 && r.bottom <= innerHeight + 1; }));
     await p.goBack(); await p.waitForTimeout(400);
     check('back button closes the sheet and stays on the page', !(await p.isVisible('#helpSheet')) && await p.isVisible('.stage') && p.url().endsWith(`/${e.folder}/`));
-    await p.click('.site-foot [data-help]'); await p.waitForTimeout(400);
+    await p.click('#helpBtn'); await p.waitForTimeout(400);
     await p.keyboard.press('Escape'); await p.waitForTimeout(300);
-    check('footer link opens it, Escape closes it', !(await p.isVisible('#helpSheet')));
+    check('Escape closes it', !(await p.isVisible('#helpSheet')));
+    check('footer is the credit line only', !(await p.$('.site-foot button')));
     check('FAQ structured data kept', await p.evaluate(() => [...document.querySelectorAll('script[type="application/ld+json"]')].some(s => s.textContent.includes('FAQPage'))));
 
     // print-ready PDF

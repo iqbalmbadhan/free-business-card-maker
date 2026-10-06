@@ -49,7 +49,7 @@ L10N = {
 T = [
     # ---------- header and preview ----------
     ('<a class="skip" href="#panel">Skip to card settings</a>', '<a class="skip" href="#panel">কার্ডের সেটিংসে যান</a>'),
-    ('Free Business Card Maker <span class="brand-by">by AiInfos</span>', 'ফ্রি ভিজিটিং কার্ড মেকার <span class="brand-by">AiInfos</span>'),
+    ('<span class="brand-name"><span class="brand-free">Free </span>Business Card Maker</span> <span class="brand-by">by AiInfos</span>', '<span class="brand-name"><span class="brand-free">ফ্রি </span>ভিজিটিং কার্ড মেকার</span> <span class="brand-by">AiInfos</span>'),
     ('<div class="spec" id="spec">3.5 × 2 in · 3 mm bleed · 300 dpi export</div>', '<div class="spec" id="spec">৩.৫ × ২ ইঞ্চি · ৩ মিমি ব্লিড · ৩০০ ডিপিআই</div>'),
     ('aria-label="Card preview"', 'aria-label="কার্ডের প্রিভিউ"'),
     ('aria-label="Card side"', 'aria-label="কার্ডের দিক"'),
@@ -73,8 +73,8 @@ T = [
     ('<span class="help-txt">About &amp; FAQ</span>', '<span class="help-txt">পরিচিতি ও প্রশ্নোত্তর</span>'),
     ('<strong id="helpTitle">About &amp; FAQ</strong>', '<strong id="helpTitle">পরিচিতি ও প্রশ্নোত্তর</strong>'),
     ('id="helpClose" type="button" aria-label="Close">', 'id="helpClose" type="button" aria-label="বন্ধ করুন">'),
-    ('<p>Built by <a href="https://www.IqbalMahmud.com">Iqbal Mahmud</a> · Inspired by <a href="https://www.DawnCSimmons.com">Dawn C Simmons</a> · <button class="linkbtn" type="button" data-help>About &amp; FAQ</button></p>',
-     '<p>তৈরি করেছেন <a href="https://www.IqbalMahmud.com">ইকবাল মাহমুদ</a> · অনুপ্রেরণা <a href="https://www.DawnCSimmons.com">Dawn C Simmons</a> · <button class="linkbtn" type="button" data-help>পরিচিতি ও প্রশ্নোত্তর</button></p>'),
+    ('<p>Built by <a href="https://www.IqbalMahmud.com">Iqbal Mahmud</a> · Inspired by <a href="https://www.DawnCSimmons.com">Dawn C Simmons</a></p>',
+     '<p>তৈরি করেছেন <a href="https://www.IqbalMahmud.com">ইকবাল মাহমুদ</a> · অনুপ্রেরণা <a href="https://www.DawnCSimmons.com">Dawn C Simmons</a></p>'),
     # ---------- phone: bottom tab bar and Download screen ----------
     ('<nav class="tabbar" id="tabbar" aria-label="Card sections">', '<nav class="tabbar" id="tabbar" aria-label="কার্ডের অংশ">'),
     ('<span class="tl">Details</span>', '<span class="tl">তথ্য</span>'),
@@ -309,7 +309,7 @@ T += [
 
 # Install prompt (added by pwa_patch after the main translation)
 T_PWA = [
-    ('id="installBtn" type="button" hidden>Install app</button>', 'id="installBtn" type="button" hidden>অ্যাপ ইনস্টল</button>'),
+    ('<span class="ib-txt">Install<span class="ib-more"> app</span></span>', '<span class="ib-txt"><span class="ib-more">অ্যাপ </span>ইনস্টল</span>'),
     ('<strong id="ihTitle">Install Business Card Maker</strong>', '<strong id="ihTitle">ভিজিটিং কার্ড মেকার ইনস্টল করুন</strong>'),
     ('<p>On iPhone or iPad, tap the Share button in Safari, then choose <b>Add to Home Screen</b>.</p>',
      '<p>iPhone বা iPad-এ Safari-র শেয়ার বাটনে চাপুন, তারপর <b>Add to Home Screen</b> বেছে নিন।</p>'),

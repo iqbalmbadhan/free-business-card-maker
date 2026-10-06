@@ -452,10 +452,14 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
   .brand .brand-mark { display: inline-block; vertical-align: -4px; margin-right: 10px; }
   .spec, .brand-by { display: none; }
   .top-actions { flex: none; }
-  #installBtn { position: relative; width: 38px; height: 38px; padding: 0; border-radius: 12px; font-size: 0; color: transparent; overflow: hidden; }
-  #installBtn::after { content: ""; position: absolute; inset: 0; margin: auto; width: 20px; height: 20px; background: var(--accent);
+  #installBtn { display: inline-flex; align-items: center; gap: 6px; height: 38px; padding: 0 12px 0 10px; border-radius: 12px; font-size: 13.5px; font-weight: 600; color: var(--accent); white-space: nowrap; }
+  #installBtn[hidden] { display: none; }
+  #installBtn .ib-ico { width: 18px; height: 18px; flex: none; background: var(--accent);
     -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='6' y='2.5' width='12' height='19' rx='2.5'/%3E%3Cpath d='M12 8.5v6M9 11.5h6'/%3E%3C/svg%3E") center / contain no-repeat;
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='6' y='2.5' width='12' height='19' rx='2.5'/%3E%3Cpath d='M12 8.5v6M9 11.5h6'/%3E%3C/svg%3E") center / contain no-repeat; }
+  .brand { font-size: 15px; }
+  #installBtn .ib-more { display: none; }
+  .brand .brand-free { display: none; }
   .stage { top: 56px; padding: 10px 16px 14px; border-bottom: 0; border-radius: 0 0 22px 22px; box-shadow: 0 10px 24px -14px rgba(6,20,15,0.6); }
   .card-canvas { max-height: 26vh; }
   .secnav, .stage .exportbar, .export-note { display: none; }
@@ -497,7 +501,8 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
   .top { position: static; }
   .stage { position: static; }
 }
-@media (max-width: 360px) { .tabbar .tl { font-size: 10.5px; } .tabbar .ti { width: 48px; } }
+@media (max-width: 360px) { .tabbar .tl { font-size: 10.5px; } .tabbar .ti { width: 48px; } .brand .brand-mark { display: none; } .top { gap: 6px; padding-left: 12px; } #installBtn { padding: 0 10px 0 8px; } }
+@media (min-width: 881px) { #installBtn .ib-ico { display: none; } }
 /* ---------- About & FAQ sheet (the article lives in the page for search engines, shown on demand) ---------- */
 .help-btn { flex: none; display: inline-flex; align-items: center; gap: 8px; margin-left: auto; padding: 6px 12px 6px 6px; border-radius: 999px;
   border: 1px solid var(--line); background: var(--field); color: var(--ink); font: 500 13px var(--f-ui); cursor: pointer;
@@ -510,7 +515,7 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
 .top-actions + .help-btn { margin-left: 0; }
 .site-foot { padding: 18px 16px calc(18px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line); background: var(--panel); text-align: center; }
 .site-foot p { margin: 0; font-size: 13px; color: var(--muted); }
-.site-foot a, .site-foot .linkbtn { color: var(--accent); font-size: 13px; text-underline-offset: 3px; }
+.site-foot a { color: var(--accent); font-size: 13px; text-underline-offset: 3px; }
 .sheet-box { max-width: 820px; padding: 0; gap: 0; overscroll-behavior: contain; }
 .sheet-head { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 12px;
   padding: 14px 14px 12px 24px; background: color-mix(in srgb, var(--panel) 94%, transparent);
@@ -598,7 +603,7 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
 
 <a class="skip" href="#panel">Skip to card settings</a>
 <header class="top">
-  <h1 class="brand"><span class="brand-mark" aria-hidden="true"></span>Free Business Card Maker <span class="brand-by">by AiInfos</span></h1>
+  <h1 class="brand"><span class="brand-mark" aria-hidden="true"></span><span class="brand-name"><span class="brand-free">Free </span>Business Card Maker</span> <span class="brand-by">by AiInfos</span></h1>
   <div class="spec" id="spec">3.5 × 2 in · 3 mm bleed · 300 dpi export</div>
   <button class="help-btn" id="helpBtn" type="button" aria-haspopup="dialog" aria-controls="helpSheet"><span class="help-q" aria-hidden="true">?</span><span class="help-txt">About &amp; FAQ</span></button>
 </header>
@@ -788,7 +793,7 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
   </nav>
 </main>
 
-<footer class="site-foot"><p>Built by <a href="https://www.IqbalMahmud.com">Iqbal Mahmud</a> · Inspired by <a href="https://www.DawnCSimmons.com">Dawn C Simmons</a> · <button class="linkbtn" type="button" data-help>About &amp; FAQ</button></p></footer>
+<footer class="site-foot"><p>Built by <a href="https://www.IqbalMahmud.com">Iqbal Mahmud</a> · Inspired by <a href="https://www.DawnCSimmons.com">Dawn C Simmons</a></p></footer>
 
 <div class="viewer sheet" id="helpSheet" hidden>
 <div class="viewer-box sheet-box" role="dialog" aria-modal="true" aria-labelledby="helpTitle">

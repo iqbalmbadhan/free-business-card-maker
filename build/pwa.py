@@ -1,4 +1,4 @@
-PWA_BTN = '''<div class="top-actions"><button class="btn" id="installBtn" type="button" hidden>Install app</button></div>'''
+PWA_BTN = '''<div class="top-actions"><button class="btn" id="installBtn" type="button" hidden><span class="ib-ico" aria-hidden="true"></span><span class="ib-txt">Install<span class="ib-more"> app</span></span></button></div>'''
 PWA_HINT = '''<div class="install-hint" id="installHint" hidden role="dialog" aria-labelledby="ihTitle">
   <strong id="ihTitle">Install Business Card Maker</strong>
   <p>On iPhone or iPad, tap the Share button in Safari, then choose <b>Add to Home Screen</b>.</p>
