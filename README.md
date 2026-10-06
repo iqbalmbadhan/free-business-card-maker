@@ -13,6 +13,7 @@ A free, open-source **business card maker** by [AiInfos](https://aiinfos.com), i
 - **Social links:** LinkedIn, X, Facebook, Instagram, YouTube, TikTok and GitHub. Type a username or paste a link; the card prints a short address anyone can type (`linkedin.com/in/yourname`), with a neutral label tag instead of company logos
 - **Your own letters:** designs that show letters (initials, or a company monogram such as "WA" or "উএ") get a field to change them, up to 4 characters
 - **QR code:** a vCard (scan to save the contact, with social links) or a website link. Long codes switch to a lower error-correction level so each dot prints larger, and the app warns when a code gets very dense
+- **13 typefaces** (English): Montserrat, Poppins, Inter, Roboto, Raleway, Nunito, Oswald, Playfair Display, Lora and Merriweather, plus Syne, Cormorant and Manrope, each paired with a matching body font. Fonts load only when needed, so the page stays fast
 - **20 color palettes** plus custom accent, paper and ink colors; adjustable size and weight for every text element
 - **Print-ready PDF:** front and back, 300 dpi, optional 3 mm bleed, TrimBox and BleedBox set for print shops; PNG of each side
 - **Sizes:** 3.5 × 2 in (88.9 × 50.8 mm), 85 × 55 mm and 90 × 55 mm, with trim and safe-zone guides

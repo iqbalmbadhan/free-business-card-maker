@@ -1,7 +1,7 @@
 <title>Free Business Card Maker with QR Code – Print-Ready PDF</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" id="fontCss" media="print" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Cormorant+Garamond:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700;800&family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" id="fontCss" media="print" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Cormorant+Garamond:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700;800&family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Raleway:wght@400;500;600;700&family=Lato:wght@400;700&family=Nunito:wght@400;600;800&family=Oswald:wght@400;500;600&family=Playfair+Display:wght@400;600;700&family=Lora:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600&family=Merriweather:wght@400;700&display=swap">
 <script>/*QRLIB*/</script>
 <style>
 /* Business Card Maker — print-shop workbench, refined.
@@ -452,7 +452,8 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
   .trow label { grid-area: l; } .trow output { grid-area: o; } .trow input[type="range"] { grid-area: r; } .trow select { grid-area: w; font-size: 16px; }
   .exportbar .btn { font-size: 12.5px; padding: 12px 4px; }
 }
-#pairs { grid-template-columns: repeat(auto-fit, minmax(64px, 1fr)); }
+#pairs { grid-template-columns: repeat(auto-fill, minmax(82px, 1fr)); }
+#pairs button span:last-child { font-size: 11.5px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* back style picker: the recommended style spans the row */
 #backSeg button:first-child { grid-column: 1 / -1; flex-direction: row; justify-content: space-between; padding: 10px 14px; text-align: left; gap: 10px; }
 #backSeg button:first-child strong { font-size: 13px; font-weight: 600; }
@@ -655,6 +656,7 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
       <li><strong>Social links:</strong> add LinkedIn, X, Facebook, Instagram, YouTube, TikTok and GitHub. They print on the back as short addresses anyone can type.</li>
       <li><strong>Professional back:</strong> your logo, tagline and links beside a large, easy-to-scan QR code.</li>
       <li><strong>20 color palettes</strong> plus custom accent, paper and ink colors to match your brand.</li>
+      <li><strong>13 typefaces:</strong> popular fonts such as Montserrat, Poppins, Inter, Roboto, Raleway, Nunito, Oswald, Playfair Display, Lora and Merriweather, each paired with a matching body font.</li>
       <li><strong>Text control:</strong> adjust the size and weight of your name, job title, company, contact details and tagline.</li>
       <li><strong>Print-ready export:</strong> a 2-page PDF (front and back) at 300 dpi with an optional 3 mm bleed, or a PNG of each side.</li>
       <li><strong>Standard sizes:</strong> 3.5 × 2 in (88.9 × 50.8 mm), 85 × 55 mm and 90 × 55 mm.</li>
@@ -767,10 +769,23 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
     au: { w: 90, h: 55, label: "90 × 55 mm" }
   };
   const PAIRS = {
-    geometric: { name: "Geometric", d: '"Syne"', dw: 700, b: '"DM Sans"', bw: 400, dk: 0.92, dfb: "sans-serif" },
-    classic:   { name: "Classic",   d: '"Cormorant Garamond"', dw: 600, b: '"Work Sans"', bw: 400, dk: 1.15, dfb: "Georgia, serif" },
-    modern:    { name: "Modern",    d: '"Manrope"', dw: 800, b: '"Manrope"', bw: 500, dk: 0.95, dfb: "sans-serif" }
+    // heading font (d) + body font (b). The first three are used by the 140 designs; keep their keys.
+    geometric:    { name: "Syne",         d: '"Syne"', dw: 700, b: '"DM Sans"', bw: 400, dk: 0.92, dfb: "sans-serif" },
+    classic:      { name: "Cormorant",    d: '"Cormorant Garamond"', dw: 600, b: '"Work Sans"', bw: 400, dk: 1.15, dfb: "Georgia, serif" },
+    modern:       { name: "Manrope",      d: '"Manrope"', dw: 800, b: '"Manrope"', bw: 500, dk: 0.95, dfb: "sans-serif" },
+    // the most used fonts on the web (Google Fonts), each with a matching body font
+    montserrat:   { name: "Montserrat",   d: '"Montserrat"', dw: 700, b: '"Open Sans"', bw: 400, dk: 0.9, dfb: "sans-serif" },
+    poppins:      { name: "Poppins",      d: '"Poppins"', dw: 600, b: '"Poppins"', bw: 400, dk: 0.92, dfb: "sans-serif" },
+    inter:        { name: "Inter",        d: '"Inter"', dw: 700, b: '"Inter"', bw: 400, dk: 0.95, dfb: "sans-serif" },
+    roboto:       { name: "Roboto",       d: '"Roboto"', dw: 700, b: '"Roboto"', bw: 400, dk: 0.98, dfb: "sans-serif" },
+    raleway:      { name: "Raleway",      d: '"Raleway"', dw: 700, b: '"Lato"', bw: 400, dk: 0.92, dfb: "sans-serif" },
+    nunito:       { name: "Nunito",       d: '"Nunito"', dw: 800, b: '"Nunito"', bw: 400, dk: 0.98, dfb: "sans-serif" },
+    oswald:       { name: "Oswald",       d: '"Oswald"', dw: 600, b: '"Roboto"', bw: 400, dk: 1.08, dfb: "sans-serif" },
+    playfair:     { name: "Playfair",     d: '"Playfair Display"', dw: 700, b: '"Lato"', bw: 400, dk: 1.0, dfb: "Georgia, serif" },
+    lora:         { name: "Lora",         d: '"Lora"', dw: 600, b: '"Source Sans 3"', bw: 400, dk: 1.02, dfb: "Georgia, serif" },
+    merriweather: { name: "Merriweather", d: '"Merriweather"', dw: 700, b: '"Open Sans"', bw: 400, dk: 0.88, dfb: "Georgia, serif" }
   };
+  const DESIGN_PAIRS = ["geometric", "classic", "modern"];   // fonts the design previews need straight away
   const PRESETS = [
     { id: "meghna",   name: "Meghna",   accent: "#1F5E78", paper: "#F7F5F0", ink: "#1B2228" },
     { id: "shapla",   name: "Shapla",   accent: "#B03A5B", paper: "#FBF7F5", ink: "#241A1E" },
@@ -1894,11 +1909,19 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
   Object.entries(PAIRS).forEach(([id, p]) => {
     const btn = document.createElement("button"); btn.type = "button"; btn.dataset.v = id;
     const aa = document.createElement("span"); aa.className = "aa"; aa.textContent = p.sample || "Aa";
-    aa.style.fontFamily = `${p.d}, ${p.dfb}`; aa.style.fontWeight = p.dw;
+    aa.dataset.font = `${p.d}, ${p.dfb}`; aa.style.fontWeight = p.dw;
     const nm = document.createElement("span"); nm.textContent = p.name;
+    btn.title = p.d === p.b ? p.d.replace(/"/g, "") : `${p.d} + ${p.b}`.replace(/"/g, "");
     btn.append(aa, nm); btn.addEventListener("click", () => { state.pair = id; changed(); syncControls(); });
     pairWrap.appendChild(btn);
   });
+  // load the preview fonts when the typeface section comes into view
+  (function lazyPairFonts() {
+    const show = () => pairWrap.querySelectorAll(".aa[data-font]").forEach(a => { a.style.fontFamily = a.dataset.font; delete a.dataset.font; });
+    if (!("IntersectionObserver" in window)) { show(); return; }
+    const io = new IntersectionObserver((es) => { if (es.some(e => e.isIntersecting)) { show(); io.disconnect(); } }, { rootMargin: "300px" });
+    io.observe(pairWrap);
+  })();
   const swWrap = $("swatches");
   PRESETS.forEach(p => {
     const btn = document.createElement("button"); btn.type = "button"; btn.className = "sw"; btn.dataset.v = p.id;
@@ -2551,7 +2574,9 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
     if (!(document.fonts && document.fonts.load)) return;
     loadedKeys.clear();
     const all = [];
-    Object.values(PAIRS).forEach(p => all.push(`${p.dw} 20px ${p.d}`, `${p.bw} 20px ${p.b}`, `500 20px ${p.b}`, `600 20px ${p.b}`));
+    // Only the chosen typeface and the ones the designs use; the rest load when someone picks them.
+    [...new Set([...DESIGN_PAIRS, state.pair])].map(k => PAIRS[k]).filter(Boolean)
+      .forEach(p => all.push(`${p.dw} 20px ${p.d}`, `${p.bw} 20px ${p.b}`, `500 20px ${p.b}`, `600 20px ${p.b}`));
     Promise.all(all.map(s => document.fonts.load(s, FONT_SAMPLE).catch(() => null))).then(schedule);
     document.fonts.ready.then(schedule);
     ensureFonts();

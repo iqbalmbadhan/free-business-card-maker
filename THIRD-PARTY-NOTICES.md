@@ -12,7 +12,7 @@ This project includes or loads the following third-party work.
 All under the SIL Open Font License 1.1.
 
 - Interface: Geist, Geist Mono (English edition); Hind Siliguri, Geist Mono (Bengali edition)
-- English card fonts: Syne, DM Sans, Cormorant Garamond, Work Sans, Manrope
+- English card fonts: Syne, DM Sans, Cormorant Garamond, Work Sans, Manrope, Montserrat, Open Sans, Poppins, Inter, Roboto, Raleway, Lato, Nunito, Oswald, Playfair Display, Lora, Source Sans 3, Merriweather (Roboto: Apache License 2.0; the rest SIL Open Font License 1.1)
 - Bengali card fonts: Anek Bangla, Hind Siliguri, Noto Sans Bengali, Noto Serif Bengali, Baloo Da 2, Tiro Bangla, Galada
 
 ## Used only while developing

@@ -58,6 +58,7 @@ TEXT = {
         features=["148 card designs in 35 styles, plus 5 back styles",
                   "Social links (LinkedIn, X, Facebook, Instagram, YouTube, TikTok, GitHub) on the card and in the QR contact",
                   "vCard QR code that saves the contact to a phone", "20 color palettes and custom colors",
+                  "13 typefaces: Montserrat, Poppins, Inter, Roboto, Raleway, Nunito, Oswald, Playfair Display, Lora, Merriweather, Syne, Cormorant and Manrope",
                   "Adjustable text size and weight", "300 dpi print-ready PDF with 3 mm bleed", "PNG export of each side",
                   "3.5 x 2 in, 85 x 55 mm and 90 x 55 mm card sizes", "Add the card to Apple Wallet or Google Wallet",
                   "Installable app that works offline"]),
