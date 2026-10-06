@@ -1,0 +1,7 @@
+# Never commit wallet credentials
+api/config.php
+*.pem
+*.p12
+*.cer
+*.csr
+wallet-certs/
