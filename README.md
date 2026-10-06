@@ -20,6 +20,7 @@ A free, open-source **business card maker** by [AiInfos](https://aiinfos.com), i
 - **Apple Wallet and Google Wallet:** free through each wallet's built-in tools, or one-tap passes with the included PHP script and your own credentials ([server/WALLET-SETUP.md](server/WALLET-SETUP.md))
 - **Phone app layout:** on phones the page works like a mobile app: a top bar, the card pinned under it with a front/back switch, one screen per section and a bottom tab bar (Details, Design, Style, Back, Download). Nothing else is pinned, so nothing overlaps
 - **Fast, modern interface:** on computers, a sticky section bar with the preview pinned beside the form; dark mode on both, and reduced motion when the device asks for it
+- **About & FAQ on demand:** the help article, how-to and FAQ open in a popup from the **?** button (a bottom sheet on phones that closes with ×, Esc, a swipe down or the back button). The page itself ends with a one-line credit footer
 - **Installable app** that works offline; designs saved only in the visitor's browser for 30 days
 - **Bengali edition:** fully Bengali interface, help text, SEO and card captions, with 6 popular Bengali fonts ([details](#bengali-edition-বাংলা-সংস্করণ))
 
@@ -145,7 +146,7 @@ You can also run it by hand from the Actions tab (**Release → Run workflow**).
 
 ## Continuous integration
 
-Every push and pull request runs **Build and test**: it builds both public editions and runs the browser tests on a computer and a phone screen size. That covers drawing, the section bar (computer) and the tab bar (phone, including checks that the top bar, card and tab bar never overlap), the design browser, the letters field, social links, the Light back, the PDF, the free wallet route, script errors, the Content Security Policy (nothing blocked) and, in the Bengali edition, untranslated English. The built site is kept as a download on the workflow run for 14 days.
+Every push and pull request runs **Build and test**: it builds both public editions and runs the browser tests on a computer and a phone screen size. That covers drawing, the section bar (computer) and the tab bar (phone, including checks that the top bar, card and tab bar never overlap), the design browser, the letters field, social links, the Light back, the PDF, the About & FAQ popup (opens, fits the screen, closes with Back and Esc), the free wallet route, script errors, the Content Security Policy (nothing blocked) and, in the Bengali edition, untranslated English. The built site is kept as a download on the workflow run for 14 days.
 
 ## Deploying
 
@@ -189,7 +190,7 @@ Without that setup, the buttons show the card's contact QR code with steps for *
 
 - Title, description, canonical URL, Open Graph and Twitter tags, 1200 × 630 preview image
 - `WebApplication` and `FAQPage` structured data matching the visible FAQ, with author and contributor credits
-- Crawlable help text, how-to and FAQ in each language; `hreflang` tags pairing English and Bengali for search engines (no visible language switch: each edition stands on its own); a sitemap per edition
+- Crawlable help text, how-to and FAQ in each language, in the page's HTML from the first load (shown in the About & FAQ popup, so search engines still read it); `hreflang` tags pairing English and Bengali for search engines (no visible language switch: each edition stands on its own); a sitemap per edition
 
 When you change a preview image, run `npm run og-images`, bump `OG_VERSION` in `build/build.py`, rebuild, then refresh the preview in Facebook's [Sharing Debugger](https://developers.facebook.com/tools/debug/) and LinkedIn's [Post Inspector](https://www.linkedin.com/post-inspector/).
 

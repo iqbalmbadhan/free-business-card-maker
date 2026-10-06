@@ -370,8 +370,6 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
 .faq details[open] summary::after { transform: translateY(-30%) rotate(225deg); }
 @media (hover: hover) and (pointer: fine) { .faq summary:hover { color: var(--accent); } }
 .faq details p { margin: 0 0 16px; color: var(--muted); }
-.about .credit { margin: 28px 0 0; padding-top: 16px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); text-align: center; }
-@media (max-width: 380px) { .about .credit { font-size: 11.5px; } }
 .about a { color: var(--accent); text-underline-offset: 3px; }
 
 /* ---------- phones and small tablets ----------
@@ -500,6 +498,48 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
   .stage { position: static; }
 }
 @media (max-width: 360px) { .tabbar .tl { font-size: 10.5px; } .tabbar .ti { width: 48px; } }
+/* ---------- About & FAQ sheet (the article lives in the page for search engines, shown on demand) ---------- */
+.help-btn { flex: none; display: inline-flex; align-items: center; gap: 8px; margin-left: auto; padding: 6px 12px 6px 6px; border-radius: 999px;
+  border: 1px solid var(--line); background: var(--field); color: var(--ink); font: 500 13px var(--f-ui); cursor: pointer;
+  transition: border-color 150ms ease, background-color 150ms ease, transform 160ms var(--ease-out); -webkit-tap-highlight-color: transparent; }
+.help-btn:active { transform: scale(0.96); }
+.help-q { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-weight: 700; font-size: 13px; }
+@media (hover: hover) and (pointer: fine) { .help-btn:hover { border-color: var(--accent); } }
+.spec { margin-left: auto; }
+.spec + .top-actions, .spec + .help-btn { margin-left: 0; }
+.top-actions + .help-btn { margin-left: 0; }
+.site-foot { padding: 18px 16px calc(18px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line); background: var(--panel); text-align: center; }
+.site-foot p { margin: 0; font-size: 13px; color: var(--muted); }
+.site-foot a, .site-foot .linkbtn { color: var(--accent); font-size: 13px; text-underline-offset: 3px; }
+.sheet-box { max-width: 820px; padding: 0; gap: 0; overscroll-behavior: contain; }
+.sheet-head { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 14px 14px 12px 24px; background: color-mix(in srgb, var(--panel) 94%, transparent);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+.sheet-head strong { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+.sheet-close { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line); background: var(--field); color: var(--ink);
+  font: 400 22px/1 var(--f-ui); cursor: pointer; display: grid; place-items: center; -webkit-tap-highlight-color: transparent; }
+.sheet-close:active { transform: scale(0.94); }
+.sheet .about { border: 0; background: none; padding: 24px 24px 36px; content-visibility: visible; }
+html.sheet-lock, html.sheet-lock body { overflow: hidden; }
+@media (max-width: 880px) {
+  .top-actions { margin-left: auto; }
+  .top-actions + .help-btn { margin-left: 0; }
+  .help-btn { padding: 0; width: 38px; height: 38px; justify-content: center; border-radius: 12px; }
+  .help-btn .help-txt { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .help-q { width: auto; height: auto; background: none; font-size: 17px; }
+  .site-foot { padding-bottom: calc(92px + env(safe-area-inset-bottom, 0px)); }
+  .sheet { padding: 0; place-items: end stretch; }
+  .sheet-box { max-width: none; width: 100%; height: calc(100dvh - env(safe-area-inset-top, 0px) - 18px); max-height: none;
+    border-radius: 22px 22px 0 0; transition: transform 320ms var(--ease-out); }
+  @starting-style { .sheet .sheet-box { transform: translateY(100%); opacity: 1; } }
+  .sheet-head { padding-top: 22px; border-radius: 22px 22px 0 0; touch-action: none; }
+  .sheet-head::before { content: ""; position: absolute; top: 8px; left: 50%; width: 38px; height: 5px; margin-left: -19px; border-radius: 3px; background: var(--line-strong); }
+  .sheet .about { padding: 18px 18px calc(32px + env(safe-area-inset-bottom, 0px)); }
+}
+/* computer: room under the last sections so the section bar can bring any of them to the top */
+@media (min-width: 881px) { .panel { padding-bottom: max(48px, calc(100dvh - 520px)); } .embed .panel { padding-bottom: 48px; } }
+.embed .sheet-box { height: auto; }
+.autoh .site-foot { padding-bottom: 18px; }
 /* ---------- embedded in another page (iframe) ----------
    Hosts that size the frame to its content make 100dvh grow with the page,
    and fixed overlays then cover the whole tall frame while their box sits far
@@ -560,6 +600,7 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
 <header class="top">
   <h1 class="brand"><span class="brand-mark" aria-hidden="true"></span>Free Business Card Maker <span class="brand-by">by AiInfos</span></h1>
   <div class="spec" id="spec">3.5 × 2 in · 3 mm bleed · 300 dpi export</div>
+  <button class="help-btn" id="helpBtn" type="button" aria-haspopup="dialog" aria-controls="helpSheet"><span class="help-q" aria-hidden="true">?</span><span class="help-txt">About &amp; FAQ</span></button>
 </header>
 
 <main class="app">
@@ -747,6 +788,11 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
   </nav>
 </main>
 
+<footer class="site-foot"><p>Built by <a href="https://www.IqbalMahmud.com">Iqbal Mahmud</a> · Inspired by <a href="https://www.DawnCSimmons.com">Dawn C Simmons</a> · <button class="linkbtn" type="button" data-help>About &amp; FAQ</button></p></footer>
+
+<div class="viewer sheet" id="helpSheet" hidden>
+<div class="viewer-box sheet-box" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+<div class="sheet-head"><strong id="helpTitle">About &amp; FAQ</strong><button class="sheet-close" id="helpClose" type="button" aria-label="Close">×</button></div>
 <section class="about" id="about" aria-labelledby="about-title">
   <div class="about-inner">
     <h2 id="about-title">Make a business card online, free, with a QR code and a print-ready PDF</h2>
@@ -812,9 +858,10 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
       </details>
     </div>
 
-    <p class="credit">Built by <a href="https://www.IqbalMahmud.com">Iqbal Mahmud</a> · Inspired by <a href="https://www.DawnCSimmons.com">Dawn C Simmons</a></p>
   </div>
 </section>
+</div>
+</div>
 
 <div class="toast" id="toast" role="status" hidden></div>
 <div class="viewer db" id="designBrowser" hidden>
@@ -2757,6 +2804,49 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
     sync();
     // download buttons on the phone's Download screen press the real ones
     document.querySelectorAll("[data-proxy]").forEach(b => b.addEventListener("click", () => { const t = $(b.dataset.proxy); if (t) t.click(); }));
+  })();
+
+  // ---------- About & FAQ sheet ----------
+  (function helpSheet() {
+    const sh = $("helpSheet"); if (!sh) return;
+    const box = sh.querySelector(".sheet-box"), head = sh.querySelector(".sheet-head"), root = document.documentElement;
+    let opener = null, viaHistory = false;
+    function open(from) {
+      opener = from || document.activeElement;
+      openModal(sh);
+      if (!EMBED) root.classList.add("sheet-lock");
+      box.scrollTop = 0; box.style.transform = "";
+      try { history.pushState({ helpSheet: 1 }, ""); viaHistory = true; } catch { viaHistory = false; }
+      $("helpClose").focus({ preventScroll: true });
+    }
+    function shut(fromPop) {
+      if (sh.hidden) return;
+      sh.hidden = true; root.classList.remove("sheet-lock"); box.style.transform = "";
+      if (viaHistory && !fromPop) { viaHistory = false; try { history.back(); } catch { } }
+      viaHistory = false;
+      if (opener && opener.focus) opener.focus({ preventScroll: true });
+    }
+    $("helpBtn").addEventListener("click", (e) => open(e.currentTarget));
+    document.querySelectorAll("[data-help]").forEach(b => b.addEventListener("click", (e) => open(e.currentTarget)));
+    $("helpClose").addEventListener("click", () => shut(false));
+    sh.addEventListener("click", (e) => { if (e.target === sh) shut(false); });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !sh.hidden) shut(false); });
+    // the phone's back button closes the sheet instead of leaving the page
+    addEventListener("popstate", () => { if (!sh.hidden) { viaHistory = false; shut(true); } });
+    // keep keyboard focus inside the sheet
+    sh.addEventListener("keydown", (e) => {
+      if (e.key !== "Tab") return;
+      const f = [...box.querySelectorAll("a[href], button, summary, [tabindex]:not([tabindex='-1'])")].filter(el => el.offsetParent !== null);
+      if (!f.length) return;
+      if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+      else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+    });
+    // phones: drag the handle down to close
+    let y0 = null, dy = 0;
+    head.addEventListener("pointerdown", (e) => { if (e.target.closest("button") || !matchMedia("(max-width: 880px)").matches) return; y0 = e.clientY; dy = 0; box.style.transition = "none"; head.setPointerCapture(e.pointerId); });
+    head.addEventListener("pointermove", (e) => { if (y0 === null) return; dy = Math.max(0, e.clientY - y0); box.style.transform = "translateY(" + dy + "px)"; });
+    const end = () => { if (y0 === null) return; y0 = null; box.style.transition = ""; if (dy > 110) shut(false); else box.style.transform = ""; };
+    head.addEventListener("pointerup", end); head.addEventListener("pointercancel", end);
   })();
 
   // ---------- phone layout: keep the section bar just under the pinned preview ----------

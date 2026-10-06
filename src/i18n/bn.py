@@ -69,6 +69,12 @@ T = [
     # ---------- section bar ----------
     ('aria-label="Card settings"', 'aria-label="কার্ডের সেটিংস"'),
     ('aria-label="Settings sections"', 'aria-label="সেটিংসের অংশ"'),
+    # ---------- About & FAQ sheet, footer ----------
+    ('<span class="help-txt">About &amp; FAQ</span>', '<span class="help-txt">পরিচিতি ও প্রশ্নোত্তর</span>'),
+    ('<strong id="helpTitle">About &amp; FAQ</strong>', '<strong id="helpTitle">পরিচিতি ও প্রশ্নোত্তর</strong>'),
+    ('id="helpClose" type="button" aria-label="Close">', 'id="helpClose" type="button" aria-label="বন্ধ করুন">'),
+    ('<p>Built by <a href="https://www.IqbalMahmud.com">Iqbal Mahmud</a> · Inspired by <a href="https://www.DawnCSimmons.com">Dawn C Simmons</a> · <button class="linkbtn" type="button" data-help>About &amp; FAQ</button></p>',
+     '<p>তৈরি করেছেন <a href="https://www.IqbalMahmud.com">ইকবাল মাহমুদ</a> · অনুপ্রেরণা <a href="https://www.DawnCSimmons.com">Dawn C Simmons</a> · <button class="linkbtn" type="button" data-help>পরিচিতি ও প্রশ্নোত্তর</button></p>'),
     # ---------- phone: bottom tab bar and Download screen ----------
     ('<nav class="tabbar" id="tabbar" aria-label="Card sections">', '<nav class="tabbar" id="tabbar" aria-label="কার্ডের অংশ">'),
     ('<span class="tl">Details</span>', '<span class="tl">তথ্য</span>'),

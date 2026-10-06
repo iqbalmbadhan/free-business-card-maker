@@ -126,6 +126,19 @@ function check(label, ok, detail = '') {
       check('no untranslated English', left.length === 0, left.slice(0, 10).join(', '));
     }
 
+    // About & FAQ: in the page for search engines, shown in a sheet on demand
+    check('article not shown on the page itself', !(await p.isVisible('#about')));
+    check('one-line footer with credits', await p.isVisible('.site-foot') && (await p.textContent('.site-foot')).includes('Dawn C Simmons'));
+    await p.click('#helpBtn'); await p.waitForTimeout(500);
+    check('About & FAQ opens', await p.isVisible('#helpSheet') && await p.isVisible('.faq'));
+    check('sheet fits the screen', await p.evaluate(() => { const r = document.querySelector('#helpSheet .sheet-box').getBoundingClientRect(); return r.top >= -1 && r.bottom <= innerHeight + 1; }));
+    await p.goBack(); await p.waitForTimeout(400);
+    check('back button closes the sheet and stays on the page', !(await p.isVisible('#helpSheet')) && await p.isVisible('.stage') && p.url().endsWith(`/${e.folder}/`));
+    await p.click('.site-foot [data-help]'); await p.waitForTimeout(400);
+    await p.keyboard.press('Escape'); await p.waitForTimeout(300);
+    check('footer link opens it, Escape closes it', !(await p.isVisible('#helpSheet')));
+    check('FAQ structured data kept', await p.evaluate(() => [...document.querySelectorAll('script[type="application/ld+json"]')].some(s => s.textContent.includes('FAQPage'))));
+
     // print-ready PDF
     const [dl] = await Promise.all([p.waitForEvent('download', { timeout: 20000 }).catch(() => null), phone ? (async () => { await tab('export'); await p.click('[data-proxy="exPdf"]'); })() : p.click('#exPdf')]);
     if (dl) {
