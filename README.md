@@ -40,7 +40,7 @@ A free, open-source **business card maker** by [AiInfos](https://aiinfos.com). D
 There is no build step and nothing to install.
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/free-business-card-maker.git
+git clone https://github.com/iqbalmbadhan/free-business-card-maker.git
 cd free-business-card-maker
 python3 -m http.server 8080
 ```
@@ -86,7 +86,7 @@ location = /business-card-maker/sw.js {
 
 1. Push the repository to GitHub.
 2. Go to **Settings → Pages**, choose **Deploy from a branch**, and select `main` and `/ (root)`.
-3. The app is published at `https://YOUR-USERNAME.github.io/free-business-card-maker/`.
+3. The app is published at `https://iqbalmbadhan.github.io/free-business-card-maker/`.
 
 ### Netlify, Vercel or Cloudflare Pages
 
