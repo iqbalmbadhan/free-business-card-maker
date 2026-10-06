@@ -1,0 +1,20 @@
+# build output and dependencies
+node_modules/
+dist/
+__pycache__/
+*.pyc
+
+# private copies with real phone numbers or addresses (see build/editions.local.example.json)
+build/editions.local.json
+
+# wallet keys and settings: never commit these
+server/api/config.php
+*.pem
+*.p12
+*.key
+*.cer
+server/api/*.json
+server/api/keys/
+
+.DS_Store
+Thumbs.db

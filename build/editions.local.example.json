@@ -1,0 +1,21 @@
+{
+  "_comment": "Copy to build/editions.local.json for private copies. That file is git-ignored, so real phone numbers and addresses never reach GitHub. index false keeps a copy out of Google.",
+  "my-card": {
+    "folder": "my-card",
+    "lang": "en",
+    "site": "https://example.com/my-card/",
+    "index": false,
+    "storageKey": "cardpress.my-card.v1",
+    "cachePrefix": "bcm-my-card",
+    "example": {
+      "name": "Your Name",
+      "title": "Your Title",
+      "company": "Your Company",
+      "phone": "+880 1XXX-XXXXXX",
+      "email": "you@example.com",
+      "website": "example.com",
+      "address": "Your address",
+      "tagline": "Your tagline"
+    }
+  }
+}

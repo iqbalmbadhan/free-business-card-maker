@@ -1,0 +1,79 @@
+# When you publish a GitHub release:
+#   1. builds and tests both editions,
+#   2. attaches ready-to-upload zips to the release,
+#   3. updates the separate Bangla repo with the Bengali build and its Bengali README.
+#
+# One-time setup for step 3 (see README, "Bangla repo"):
+#   - repository variable BANGLA_REPO, e.g. your-username/bangla-business-card-maker
+#   - repository secret BANGLA_REPO_TOKEN, a fine-grained token with Contents: read and write on that repo only
+name: Release
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build
+      - run: npm test
+
+      - name: Zip each edition
+        run: |
+          mkdir -p release
+          for d in dist/*/; do name=$(basename "$d"); (cd "$d" && zip -qr "../../release/$name.zip" .); done
+          ls -la release
+
+      - name: Attach zips to the release
+        if: github.event_name == 'release'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${{ github.event.release.tag_name }}" release/*.zip --clobber
+
+      - name: Prepare the Bangla repo contents
+        id: bangla
+        env:
+          BANGLA_REPO: ${{ vars.BANGLA_REPO }}
+          HAS_TOKEN: ${{ secrets.BANGLA_REPO_TOKEN != '' }}
+        run: |
+          if [ -z "$BANGLA_REPO" ] || [ "$HAS_TOKEN" != "true" ]; then
+            echo "::notice::Bangla repo not set up yet (BANGLA_REPO variable and BANGLA_REPO_TOKEN secret). Skipping."
+            echo "skip=true" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          mkdir -p bangla-out
+          cp -r dist/bangla-business-card-maker/. bangla-out/
+          cp bangla-repo/README.md bangla-out/README.md
+          cp THIRD-PARTY-NOTICES.md bangla-out/
+          touch bangla-out/.nojekyll
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+
+      - name: Push to the Bangla repo
+        if: steps.bangla.outputs.skip == 'false'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          personal_token: ${{ secrets.BANGLA_REPO_TOKEN }}
+          external_repository: ${{ vars.BANGLA_REPO }}
+          publish_branch: main
+          publish_dir: ./bangla-out
+          user_name: github-actions[bot]
+          user_email: 41898282+github-actions[bot]@users.noreply.github.com
+          commit_message: "Update from ${{ github.repository }} ${{ github.event.release.tag_name || github.sha }}"

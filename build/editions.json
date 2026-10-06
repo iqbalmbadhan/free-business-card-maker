@@ -1,0 +1,41 @@
+{
+  "_comment": "Public editions. Each one is built into dist/<folder>/. Private copies with real phone numbers or addresses go in build/editions.local.json, which git ignores (see editions.local.example.json).",
+  "en": {
+    "folder": "business-card-maker",
+    "lang": "en",
+    "site": "https://iqbalmahmud.com/business-card-maker/",
+    "index": true,
+    "storageKey": "cardpress.iqbal.v1",
+    "cachePrefix": "bcm-iqbal",
+    "alternate": "bn",
+    "example": {
+      "name": "Md. Iqbal Mahmud",
+      "title": "Co-Founder",
+      "company": "Women AI Labs",
+      "phone": "+880 1700-000000",
+      "email": "iqbal@womenailabs.org",
+      "website": "womenailabs.org",
+      "address": "House 12, Road 5, Dhanmondi, Dhaka 1205",
+      "tagline": "AI Can't Fix What It Doesn't See."
+    }
+  },
+  "bn": {
+    "folder": "bangla-business-card-maker",
+    "lang": "bn",
+    "site": "https://iqbalmahmud.com/bangla-business-card-maker/",
+    "index": true,
+    "storageKey": "cardpress.bn.v1",
+    "cachePrefix": "bcm-bn",
+    "alternate": "en",
+    "example": {
+      "name": "মো. ইকবাল মাহমুদ",
+      "title": "সহ-প্রতিষ্ঠাতা",
+      "company": "উইমেন এআই ল্যাবস",
+      "phone": "+880 1700-000000",
+      "email": "iqbal@womenailabs.org",
+      "website": "womenailabs.org",
+      "address": "বাড়ি ১২, সড়ক ৫, ধানমন্ডি, ঢাকা ১২০৫",
+      "tagline": "এআই যা দেখে না, তা ঠিক করতে পারে না।"
+    }
+  }
+}

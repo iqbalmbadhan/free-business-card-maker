@@ -1,0 +1,37 @@
+{
+  "name": "free-business-card-maker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Free business card maker with QR code, social links, Apple/Google Wallet and print-ready PDF. English and Bengali editions.",
+  "license": "MIT",
+  "author": "Iqbal Mahmud (https://www.IqbalMahmud.com)",
+  "homepage": "https://iqbalmahmud.com/business-card-maker/",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "python3 build/build.py",
+    "build:dev": "python3 build/build.py --no-minify",
+    "serve": "node tools/serve.js",
+    "test": "node tests/smoke.test.js",
+    "og-images": "node tools/og-image.js en && node tools/og-image.js bn"
+  },
+  "devDependencies": {
+    "@fontsource/anek-bangla": "5.3.0",
+    "@fontsource/baloo-da-2": "5.3.0",
+    "@fontsource/cormorant-garamond": "^5.3.0",
+    "@fontsource/dm-sans": "5.3.0",
+    "@fontsource/galada": "5.3.0",
+    "@fontsource/geist-mono": "5.3.0",
+    "@fontsource/geist-sans": "5.3.0",
+    "@fontsource/hind-siliguri": "5.3.0",
+    "@fontsource/manrope": "^5.3.0",
+    "@fontsource/noto-sans-bengali": "5.3.0",
+    "@fontsource/noto-serif-bengali": "5.3.0",
+    "@fontsource/syne": "5.3.0",
+    "@fontsource/tiro-bangla": "5.3.0",
+    "@fontsource/work-sans": "^5.3.0",
+    "esbuild": "0.24.2",
+    "playwright": "1.63.0"
+  }
+}
