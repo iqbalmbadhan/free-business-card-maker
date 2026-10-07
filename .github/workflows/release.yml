@@ -4,7 +4,7 @@
 #   3. updates the separate Bangla repo with the Bengali build and its Bengali README.
 #
 # One-time setup for step 3 (see README, "Bangla repo"):
-#   - repository variable BANGLA_REPO, e.g. your-username/bangla-business-card-maker
+#   - repository variable BANGLA_REPO, e.g. iqbalmbadhan/bangla-business-card-maker
 #   - repository secret BANGLA_REPO_TOKEN, a fine-grained token with Contents: read and write on that repo only
 name: Release
 

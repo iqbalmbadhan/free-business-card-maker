@@ -62,7 +62,7 @@ free-business-card-maker/
 You need **Node.js 18+** and **Python 3.8+**.
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/free-business-card-maker.git
+git clone https://github.com/iqbalmbadhan/free-business-card-maker.git
 cd free-business-card-maker
 npm install
 npm run build        # builds every edition into dist/
@@ -134,7 +134,7 @@ One-time setup:
 2. Create a fine-grained personal access token (GitHub → Settings → Developer settings → Fine-grained tokens) with access to **that repository only** and **Contents: Read and write**.
 3. In **this** repository, go to Settings → Secrets and variables → Actions:
    - add a **secret** `BANGLA_REPO_TOKEN` with the token
-   - add a **variable** `BANGLA_REPO` with `YOUR-USERNAME/bangla-business-card-maker`
+   - add a **variable** `BANGLA_REPO` with `iqbalmbadhan/bangla-business-card-maker`
 4. Optional: in the Bangla repo, turn on GitHub Pages (Settings → Pages → Deploy from branch `main`, root) for a free live copy.
 
 Then publish a release here (Releases → Draft a new release, for example `v1.1.0`). The **Release** workflow:
