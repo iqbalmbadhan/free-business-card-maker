@@ -1,8 +1,8 @@
 // Business Card Maker – AiInfos: service worker for offline use.
 // Bump VERSION whenever you upload a new index.html so installed copies pick it up.
-const VERSION = "bcm-iqbal-private-v8";
+const VERSION = "bcm-iqbal-v19";
 const APP_CACHE = VERSION + "-app";
-const FONT_CACHE = "bcm-iqbal-private-fonts";
+const FONT_CACHE = "bcm-iqbal-fonts";
 
 const APP_FILES = [
   "./",
@@ -22,7 +22,7 @@ self.addEventListener("install", (event) => {
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k.startsWith("bcm-iqbal-private-") && k !== APP_CACHE && k !== FONT_CACHE).map((k) => caches.delete(k))))
+      .then((keys) => Promise.all(keys.filter((k) => k.startsWith("bcm-iqbal-") && k !== APP_CACHE && k !== FONT_CACHE).map((k) => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
