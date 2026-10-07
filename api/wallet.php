@@ -12,6 +12,7 @@
  */
 declare(strict_types=1);
 
+umask(0077);   // every file this script writes is readable by its own user only
 header('X-Content-Type-Options: nosniff');
 header('Referrer-Policy: no-referrer');
 
@@ -25,6 +26,8 @@ final class UserFacingError extends RuntimeException
 
 const PASS_TTL = 600;          // seconds a generated .pkpass waits for its download
 const MAX_BODY = 700000;       // bytes; enough for a ~400 KB logo as a data URL
+const LOGO_MAX_SIDE = 1000;    // pixels; the app sends logos of at most 480 x 150
+const LOGO_MAX_PIXELS = 1000000;
 
 function send_json(int $status, array $data): void
 {
@@ -45,16 +48,28 @@ $configFile = __DIR__ . '/config.php';
 // Which wallets are switched on (lets the page hide buttons that would not work).
 if (($_SERVER['REQUEST_METHOD'] ?? '') === 'GET' && isset($_GET['status'])) {
     $c = is_file($configFile) ? require $configFile : [];
-    send_json(200, ['apple' => !empty($c['apple']['enabled']), 'google' => !empty($c['google']['enabled'])]);
+    http_response_code(200);
+    header('Content-Type: application/json; charset=utf-8');
+    header('Cache-Control: public, max-age=300');   // safe to cache: it only says which wallets are switched on
+    echo json_encode(['apple' => !empty($c['apple']['enabled']), 'google' => !empty($c['google']['enabled'])]);
+    exit;
 }
 if (!is_file($configFile)) {
     fail(503, 'Wallet passes are not set up on this server yet.');
 }
 $cfg = require $configFile;
 
-$tmpDir = rtrim(sys_get_temp_dir(), '/') . '/bcm-wallet';
+$tmpDir = rtrim((string) ($cfg['tmp_dir'] ?? (sys_get_temp_dir() . '/bcm-wallet')), '/');
 if (!is_dir($tmpDir)) {
     @mkdir($tmpDir, 0700, true);
+}
+// On shared hosting another account could create this folder first and read the passes: refuse to use it then.
+$tmpOk = is_dir($tmpDir) && !is_link($tmpDir) && is_writable($tmpDir)
+    && (fileperms($tmpDir) & 0077) === 0
+    && (!function_exists('posix_geteuid') || fileowner($tmpDir) === posix_geteuid());
+if (!$tmpOk) {
+    error_log('[business-card wallet] temp folder is missing, shared or not private: ' . $tmpDir);
+    fail(503, 'Wallet passes are temporarily unavailable.');
 }
 
 // Remove expired passes now and then.
@@ -64,13 +79,25 @@ if (random_int(1, 20) === 1) {
             @unlink($old);
         }
     }
+    foreach (glob($tmpDir . '/rl-*.json') ?: [] as $old) {
+        if (filemtime($old) < time() - 3600) {
+            @unlink($old);
+        }
+    }
+    foreach (glob($tmpDir . '/*.claimed') ?: [] as $old) {
+        if (filemtime($old) < time() - 300) {
+            @unlink($old);
+        }
+    }
 }
 
 // ---------------------------------------------------------------- download a generated Apple pass
 if (($_SERVER['REQUEST_METHOD'] ?? '') === 'GET' && isset($_GET['download'])) {
-    $token = (string) $_GET['download'];
+    $token = is_string($_GET['download']) ? $_GET['download'] : '';
     $file = $tmpDir . '/' . $token . '.pkpass';
-    if (!preg_match('/^[a-f0-9]{32}$/', $token) || !is_file($file) || filemtime($file) < time() - PASS_TTL) {
+    $claimed = $file . '.' . bin2hex(random_bytes(6)) . '.claimed';
+    // Claim the file by renaming it first: only one request can win, so a pass is downloaded once.
+    if (!preg_match('/^[a-f0-9]{32}$/', $token) || !is_file($file) || filemtime($file) < time() - PASS_TTL || !@rename($file, $claimed)) {
         http_response_code(404);
         header('Content-Type: text/plain; charset=utf-8');
         echo "This wallet pass has expired. Go back and tap Add to Apple Wallet again.";
@@ -78,17 +105,19 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'GET' && isset($_GET['download'])) {
     }
     header('Content-Type: application/vnd.apple.pkpass');
     header('Content-Disposition: attachment; filename="business-card.pkpass"');
-    header('Content-Length: ' . filesize($file));
+    header('Content-Length: ' . filesize($claimed));
     header('Cache-Control: no-store');
-    readfile($file);
-    @unlink($file);
+    readfile($claimed);
+    @unlink($claimed);
     exit;
 }
 
 // ---------------------------------------------------------------- same-site requests only
-$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+$origin = (string) ($_SERVER['HTTP_ORIGIN'] ?? '');
 $allowed = $cfg['allowed_origins'] ?? [];
-if ($origin !== '') {
+// Browsers always send Origin with POST requests made by a page, so a missing Origin means a script.
+// That keeps your signing certificate from being used by anything but your own pages.
+if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'GET') {
     if (!in_array($origin, $allowed, true)) {
         fail(403, 'This site is not allowed to create wallet passes here.');
     }
@@ -108,14 +137,52 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
 // ---------------------------------------------------------------- simple per-IP rate limit
 $limit = (int) ($cfg['rate_limit_per_hour'] ?? 30);
 if ($limit > 0) {
-    $ipFile = $tmpDir . '/rl-' . hash('sha256', ($_SERVER['REMOTE_ADDR'] ?? '') . __DIR__) . '.json';
-    $hits = is_file($ipFile) ? (json_decode((string) file_get_contents($ipFile), true) ?: []) : [];
-    $hits = array_values(array_filter($hits, fn($t) => is_int($t) && $t > time() - 3600));
-    if (count($hits) >= $limit) {
-        fail(429, 'Too many wallet passes from this connection. Try again in an hour.');
+    // Behind Cloudflare or another proxy, configure the web server's real-IP module so REMOTE_ADDR is the visitor.
+    $ip = (string) ($_SERVER['REMOTE_ADDR'] ?? '');
+    // IPv6 visitors usually control a whole /64 block, so count the block, not each address.
+    if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) && ($bin = @inet_pton($ip)) !== false) {
+        $ip = bin2hex(substr($bin, 0, 8)) . '::/64';
     }
-    $hits[] = time();
-    file_put_contents($ipFile, json_encode($hits), LOCK_EX);
+    $ipFile = $tmpDir . '/rl-' . hash('sha256', $ip . __DIR__) . '.json';
+    // Read, check and update under one lock so many requests at once can't slip past the limit.
+    $fh = @fopen($ipFile, 'c+');
+    if (!$fh || !flock($fh, LOCK_EX)) {
+        fail(503, 'Wallet passes are temporarily unavailable.');   // never skip the limit
+    }
+    {
+        $hits = json_decode((string) stream_get_contents($fh), true) ?: [];
+        $hits = array_values(array_filter($hits, fn($t) => is_int($t) && $t > time() - 3600));
+        if (count($hits) >= $limit) {
+            flock($fh, LOCK_UN);
+            fclose($fh);
+            header('Retry-After: ' . max(60, $hits[0] + 3600 - time()));
+            fail(429, 'Too many wallet passes from this connection. Try again in an hour.');
+        }
+        $hits[] = time();
+        ftruncate($fh, 0);
+        rewind($fh);
+        fwrite($fh, json_encode($hits));
+        flock($fh, LOCK_UN);
+        fclose($fh);
+    }
+}
+// A total per day across all visitors, as a backstop if the per-visitor limit is ever bypassed.
+$daily = (int) ($cfg['daily_limit'] ?? 1000);
+if ($daily > 0) {
+    $fh = @fopen($tmpDir . '/daily-count.json', 'c+');
+    if (!$fh || !flock($fh, LOCK_EX)) {
+        fail(503, 'Wallet passes are temporarily unavailable.');
+    }
+    $day = gmdate('Y-m-d');
+    $d = json_decode((string) stream_get_contents($fh), true);
+    $n = (is_array($d) && ($d['day'] ?? '') === $day) ? (int) $d['n'] : 0;
+    if ($n >= $daily) {
+        flock($fh, LOCK_UN); fclose($fh);
+        error_log('[business-card wallet] daily limit reached');
+        fail(429, 'Wallet passes are busy today. Please try again tomorrow.');
+    }
+    ftruncate($fh, 0); rewind($fh); fwrite($fh, json_encode(['day' => $day, 'n' => $n + 1]));
+    flock($fh, LOCK_UN); fclose($fh);
 }
 
 // ---------------------------------------------------------------- read and clean the card
@@ -133,7 +200,7 @@ function clean(mixed $v, int $max): string
     if (!is_string($v)) {
         return '';
     }
-    $v = preg_replace('/[\x00-\x1F\x7F]+/u', ' ', $v) ?? '';
+    $v = preg_replace('/[\x00-\x1F\x7F\x{0080}-\x{009F}\x{00AD}\x{200B}\x{200E}\x{200F}\x{2028}-\x{202E}\x{2060}-\x{2064}\x{2066}-\x{2069}\x{FEFF}]+/u', ' ', $v) ?? '';
     return trim(mb_substr(trim($v), 0, $max));
 }
 
@@ -193,10 +260,12 @@ $type = $_GET['type'] ?? '';
 try {
     if ($type === 'apple') {
         $token = make_apple_pass($cfg['apple'] ?? [], $card, $colors, $in['logo'] ?? null, $tmpDir);
-        $self = strtok($_SERVER['REQUEST_URI'] ?? 'wallet.php', '?');
-        send_json(200, ['downloadUrl' => $self . '?download=' . $token]);
+        error_log('[business-card wallet] apple pass created');
+        send_json(200, ['downloadUrl' => basename(__FILE__) . '?download=' . $token]);
     } elseif ($type === 'google') {
-        send_json(200, ['saveUrl' => make_google_pass($cfg['google'] ?? [], $allowed, $card, $colors, $tmpDir)]);
+        $saveUrl = make_google_pass($cfg['google'] ?? [], $allowed, $card, $colors, $tmpDir);
+        error_log('[business-card wallet] google pass created');
+        send_json(200, ['saveUrl' => $saveUrl]);
     }
     fail(400, 'Unknown wallet type.');
 } catch (UserFacingError $e) {
@@ -223,6 +292,7 @@ function make_apple_pass(array $a, array $c, array $colors, mixed $logo, string 
         }
     }
 
+    $slot = build_slot($tmpDir);
     $dir = $tmpDir . '/build-' . bin2hex(random_bytes(8));
     mkdir($dir, 0700);
     try {
@@ -281,7 +351,7 @@ function make_apple_pass(array $a, array $c, array $colors, mixed $logo, string 
         file_put_contents("$dir/manifest.json", json_encode($manifest, JSON_UNESCAPED_SLASHES));
 
         // signature: detached PKCS#7 of manifest.json, signed with the Pass Type ID certificate + Apple WWDR
-        $smime = "$dir/../" . basename($dir) . '.smime';
+        $smime = "$dir/.signature.smime";   // a dot file: left out of the pass, removed below
         $ok = openssl_pkcs7_sign(
             "$dir/manifest.json", $smime,
             'file://' . $a['cert_pem'],
@@ -308,11 +378,32 @@ function make_apple_pass(array $a, array $c, array $colors, mixed $logo, string 
         $zip->close();
         return $token;
     } finally {
-        foreach (glob("$dir/*") ?: [] as $f) {
+        foreach (array_merge(glob("$dir/*") ?: [], glob("$dir/.*smime") ?: []) as $f) {
             @unlink($f);
         }
         @rmdir($dir);
+        flock($slot, LOCK_UN);
+        fclose($slot);
     }
+}
+
+/** Waits up to 8 seconds for one of a few build slots, so only that many passes are made at the same time. */
+function build_slot(string $tmpDir, int $slots = 2)
+{
+    $deadline = microtime(true) + 8;
+    do {
+        for ($i = 0; $i < $slots; $i++) {
+            $fh = @fopen("$tmpDir/slot-$i.lock", 'c');
+            if ($fh && flock($fh, LOCK_EX | LOCK_NB)) {
+                return $fh;
+            }
+            if ($fh) {
+                fclose($fh);
+            }
+        }
+        usleep(150000);
+    } while (microtime(true) < $deadline);
+    throw new UserFacingError('Many people are creating passes right now. Please try again in a moment.', 503);
 }
 
 /** openssl_pkcs7_sign writes S/MIME text; Wallet needs the raw DER signature inside it. */
@@ -343,6 +434,15 @@ function write_logo(mixed $logo, string $dir): bool
     }
     $bytes = base64_decode($m[2], true);
     if ($bytes === false || strlen($bytes) > 500000) {
+        return false;
+    }
+    // Read the real format and size from the file header first: a small file can claim
+    // 12000 x 12000 pixels and make the image library allocate gigabytes when decoded.
+    $info = @getimagesizefromstring($bytes);
+    $types = ['png' => IMAGETYPE_PNG, 'jpg' => IMAGETYPE_JPEG, 'jpeg' => IMAGETYPE_JPEG, 'webp' => IMAGETYPE_WEBP];
+    if (!$info || ($info[2] ?? 0) !== $types[strtolower($m[1])]
+        || $info[0] < 1 || $info[1] < 1 || $info[0] > LOGO_MAX_SIDE || $info[1] > LOGO_MAX_SIDE
+        || $info[0] * $info[1] > LOGO_MAX_PIXELS) {
         return false;
     }
     $src = @imagecreatefromstring($bytes);
@@ -437,8 +537,12 @@ function google_token(array $sa, string $tmpDir): string
     if ($status !== 200 || empty($res['access_token'])) {
         throw new RuntimeException('Google sign-in failed (' . $status . '): ' . json_encode($res));
     }
-    file_put_contents($cache, json_encode(['token' => $res['access_token'], 'exp' => $now + (int) ($res['expires_in'] ?? 3600)]), LOCK_EX);
-    @chmod($cache, 0600);
+    $tmp = tempnam($tmpDir, 'gtok');
+    if ($tmp !== false) {
+        @chmod($tmp, 0600);
+        file_put_contents($tmp, json_encode(['token' => $res['access_token'], 'exp' => $now + (int) ($res['expires_in'] ?? 3600)]));
+        @rename($tmp, $cache);   // atomic, and replaces any link someone planted at that name
+    }
     return $res['access_token'];
 }
 

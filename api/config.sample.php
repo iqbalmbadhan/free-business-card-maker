@@ -1,6 +1,7 @@
 <?php
 // Copy this file to config.php and fill it in. config.php is never served as text:
-// PHP runs it and it prints nothing. Keep the certificate and key files OUTSIDE your web root.
+// PHP runs it and it prints nothing. Keep the certificate and key files OUTSIDE your web root,
+// never inside this api folder: web servers can be set up to serve .json and .pem files as plain text.
 
 return [
     // Sites allowed to call this endpoint (scheme + host, no trailing slash).
@@ -10,7 +11,16 @@ return [
     ],
 
     // Requests allowed per visitor IP per hour (protects your signing certificate from abuse).
+    // Behind Cloudflare, also set up the real-IP lines in deploy/nginx.conf so each visitor is counted separately.
     'rate_limit_per_hour' => 30,
+
+    // Passes allowed per day in total, across all visitors. A backstop against abuse; 0 turns it off.
+    'daily_limit' => 1000,
+
+    // Private folder for passes waiting to be downloaded. Use a folder OUTSIDE your web root that only
+    // this site's user can read (the script refuses a folder that other accounts can read).
+    // Default: the system temp folder. On shared hosting, set your own, for example:
+    // 'tmp_dir' => '/home/USER/wallet-tmp',
 
     // ---------------- Apple Wallet ----------------
     'apple' => [

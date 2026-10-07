@@ -1,0 +1,5 @@
+# Keep keys, settings and backups private on Apache/LiteSpeed hosts. Only wallet.php and assets/*.png are public.
+Options -Indexes
+<FilesMatch "^(config\.php|config\.sample\.php)$|\.(pem|p12|key|cer|json|bak|old|orig|save|swp|log)$|~$|^\.">
+  Require all denied
+</FilesMatch>
