@@ -2,7 +2,7 @@
 
 A free, open-source **business card maker** by [AiInfos](https://aiinfos.com), in **English and Bengali**. Design a two-sided business card in the browser, add a **vCard QR code** and **social links**, download a **300 dpi print-ready PDF** with bleed, and save the card to **Apple Wallet or Google Wallet**. No sign-up, no watermark and no image files: every design is drawn in code, and each edition is a single HTML page.
 
-**Live:** [English](https://iqbalmahmud.com/business-card-maker/) · [বাংলা](https://iqbalmahmud.com/bangla-business-card-maker/)
+**Live:** [English](https://iqbalmahmud.com/business-card-maker/) · [বাংলা](https://iqbalmahmud.com/bangla-business-card-maker/) · [GitHub Pages copy (English)](https://iqbalmbadhan.github.io/free-business-card-maker/)
 
 ![Free business card maker: front and back of a business card with a QR code](public/og-image.png)
 
@@ -174,6 +174,8 @@ The app can also run inside an `<iframe>` (a page builder, a preview pane). It d
 Linking to the page directly still gives the best experience, especially on phones.
 
 ### Static hosts
+
+**This repo's GitHub Pages copy** is published automatically: the **GitHub Pages** workflow builds the English edition on every push to `main` and deploys it to https://iqbalmbadhan.github.io/free-business-card-maker/ (one-time setup: Settings → Pages → Source: **GitHub Actions**). Its canonical link points to iqbalmahmud.com, so search engines treat that as the main address.
 
 GitHub Pages, Netlify, Vercel and Cloudflare Pages: publish a folder from `dist/`. They can't run PHP, so the wallet buttons use the free route (each wallet's built-in tools), which needs no server.
 
