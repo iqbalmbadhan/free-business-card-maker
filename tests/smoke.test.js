@@ -140,7 +140,7 @@ function check(label, ok, detail = '') {
         if (sel) sel.hidden = false;
         return out;
       });
-      const allowed = /^(PDF|PNG|SVG|JPG|QR|vCard|AiInfos|Apple|Google|Wallet|iPhone|iPad|Android|Safari|Photos|Create|a|Pass|Add|to|Home|Screen|Everything|else|LinkedIn|X|Facebook|Instagram|YouTube|TikTok|GitHub|Dawn|C|Simmons|ISO|Pass2U|Save|Download|image|fit|page|iOS|com|org|vcf|Share|WhatsApp|English|LI|FB|IG|YT|TT|GH|WEB|test|user|in|linkedin|Wallet-|PDF-)$/;
+      const allowed = /^(PDF|PNG|SVG|JPG|QR|NFC|vCard|AiInfos|Apple|Google|Wallet|iPhone|iPad|Android|Safari|Photos|Create|a|Pass|Add|to|Home|Screen|Everything|else|LinkedIn|X|Facebook|Instagram|YouTube|TikTok|GitHub|Dawn|C|Simmons|ISO|Pass2U|Save|Download|image|fit|page|iOS|com|org|vcf|Share|WhatsApp|English|LI|FB|IG|YT|TT|GH|WEB|test|user|in|linkedin|iqbal|womenailabs|Wallet-|PDF-)$/;
       const left = [...new Set(txt.match(/[A-Za-z][A-Za-z0-9'-]*/g) || [])].filter(w => !allowed.test(w) && !/@|\./.test(w));
       check('no untranslated English', left.length === 0, left.slice(0, 10).join(', '));
     }
@@ -155,9 +155,10 @@ function check(label, ok, detail = '') {
       check('French switches document to LTR and translates UI', await p.getAttribute('html', 'lang') === 'fr' && await p.getAttribute('html', 'dir') === 'ltr');
       await p.selectOption('#langSelect', 'en'); await p.waitForTimeout(250);
 
-      // Present Mode & My Cards deck checks
+      // Present Mode, Personal Profile Share Hub & My Cards deck checks
+      check('Personal Profile Hub renders live identity and 6 share actions', await p.isVisible('#g-profile') && await p.locator('#g-profile .prof-share-btn').count() === 6);
       await p.click('#presentBtn'); await p.waitForTimeout(250);
-      check('Present Mode modal opens with front, back, and QR', await p.isVisible('#presentModal') && await p.evaluate(() => document.getElementById('presFront').width > 200 && document.getElementById('presQr').width > 100));
+      check('Present Mode modal opens with front, back, QR, and NFC bar', await p.isVisible('#presentModal') && await p.isVisible('#nfcBar') && await p.evaluate(() => document.getElementById('presFront').width > 200 && document.getElementById('presQr').width > 100));
       await p.click('#presClose'); await p.waitForTimeout(150);
       check('Present Mode modal closes', !(await p.isVisible('#presentModal')));
 

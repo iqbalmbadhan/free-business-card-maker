@@ -569,6 +569,30 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
 .pres-qr-wrap { grid-column: 1 / -1; display: flex; justify-content: center; padding: 10px; background: #fff; border-radius: var(--r-md); border: 1px solid var(--line); }
 .pres-qr { width: min(220px, 58vw); height: auto; image-rendering: pixelated; }
 @media (max-width: 600px) { .pres-grid { grid-template-columns: 1fr; } }
+.prof-card { display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: var(--r-lg); border: 1px solid var(--line); background: linear-gradient(145deg, color-mix(in srgb, var(--accent) 7%, var(--field)), var(--field)); box-shadow: var(--shadow-sm); }
+.prof-top { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.prof-avatar { width: 48px; height: 48px; border-radius: 14px; background: var(--accent); color: var(--accent-ink); font: 700 17px/1 var(--f-ui); display: grid; place-items: center; flex: none; overflow: hidden; box-shadow: 0 4px 12px -4px var(--ring); }
+.prof-avatar img { width: 100%; height: 100%; object-fit: contain; background: #fff; padding: 3px; }
+.prof-meta { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+.prof-meta strong { font-size: 15px; font-weight: 700; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: -0.01em; }
+.prof-meta span { font-size: 12.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.prof-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+.prof-pill { display: inline-flex; align-items: center; gap: 5px; padding: 4px 9px; border-radius: 999px; font-size: 11.5px; font-weight: 500; background: var(--panel); border: 1px solid var(--line); color: var(--ink); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.prof-share-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 420px) { .prof-share-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.prof-share-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 12px 8px; border-radius: var(--r-md); border: 1px solid var(--line-strong); background: var(--field); color: var(--ink); font: 600 12px/1.2 var(--f-ui); cursor: pointer; text-align: center; box-shadow: var(--shadow-sm); transition: transform 150ms var(--ease-out), border-color 150ms ease, background-color 150ms ease; -webkit-tap-highlight-color: transparent; }
+.prof-share-btn svg { width: 20px; height: 20px; color: var(--accent); flex: none; }
+.prof-share-btn:active { transform: scale(0.96); }
+.prof-share-btn.accent-btn { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 30%, var(--line)); }
+@media (hover: hover) and (pointer: fine) { .prof-share-btn:hover { border-color: var(--accent); transform: translateY(-1px); } }
+.nfc-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border-radius: var(--r-md); border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--line)); background: var(--accent-soft); margin-bottom: 10px; flex-wrap: wrap; }
+.nfc-bar-info { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; }
+.nfc-ico { width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; flex: none; }
+.nfc-ico.scanning { animation: nfc-pulse 1.3s infinite ease-in-out; }
+@keyframes nfc-pulse { 0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 var(--ring); } 50% { transform: scale(1.08); box-shadow: 0 0 0 8px transparent; } }
+.nfc-bar-txt { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.nfc-bar-txt strong { font-size: 13px; font-weight: 600; color: var(--ink); }
+.nfc-bar-txt span { font-size: 12px; color: var(--muted); line-height: 1.35; }
 @media (max-width: 880px) {
   .top-actions { margin-inline-start: auto; }
   .top-actions + .lang-switch, .top-actions + .help-btn, .lang-switch + .help-btn { margin-inline-start: 0; }
@@ -677,7 +701,6 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
       <div class="side-toggle" role="group" aria-label="Card side">
         <button type="button" id="sideFront" aria-pressed="true">Front</button>
         <button type="button" id="sideBack" aria-pressed="false">Back</button>
-        <button type="button" id="sidePresent">Present</button>
       </div>
       <figure class="side-front">
         <figcaption><span>Front</span><span class="dim" id="dimF"></span></figcaption>
@@ -709,6 +732,7 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
       <button type="button" data-to="g-back">Back &amp; QR</button>
       <button type="button" data-to="g-print">Print</button>
       <button type="button" data-to="walletGroup" data-wallet-nav hidden>Wallet</button>
+      <button type="button" data-to="g-profile">Profile</button>
       <button type="button" data-to="g-saved">Saved</button>
     </nav>
     <div class="group" id="g-details" data-tab="info">
@@ -835,6 +859,47 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
         <button class="btn vcf-btn" type="button" data-vcf hidden><span>Save contact (.vcf)</span></button>
       </div>
       <p class="hint">Keeps your card on your phone, ready to show. Anyone who scans its QR code gets your contact.</p>
+    </div>
+
+    <div class="group" id="g-profile" data-tab="export">
+      <div class="group-head"><h2 id="hProfile">Personal profile &amp; share</h2></div>
+      <div class="prof-card" id="profCard">
+        <div class="prof-top">
+          <div class="prof-avatar" id="profAvatar" aria-hidden="true">AR</div>
+          <div class="prof-meta">
+            <strong id="profName">Alex Rahman</strong>
+            <span id="profRole">Founder · Sample Studio</span>
+          </div>
+        </div>
+        <div class="prof-pills" id="profPills"></div>
+      </div>
+      <div class="prof-share-grid">
+        <button class="prof-share-btn accent-btn" id="profNfcBtn" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8.5a6.5 6.5 0 0 1 12 0"/><path d="M8.8 11.5a3.5 3.5 0 0 1 6.4 0"/><circle cx="12" cy="14.5" r="1.5" fill="currentColor"/><rect x="4" y="3" width="16" height="18" rx="3"/></svg>
+          <span id="lblShareNfc">NFC Tap</span>
+        </button>
+        <button class="prof-share-btn" id="profWalletBtn" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3 10h18"/><rect x="14" y="13" width="4" height="2.4" rx="1" fill="currentColor"/></svg>
+          <span id="lblShareWallet">Phone Wallet</span>
+        </button>
+        <button class="prof-share-btn" id="profPhotoBtn" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="m21 15-5-5L5 20"/></svg>
+          <span id="lblSharePhoto">Share Photo</span>
+        </button>
+        <button class="prof-share-btn" id="profPdfBtn" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></svg>
+          <span id="lblSharePdf">Share PDF</span>
+        </button>
+        <button class="prof-share-btn" id="profVcfBtn" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M16 11h6"/></svg>
+          <span id="lblShareVcf">Contact (.vcf)</span>
+        </button>
+        <button class="prof-share-btn" id="profCopyBtn" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          <span id="lblShareCopy">Copy info</span>
+        </button>
+      </div>
+      <p class="hint" id="profileHint">Share your card and contact details via phone wallet, NFC tap, photo, or print-ready PDF.</p>
     </div>
 
     <div class="group" id="g-saved" data-tab="export">
@@ -988,17 +1053,30 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
 <div class="viewer" id="presentModal" hidden>
   <div class="viewer-box pres-box" role="dialog" aria-modal="true" aria-labelledby="presTitle">
     <div class="db-head">
-      <h3 id="presTitle">Present card</h3>
+      <h3 id="presTitle">Personal profile &amp; share</h3>
       <button class="btn" id="presClose" type="button">Close</button>
     </div>
-    <p class="hint" id="presSub">Show this screen so anyone can read your card or scan your contact QR code.</p>
+    <p class="hint" id="presSub">Share your business card in person by QR scan, NFC tap, Wallet pass, photo, or PDF.</p>
+    <div class="nfc-bar" id="nfcBar">
+      <div class="nfc-bar-info">
+        <div class="nfc-ico" id="nfcIco" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8.5a6.5 6.5 0 0 1 12 0"/><path d="M8.8 11.5a3.5 3.5 0 0 1 6.4 0"/><circle cx="12" cy="14.5" r="1.5" fill="currentColor"/></svg>
+        </div>
+        <div class="nfc-bar-txt">
+          <strong id="nfcTitle">NFC Tap &amp; Write Tag</strong>
+          <span id="nfcStatus">Hold an NFC card or tag near the back of your phone to write your contact details, or scan the QR code below.</span>
+        </div>
+      </div>
+      <button class="btn primary" id="nfcStartBtn" type="button">Start NFC Tap</button>
+    </div>
     <div class="pres-grid">
       <canvas id="presFront" class="pres-card"></canvas>
       <canvas id="presBack" class="pres-card"></canvas>
       <div class="pres-qr-wrap" id="presQrWrap"><canvas id="presQr" class="pres-qr"></canvas></div>
     </div>
     <div class="fw-actions">
-      <button class="btn primary" id="presPdf" type="button">Share PDF</button>
+      <button class="btn primary" id="presPhoto" type="button">Share Photo</button>
+      <button class="btn" id="presPdf" type="button">Share PDF</button>
       <button class="btn" id="presVcf" type="button">Save contact (.vcf)</button>
     </div>
   </div>
@@ -2421,6 +2499,7 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
     $("legend").hidden = !state.guides;
     updateQrHint();
     $("exportNote").textContent = t(state.bleed ? "exportNoteBleed" : "exportNoteNoBleed");
+    if (typeof updateProfileHub === "function") updateProfileHub();
   }
 
   function updateQrHint() {
@@ -2822,7 +2901,138 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
   }
   document.querySelectorAll("[data-vcf]").forEach(b => b.addEventListener("click", saveVcf));
 
-  // ---------- Present Mode (in-person sharing + full-screen QR) ----------
+  // ---------- Present Mode & Personal Profile Share Hub (Wallet, NFC Tap, Photo, PDF, .vcf) ----------
+  function updateProfileHub() {
+    const av = $("profAvatar"), nm = $("profName"), rl = $("profRole"), pills = $("profPills");
+    if (!av || !nm || !rl || !pills) return;
+    const nameStr = String(state.name || state.company || "").trim() || t("pdfDefaultName");
+    const roleStr = [state.title, state.company].map(s => String(s || "").trim()).filter(Boolean).join(" · ");
+    nm.textContent = nameStr;
+    rl.textContent = roleStr;
+    rl.hidden = !roleStr;
+    av.style.background = state.accent || "#2E5A4D";
+    av.textContent = "";
+    if (state.logo) {
+      const img = document.createElement("img");
+      img.src = state.logo;
+      img.alt = "";
+      av.appendChild(img);
+    } else {
+      const words = nameStr.split(/\s+/).filter(Boolean);
+      const init = words.length ? (Array.from(words[0])[0] + (words.length > 1 ? Array.from(words[words.length - 1])[0] : "")).toUpperCase() : "ID";
+      av.textContent = String(state.mono || "").trim() || init;
+    }
+    pills.textContent = "";
+    const items = [
+      state.phone && String(state.phone).trim(),
+      state.email && String(state.email).trim(),
+      state.website && cleanUrl(state.website),
+      ...SOCIALS.map(d => {
+        const v = String((state.social || {})[d.id] || "").trim();
+        return v ? d.name : "";
+      }).filter(Boolean)
+    ].filter(Boolean).slice(0, 5);
+    items.forEach(txt => {
+      const sp = document.createElement("span");
+      sp.className = "prof-pill";
+      sp.textContent = txt;
+      pills.appendChild(sp);
+    });
+  }
+
+  async function shareAsPhoto() {
+    haptic("MEDIUM");
+    const cv = walletImageCanvas() || exportCanvas("front");
+    const blob = await toBlob(cv);
+    if (!blob) { toast(t("renderErr")); return; }
+    const filename = `${slug()}-business-card.png`;
+    if (await shareNativeFile(filename, blob)) return;
+    try {
+      if (navigator.canShare && typeof File === "function") {
+        const file = new File([blob], filename, { type: "image/png" });
+        if (navigator.canShare({ files: [file] }) && matchMedia("(max-width: 880px)").matches) {
+          await navigator.share({ title: state.name || t("pdfDefaultName"), files: [file] });
+          return;
+        }
+      }
+    } catch (e) {
+      if (e && e.name === "AbortError") return;
+    }
+    await offer(filename, blob, [cv], "png");
+  }
+
+  async function copyContactInfo() {
+    haptic("LIGHT");
+    const lines = [
+      state.name,
+      [state.title, state.company].filter(Boolean).join(" · "),
+      state.phone,
+      state.email,
+      state.website,
+      state.address
+    ].map(s => String(s || "").trim()).filter(Boolean).join("\n");
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(lines);
+      } else {
+        const ta = document.createElement("textarea");
+        ta.value = lines; ta.style.position = "fixed"; ta.style.opacity = "0";
+        document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove();
+      }
+      toast(t("shareCopiedToast"));
+    } catch (e) {
+      toast(t("shareCopiedToast"));
+    }
+  }
+
+  let nfcAbort = null;
+  async function startNfcTap() {
+    haptic("MEDIUM");
+    if ($("presentModal").hidden) openPresentMode();
+    const statusEl = $("nfcStatus"), icoEl = $("nfcIco");
+    if (!("NDEFReader" in window)) {
+      if (statusEl) statusEl.textContent = t("nfcUnsupported");
+      toast(t("nfcUnsupported"));
+      return;
+    }
+    try {
+      if (nfcAbort) { try { nfcAbort.abort(); } catch (e) {} }
+      nfcAbort = new AbortController();
+      if (icoEl) icoEl.classList.add("scanning");
+      if (statusEl) statusEl.textContent = t("nfcScanning");
+      const ndef = new window.NDEFReader();
+      const vcard = qrPayload("vcard");
+      const records = [];
+      if (vcard) {
+        records.push({
+          recordType: "mime",
+          mediaType: "text/vcard",
+          data: new TextEncoder().encode(vcard)
+        });
+      }
+      if (state.website) {
+        const u = /^https?:\/\//i.test(state.website.trim()) ? state.website.trim() : "https://" + state.website.trim();
+        records.push({ recordType: "url", data: u });
+      }
+      await ndef.write({ records }, { signal: nfcAbort.signal });
+      if (icoEl) icoEl.classList.remove("scanning");
+      if (statusEl) statusEl.textContent = t("nfcSuccess");
+      haptic("MEDIUM");
+      toast(t("nfcSuccess"));
+    } catch (err) {
+      if (icoEl) icoEl.classList.remove("scanning");
+      if (err && err.name === "AbortError") return;
+      if (statusEl) statusEl.textContent = t("nfcError");
+      toast(t("nfcError"));
+    }
+  }
+
+  function closePresentMode() {
+    if (nfcAbort) { try { nfcAbort.abort(); } catch (e) {} nfcAbort = null; }
+    if ($("nfcIco")) $("nfcIco").classList.remove("scanning");
+    $("presentModal").hidden = true;
+  }
+
   function openPresentMode() {
     haptic("MEDIUM");
     renderTo($("presFront"), "front", { scale: 6, bleed: false, guides: false });
@@ -2837,16 +3047,28 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
     } else if (qrWrap) {
       qrWrap.hidden = true;
     }
+    if ($("nfcStatus")) $("nfcStatus").textContent = t("nfcSub");
     openModal($("presentModal"));
     $("presClose").focus({ preventScroll: EMBED });
   }
   if ($("presentBtn")) $("presentBtn").addEventListener("click", openPresentMode);
-  if ($("sidePresent")) $("sidePresent").addEventListener("click", openPresentMode);
-  if ($("presClose")) $("presClose").addEventListener("click", () => { $("presentModal").hidden = true; });
-  if ($("presentModal")) $("presentModal").addEventListener("click", (e) => { if (e.target === $("presentModal")) $("presentModal").hidden = true; });
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && $("presentModal") && !$("presentModal").hidden) $("presentModal").hidden = true; });
+  if ($("presClose")) $("presClose").addEventListener("click", closePresentMode);
+  if ($("presentModal")) $("presentModal").addEventListener("click", (e) => { if (e.target === $("presentModal")) closePresentMode(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && $("presentModal") && !$("presentModal").hidden) closePresentMode(); });
+  if ($("presPhoto")) $("presPhoto").addEventListener("click", shareAsPhoto);
   if ($("presPdf")) $("presPdf").addEventListener("click", () => $("exPdf").click());
   if ($("presVcf")) $("presVcf").addEventListener("click", saveVcf);
+  if ($("nfcStartBtn")) $("nfcStartBtn").addEventListener("click", startNfcTap);
+  if ($("profNfcBtn")) $("profNfcBtn").addEventListener("click", () => { openPresentMode(); startNfcTap(); });
+  if ($("profWalletBtn")) $("profWalletBtn").addEventListener("click", () => {
+    const kind = /android/i.test(navigator.userAgent) ? "google" : "apple";
+    const btn = document.querySelector(`.wallet-btn.${kind}`) || $("profWalletBtn");
+    addToWallet(kind, btn);
+  });
+  if ($("profPhotoBtn")) $("profPhotoBtn").addEventListener("click", shareAsPhoto);
+  if ($("profPdfBtn")) $("profPdfBtn").addEventListener("click", () => $("exPdf").click());
+  if ($("profVcfBtn")) $("profVcfBtn").addEventListener("click", saveVcf);
+  if ($("profCopyBtn")) $("profCopyBtn").addEventListener("click", copyContactInfo);
 
   // ---------- My Cards deck (multiple saved cards on device) ----------
   const DECK_KEY = KEY + ".deck";
@@ -3197,18 +3419,30 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
     setTxt("#exFront", "exFront");
     setTxt("#exBack", "exBack");
     setTxt("#presentBtn", "presentBtn");
-    setTxt("#sidePresent", "presentBtn");
     setTxt('#g-export [data-proxy="presentBtn"]', "presentBtn");
     setTxt("#presTitle", "presentTitle");
     setTxt("#presSub", "presentSub");
+    setTxt("#presPhoto", "sharePhotoBtn");
     setTxt("#presPdf", "presentSharePdf");
     setTxt("#presVcf", "presentShareVcf");
     setTxt("#presClose", "presentClose");
+    setTxt("#nfcTitle", "nfcTitle");
+    setTxt("#nfcStatus", "nfcSub");
+    setTxt("#nfcStartBtn", "nfcWriteBtn");
+    setTxt("#hProfile", "hProfile");
+    setTxt("#profileHint", "profileHint");
+    setTxt("#lblShareNfc", "shareNfcBtn");
+    setTxt("#lblShareWallet", "shareWalletBtn");
+    setTxt("#lblSharePhoto", "sharePhotoBtn");
+    setTxt("#lblSharePdf", "sharePdfBtn");
+    setTxt("#lblShareVcf", "shareVcfBtn");
+    setTxt("#lblShareCopy", "shareCopyBtn");
     setTxt("#deckTitle", "deckTitle");
     setTxt("#deckHint", "deckHint");
     setTxt("#deckSaveNew", "deckSaveNew");
     setTxt("#deckUpdate", "deckUpdate");
     renderDeck();
+    updateProfileHub();
 
     setAttr("#panel", "aria-label", "panelAria");
     setAttr("#secnav", "aria-label", "secnavAria");
@@ -3221,6 +3455,7 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
     setTxt('#secnav button[data-to="g-back"]', "navBack");
     setTxt('#secnav button[data-to="g-print"]', "navPrint");
     setTxt('#secnav button[data-to="walletGroup"]', "navWallet");
+    setTxt('#secnav button[data-to="g-profile"]', "navProfile");
     setTxt('#secnav button[data-to="g-saved"]', "navSaved");
 
     setAttr("#tabbar", "aria-label", "tabbarAria");
