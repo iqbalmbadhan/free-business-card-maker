@@ -2,7 +2,6 @@
   "appId": "com.aiinfos.businesscardmaker",
   "appName": "Card Maker",
   "webDir": "dist/mobile",
-  "bundledWebRuntime": false,
   "backgroundColor": "#F6F3EC",
   "android": {
     "allowMixedContent": false,
