@@ -84,6 +84,9 @@ jobs:
         run: |
           chmod +x gradlew
           ./gradlew assembleDebug
+          TIMESTAMP=$(date -u +"%Y%m%d_%H%M%S")
+          cp app/build/outputs/apk/debug/app-debug.apk ../BusinessCardMaker_latest.apk
+          cp app/build/outputs/apk/debug/app-debug.apk ../BusinessCardMaker_${TIMESTAMP}.apk
           cp app/build/outputs/apk/debug/app-debug.apk ../BusinessCardMaker-debug.apk
 
       - name: Build Signed Release APK & AAB (if Android Keystore secrets are configured)
@@ -104,17 +107,19 @@ jobs:
             -Pandroid.injected.signing.store.password="$ANDROID_KEYSTORE_PASSWORD" \
             -Pandroid.injected.signing.key.alias="$ANDROID_KEY_ALIAS" \
             -Pandroid.injected.signing.key.password="$ANDROID_KEY_PASSWORD"
-          cp app/build/outputs/apk/release/app-release.apk ../BusinessCardMaker-release.apk
-          cp app/build/outputs/bundle/release/app-release.aab ../BusinessCardMaker-release.aab
+          TIMESTAMP=$(date -u +"%Y%m%d_%H%M%S")
+          cp app/build/outputs/apk/release/app-release.apk ../BusinessCardMaker_release_latest.apk
+          cp app/build/outputs/apk/release/app-release.apk ../BusinessCardMaker_release_${TIMESTAMP}.apk
+          cp app/build/outputs/bundle/release/app-release.aab ../BusinessCardMaker_release_latest.aab
+          cp app/build/outputs/bundle/release/app-release.aab ../BusinessCardMaker_release_${TIMESTAMP}.aab
 
       - name: Upload Android Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: Android-App-Packages
           path: |
-            BusinessCardMaker-debug.apk
-            BusinessCardMaker-release.apk
-            BusinessCardMaker-release.aab
+            BusinessCardMaker*.apk
+            BusinessCardMaker*.aab
           if-no-files-found: warn
 
   # ============================================================================
@@ -212,6 +217,10 @@ jobs:
           cp -R ios/build/DerivedData/Build/Products/Release-iphoneos/App.app ios/build/Payload/
           cd ios/build
           zip -qry ../../BusinessCardMaker-unsigned.ipa Payload
+          cd ../..
+          TIMESTAMP=$(date -u +"%Y%m%d_%H%M%S")
+          cp BusinessCardMaker-unsigned.ipa BusinessCardMaker_latest.ipa
+          cp BusinessCardMaker-unsigned.ipa BusinessCardMaker_${TIMESTAMP}.ipa
 
       - name: Build iOS Simulator .app Bundle
         run: |
@@ -228,6 +237,10 @@ jobs:
             build
           cd ios/build/SimDerivedData/Build/Products/Release-iphonesimulator
           zip -qry ../../../../../../BusinessCardMaker-Simulator.app.zip App.app
+          cd ../../../../../..
+          TIMESTAMP=$(date -u +"%Y%m%d_%H%M%S")
+          cp BusinessCardMaker-Simulator.app.zip BusinessCardMaker_Simulator_latest.app.zip
+          cp BusinessCardMaker-Simulator.app.zip BusinessCardMaker_Simulator_${TIMESTAMP}.app.zip
 
       - name: Build Signed App Store / TestFlight .ipa (if Apple Developer secrets are configured)
         env:
@@ -293,13 +306,15 @@ jobs:
             -exportPath ios/build/SignedExport
 
           cp ios/build/SignedExport/*.ipa BusinessCardMaker-signed.ipa
+          TIMESTAMP=$(date -u +"%Y%m%d_%H%M%S")
+          cp BusinessCardMaker-signed.ipa BusinessCardMaker_signed_latest.ipa
+          cp BusinessCardMaker-signed.ipa BusinessCardMaker_signed_${TIMESTAMP}.ipa
 
       - name: Upload iOS Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: iOS-App-Packages
           path: |
-            BusinessCardMaker-unsigned.ipa
-            BusinessCardMaker-Simulator.app.zip
-            BusinessCardMaker-signed.ipa
+            BusinessCardMaker*.ipa
+            BusinessCardMaker*.app.zip
           if-no-files-found: warn
