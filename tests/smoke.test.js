@@ -9,8 +9,8 @@ const { start } = require('../tools/serve');
 const fonts = require('../tools/font-route');
 
 const EDITIONS = [
-  { id: 'en', folder: 'business-card-maker', lang: 'en', next: 'Next', page2: /13–24/ },
-  { id: 'bn', folder: 'bangla-business-card-maker', lang: 'bn', next: 'পরের', page2: /১৩–২৪/ },
+  { id: 'en', folder: 'business-card-maker', country: 'US', lang: 'en', next: 'Next', page2: /13–24/ },
+  { id: 'bn', folder: 'business-card-maker', country: 'BD', lang: 'bn', next: 'পরের', page2: /১৩–২৪/ },
 ];
 const SIZES = [
   { name: 'desktop', viewport: { width: 1440, height: 900 } },
@@ -32,19 +32,32 @@ function check(label, ok, detail = '') {
   }
   const server = await start(0);
   const base = `http://127.0.0.1:${server.address().port}`;
-  const browser = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
+  const sysChrome = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+  const execPath = process.env.CHROMIUM_PATH || (fs.existsSync(sysChrome) ? sysChrome : undefined);
+  const browser = await chromium.launch(execPath ? { executablePath: execPath } : {});
 
   for (const e of EDITIONS) for (const s of SIZES) {
     console.log(`\n${e.id} · ${s.name}`);
     const { name, ...opts } = s;
     const ctx = await browser.newContext({ ...opts, acceptDownloads: true });
     await fonts(ctx);   // real fonts, served locally
+    await ctx.route('https://api.country.is/**', route => route.fulfill({
+      status: 200, contentType: 'application/json', body: JSON.stringify({ country: e.country })
+    }));
+    await ctx.route('https://get.geojs.io/**', route => route.fulfill({
+      status: 200, contentType: 'application/json', body: JSON.stringify({ country: e.country })
+    }));
     const p = await ctx.newPage();
     const errors = []; p.on('pageerror', err => errors.push(err.message));
     // anything the Content Security Policy blocks is a bug: record it
     await p.addInitScript(() => { window.__csp = []; document.addEventListener('securitypolicyviolation', e => window.__csp.push(e.violatedDirective + ' ' + (e.blockedURI || 'inline'))); });
     await p.goto(`${base}/${e.folder}/`, { waitUntil: 'load' });
     await p.waitForTimeout(600);
+    if (e.lang === 'bn') {
+      check('IP auto-language toast notice shown', await p.isVisible('#toast.toast-language'));
+      await p.click('#toast .toast-close');
+      await p.waitForTimeout(100);
+    }
 
     check('page language', await p.getAttribute('html', 'lang') === e.lang);
     check('cards are drawn', await p.evaluate(() => document.getElementById('cvFront').width > 300 && document.getElementById('cvBack').width > 300));
@@ -118,12 +131,40 @@ function check(label, ok, detail = '') {
     });
     check('Light back is light on a dark palette', lum > 0.6, `luminance ${lum.toFixed(2)}`);
 
-    // Bengali edition: nothing left in English
+    // Bengali edition: nothing left in English (excluding language selector option names)
     if (e.lang === 'bn' && s.name === 'desktop') {
-      const txt = await p.evaluate(() => document.body.innerText);
+      const txt = await p.evaluate(() => {
+        const sel = document.getElementById('langSelect');
+        if (sel) sel.hidden = true;
+        const out = document.body.innerText;
+        if (sel) sel.hidden = false;
+        return out;
+      });
       const allowed = /^(PDF|PNG|SVG|JPG|QR|vCard|AiInfos|Apple|Google|Wallet|iPhone|iPad|Android|Safari|Photos|Create|a|Pass|Add|to|Home|Screen|Everything|else|LinkedIn|X|Facebook|Instagram|YouTube|TikTok|GitHub|Dawn|C|Simmons|ISO|Pass2U|Save|Download|image|fit|page|iOS|com|org|vcf|Share|WhatsApp|English|LI|FB|IG|YT|TT|GH|WEB|test|user|in|linkedin|Wallet-|PDF-)$/;
       const left = [...new Set(txt.match(/[A-Za-z][A-Za-z0-9'-]*/g) || [])].filter(w => !allowed.test(w) && !/@|\./.test(w));
       check('no untranslated English', left.length === 0, left.slice(0, 10).join(', '));
+    }
+
+    // Live language switching and IP-based auto language detection checks on desktop en
+    if (e.lang === 'en' && s.name === 'desktop') {
+      const langCount = await p.locator('#langSelect option').count();
+      check('11 languages in language selector', langCount === 11, `${langCount} options`);
+      await p.selectOption('#langSelect', 'ar'); await p.waitForTimeout(250);
+      check('Arabic switches document to RTL', await p.getAttribute('html', 'lang') === 'ar' && await p.getAttribute('html', 'dir') === 'rtl');
+      await p.selectOption('#langSelect', 'fr'); await p.waitForTimeout(250);
+      check('French switches document to LTR and translates UI', await p.getAttribute('html', 'lang') === 'fr' && await p.getAttribute('html', 'dir') === 'ltr');
+      await p.selectOption('#langSelect', 'en'); await p.waitForTimeout(250);
+
+      // Present Mode & My Cards deck checks
+      await p.click('#presentBtn'); await p.waitForTimeout(250);
+      check('Present Mode modal opens with front, back, and QR', await p.isVisible('#presentModal') && await p.evaluate(() => document.getElementById('presFront').width > 200 && document.getElementById('presQr').width > 100));
+      await p.click('#presClose'); await p.waitForTimeout(150);
+      check('Present Mode modal closes', !(await p.isVisible('#presentModal')));
+
+      await p.click('#deckSaveNew'); await p.waitForTimeout(200);
+      check('My Cards deck saves card and shows Update button', await p.locator('#deckList .deck-item').count() === 1 && await p.isVisible('#deckUpdate'));
+      await p.click('#deckList .deck-item-del'); await p.waitForTimeout(150);
+      check('My Cards deck deletes saved card', await p.locator('#deckList .deck-item').count() === 0);
     }
 
     // About & FAQ: in the page for search engines, shown in a sheet on demand
@@ -133,7 +174,7 @@ function check(label, ok, detail = '') {
     check('About & FAQ opens', await p.isVisible('#helpSheet') && await p.isVisible('.faq'));
     check('sheet fits the screen', await p.evaluate(() => { const r = document.querySelector('#helpSheet .sheet-box').getBoundingClientRect(); return r.top >= -1 && r.bottom <= innerHeight + 1; }));
     await p.goBack(); await p.waitForTimeout(400);
-    check('back button closes the sheet and stays on the page', !(await p.isVisible('#helpSheet')) && await p.isVisible('.stage') && p.url().endsWith(`/${e.folder}/`));
+    check('back button closes the sheet and stays on the page', !(await p.isVisible('#helpSheet')) && await p.isVisible('.stage') && p.url().includes(`/${e.folder}/`));
     await p.click('#helpBtn'); await p.waitForTimeout(400);
     await p.keyboard.press('Escape'); await p.waitForTimeout(300);
     check('Escape closes it', !(await p.isVisible('#helpSheet')));
@@ -156,6 +197,23 @@ function check(label, ok, detail = '') {
     check('no script errors', errors.length === 0, errors.join(' | '));
     const csp = await p.evaluate(() => window.__csp || []);
     check('Content Security Policy active and nothing blocked', (await p.$('meta[http-equiv="Content-Security-Policy"]')) !== null && csp.length === 0, csp.join(' | '));
+    await ctx.close();
+  }
+
+  if (fs.existsSync(path.join(__dirname, '..', 'dist', 'mobile', 'index.html'))) {
+    console.log('\nmobile · offline bundle');
+    const ctx = await browser.newContext({ ...SIZES[1] });
+    await ctx.route('https://api.country.is/**', route => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ country: 'US' }) }));
+    const p = await ctx.newPage();
+    const errors = []; p.on('pageerror', err => errors.push(err.message));
+    await p.addInitScript(() => { window.__csp = []; document.addEventListener('securitypolicyviolation', e => window.__csp.push(e.violatedDirective + ' ' + (e.blockedURI || 'inline'))); });
+    await p.goto(`${base}/mobile/`, { waitUntil: 'load' });
+    await p.waitForTimeout(500);
+    check('offline mobile bundle draws cards', await p.evaluate(() => document.getElementById('cvFront').width > 300 && document.getElementById('cvBack').width > 300));
+    check('offline fonts stylesheet linked locally', await p.getAttribute('#fontCss', 'href') === 'fonts/fonts.css');
+    check('offline mobile bundle has no script errors', errors.length === 0, errors.join(' | '));
+    const csp = await p.evaluate(() => window.__csp || []);
+    check('offline mobile bundle CSP active and nothing blocked', csp.length === 0, csp.join(' | '));
     await ctx.close();
   }
 

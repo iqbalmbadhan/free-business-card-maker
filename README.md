@@ -30,12 +30,11 @@ A free, open-source **business card maker** by [AiInfos](https://aiinfos.com), i
 ```
 free-business-card-maker/
 ├── src/
-│   ├── app.html               # the app: HTML, CSS and JavaScript (English source)
+│   ├── app.html               # the app: HTML, CSS and JavaScript
 │   ├── pdf-writer.js          # writes the print-ready PDF in the browser
 │   ├── sw.template.js         # service worker (offline use)
 │   └── i18n/
-│       ├── bn.py              # turns the English build into the Bengali edition
-│       └── about-bn.html      # Bengali help text and FAQ
+│       └── locales.js         # 11-language dictionary (en, fr, de, es, bn, hi, ja, zh, zh-Hant, ar, ru)
 ├── vendor/qrcode-generator/   # QR code library (MIT), inlined into each page
 ├── build/
 │   ├── build.py               # builds every edition into dist/

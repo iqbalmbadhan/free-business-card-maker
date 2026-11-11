@@ -10,7 +10,7 @@ const css = fonts.css;
 const BN = process.argv[2] === 'bn';
 const DESIGN = BN ? 'ঢেউ' : 'coastal';   // the design shown on the cards
 const DIST = path.join(__dirname, '..', 'dist');
-const PAGE = 'file://' + path.join(DIST, BN ? 'bangla-business-card-maker' : 'business-card-maker', 'index.html');
+const PAGE = 'file://' + path.join(DIST, 'business-card-maker', 'index.html') + (BN ? '?lang=bn' : '?lang=en');
 const TXT = BN ? { brand: 'AiInfos', h1: 'ফ্রি ভিজিটিং কার্ড মেকার', p: 'বাংলা ফন্টে দুই পাশের কার্ড বানান, QR কোডসহ। প্রেসে দেওয়ার মতো PDF ডাউনলোড করুন।',
   chips: ['১৪৮টি ডিজাইন', '৬টি বাংলা ফন্ট', 'QR কন্টাক্ট', 'সোশ্যাল লিংক', 'অ্যাকাউন্ট লাগে না'], foot: 'ফ্রি · ওয়াটারমার্ক নেই · যেকোনো ফোনে চলে', font: '"Noto Sans Bengali"', h1size: 52 }
  : { brand: 'AiInfos', h1: 'Free Business Card Maker', p: 'Design a two-sided card with a QR code in minutes. Download a print-ready PDF.',

@@ -2,7 +2,7 @@
   "name": "free-business-card-maker",
   "version": "1.0.0",
   "private": true,
-  "description": "Free business card maker with QR code, social links, Apple/Google Wallet and print-ready PDF. English and Bengali editions.",
+  "description": "Free multi-language business card maker with QR code, social links, Apple/Google Wallet and print-ready PDF.",
   "license": "MIT",
   "author": "Iqbal Mahmud (https://www.IqbalMahmud.com)",
   "homepage": "https://iqbalmahmud.com/business-card-maker/",
@@ -12,6 +12,8 @@
   "scripts": {
     "build": "python3 build/build.py",
     "build:dev": "python3 build/build.py --no-minify",
+    "build:mobile": "python3 build/build_mobile.py",
+    "cap:sync": "python3 build/build_mobile.py && npx cap sync",
     "serve": "node tools/serve.js",
     "test": "node tests/smoke.test.js",
     "og-images": "node tools/og-image.js en && node tools/og-image.js bn"

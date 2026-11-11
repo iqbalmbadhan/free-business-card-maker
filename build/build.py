@@ -39,12 +39,15 @@ def load_editions():
 
 
 def assemble():
-    """The app with its QR library and PDF writer inlined: one self-contained page."""
+    """The app with its QR library, locales and PDF writer inlined: one self-contained page."""
     src = read(SRC, 'app.html')
     qr = read(ROOT, 'vendor', 'qrcode-generator', 'qrcode.js')
-    assert '</script' not in qr.lower()
-    assert src.count('/*QRLIB*/') == 1 and src.count('/*PDFWRITER*/') == 1
-    return src.replace('/*QRLIB*/', '\n' + qr + '\n').replace('/*PDFWRITER*/', read(SRC, 'pdf-writer.js'))
+    loc = read(SRC, 'i18n', 'locales.js')
+    assert '</script' not in qr.lower() and '</script' not in loc.lower()
+    assert src.count('/*QRLIB*/') == 1 and src.count('/*LOCALES*/') == 1 and src.count('/*PDFWRITER*/') == 1
+    return (src.replace('/*QRLIB*/', '\n' + qr + '\n')
+               .replace('/*LOCALES*/', '\n' + loc + '\n')
+               .replace('/*PDFWRITER*/', read(SRC, 'pdf-writer.js')))
 
 
 TEXT = {
@@ -86,22 +89,18 @@ def add_csp(index):
     csp = '; '.join([
         "default-src 'self'", "script-src 'self' " + ' '.join(hashes),
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com", "font-src https://fonts.gstatic.com",
-        "img-src 'self' data: blob:", "connect-src 'self'", "worker-src 'self'", "manifest-src 'self'",
+        "img-src 'self' data: blob:", "connect-src 'self' https://api.country.is https://get.geojs.io", "worker-src 'self'", "manifest-src 'self'",
         "object-src 'none'", "base-uri 'none'", "form-action 'none'", "upgrade-insecure-requests"])
     page = page.replace('<meta charset="utf-8">', f'<meta charset="utf-8">\n<meta http-equiv="Content-Security-Policy" content="{csp}">', 1)
     write(index, page)
 
 
 def build(eid, ed, eds, minify=True):
-    lang = ed.get('lang', 'en'); T = TEXT[lang]; bn = None
+    lang = ed.get('lang', 'en'); T = TEXT[lang]
     site = ed['site']; out = os.path.join(DIST, ed['folder'])
     alt = eds.get(ed.get('alternate', '')) if ed.get('alternate') else None
 
     art = assemble()
-    if lang == 'bn':
-        import bn as bn  # src/i18n/bn.py
-        art = bn.translate(art)
-    # No visible language switch: each edition stands on its own. The hreflang tags in <head> still pair them for search engines.
     a = art.index('  const EXAMPLE = {'); b = art.index('};', a) + 2
     art = art[:a] + '  const EXAMPLE = ' + json.dumps(ed['example'], ensure_ascii=False) + ';' + art[b:]
     assert art.count('const KEY = "cardpress.v2";') == 1
@@ -112,8 +111,6 @@ def build(eid, ed, eds, minify=True):
     for l in links:
         body = body.replace(l, '', 1)
     body = pwa_patch(body.strip())
-    if bn:
-        body = bn.translate_pwa(body)
 
     og = site + f'og-image.png?v={OG_VERSION}'
     faq = [{"@type": "Question", "name": re.sub('<[^>]+>', '', q).strip(),

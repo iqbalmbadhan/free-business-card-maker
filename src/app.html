@@ -1,8 +1,9 @@
 <title>Free Business Card Maker with QR Code – Print-Ready PDF</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" id="fontCss" media="print" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Cormorant+Garamond:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700;800&family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Raleway:wght@400;500;600;700&family=Lato:wght@400;700&family=Nunito:wght@400;600;800&family=Oswald:wght@400;500;600&family=Playfair+Display:wght@400;600;700&family=Lora:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600&family=Merriweather:wght@400;700&display=swap">
+<link rel="stylesheet" id="fontCss" media="print" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Cormorant+Garamond:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700;800&family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Raleway:wght@400;500;600;700&family=Lato:wght@400;700&family=Nunito:wght@400;600;800&family=Oswald:wght@400;500;600&family=Playfair+Display:wght@400;600;700&family=Lora:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600&family=Merriweather:wght@400;700&family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@400;500;600;700&family=Anek+Bangla:wght@400;500;600;700&family=Baloo+Da+2:wght@400;500;600;700&family=Tiro+Bangla&family=Galada&display=swap">
 <script>/*QRLIB*/</script>
+<script>/*LOCALES*/</script>
 <style>
 /* Business Card Maker — print-shop workbench, refined.
    Controls on a calm paper panel; the card sits on a lit cutting mat with real trim and safe-zone guides.
@@ -501,18 +502,41 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
   .top { position: static; }
   .stage { position: static; }
 }
-@media (max-width: 360px) { .tabbar .tl { font-size: 10.5px; } .tabbar .ti { width: 48px; } .brand .brand-mark { display: none; } .top { gap: 6px; padding-left: 12px; } #installBtn { padding: 0 10px 0 8px; } }
+@media (max-width: 360px) { .tabbar .tl { font-size: 10.5px; } .tabbar .ti { width: 48px; } .brand .brand-mark { display: none; } .top { gap: 6px; padding-left: 12px; } #installBtn { padding: 0 10px 0 8px; } .lang-globe { display: none; } #langSelect { max-width: 82px; font-size: 12px; } }
 @media (min-width: 881px) { #installBtn .ib-ico { display: none; } }
-/* ---------- About & FAQ sheet (the article lives in the page for search engines, shown on demand) ---------- */
-.help-btn { flex: none; display: inline-flex; align-items: center; gap: 8px; margin-left: auto; padding: 6px 12px 6px 6px; border-radius: 999px;
+/* ---------- language switcher & About & FAQ sheet ---------- */
+.lang-switch {
+  flex: none; display: inline-flex; align-items: center; gap: 6px; margin-inline-start: auto;
+  padding: 4px 10px 4px 8px; border-radius: 999px; border: 1px solid var(--line);
+  background: var(--field); color: var(--ink); font: 500 12.5px/1 var(--f-ui); cursor: pointer;
+  transition: border-color 150ms ease, background-color 150ms ease; -webkit-tap-highlight-color: transparent;
+}
+@media (hover: hover) and (pointer: fine) { .lang-switch:hover { border-color: var(--accent); } }
+.lang-switch:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--ring); }
+.lang-globe { width: 16px; height: 16px; color: var(--accent); flex: none; pointer-events: none; }
+.lang-label { color: var(--muted); font-size: 12px; white-space: nowrap; user-select: none; }
+#langSelect {
+  width: auto; min-width: 0; border: 0; background: transparent; box-shadow: none;
+  padding: 3px 2px; font: 600 12.5px/1.2 var(--f-ui); color: var(--ink); cursor: pointer;
+}
+#langSelect:focus, #langSelect:focus-visible { outline: none; border: 0; box-shadow: none; }
+#langSelect option { background: var(--field); color: var(--ink); }
+.toast.toast-language { display: flex; align-items: center; gap: 12px; max-width: min(520px, calc(100% - 32px)); line-height: 1.45; }
+.toast-close {
+  flex: none; width: 26px; height: 26px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.22);
+  background: rgba(255,255,255,0.1); color: inherit; font: 500 16px/1 var(--f-ui);
+  cursor: pointer; display: grid; place-items: center; padding: 0;
+}
+.help-btn { flex: none; display: inline-flex; align-items: center; gap: 8px; margin-inline-start: auto; padding: 6px 12px 6px 6px; border-radius: 999px;
   border: 1px solid var(--line); background: var(--field); color: var(--ink); font: 500 13px var(--f-ui); cursor: pointer;
   transition: border-color 150ms ease, background-color 150ms ease, transform 160ms var(--ease-out); -webkit-tap-highlight-color: transparent; }
 .help-btn:active { transform: scale(0.96); }
 .help-q { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-weight: 700; font-size: 13px; }
 @media (hover: hover) and (pointer: fine) { .help-btn:hover { border-color: var(--accent); } }
-.spec { margin-left: auto; }
-.spec + .top-actions, .spec + .help-btn { margin-left: 0; }
-.top-actions + .help-btn { margin-left: 0; }
+.spec { margin-inline-start: auto; }
+.spec + .top-actions, .spec + .lang-switch, .spec + .help-btn,
+.top-actions + .lang-switch, .top-actions + .help-btn,
+.lang-switch + .help-btn { margin-inline-start: 0; }
 .site-foot { padding: 18px 16px calc(18px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line); background: var(--panel); text-align: center; }
 .site-foot p { margin: 0; font-size: 13px; color: var(--muted); }
 .site-foot a { color: var(--accent); font-size: 13px; text-underline-offset: 3px; }
@@ -526,9 +550,31 @@ ol.about-list li::marker { color: var(--accent); font-family: var(--f-mono); fon
 .sheet-close:active { transform: scale(0.94); }
 .sheet .about { border: 0; background: none; padding: 24px 24px 36px; content-visibility: visible; }
 html.sheet-lock, html.sheet-lock body { overflow: hidden; }
+.deck-box { margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px dashed var(--line); }
+.deck-box .group-head { margin-bottom: 4px; }
+.deck-box h3 { margin: 0; font-size: 13px; font-weight: 600; color: var(--ink); letter-spacing: -0.01em; }
+.deck-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.deck-list { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.deck-empty { margin: 2px 0 0; font-size: 12px; color: var(--muted); font-style: italic; }
+.deck-item { display: flex; align-items: center; gap: 6px; padding: 6px 8px; border-radius: var(--r-md); border: 1px solid var(--line); background: var(--field); transition: border-color 140ms, background 140ms; }
+.deck-item.is-active { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--field)); }
+.deck-item-main { flex: 1; min-width: 0; border: 0; background: none; padding: 2px 4px; text-align: start; font: inherit; color: var(--ink); cursor: pointer; display: flex; flex-direction: column; gap: 1px; }
+.deck-item-main strong { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.deck-item-main small { font-size: 11.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.deck-item-del { border: 0; background: none; color: var(--muted); font: 500 12px/1 var(--f-ui); padding: 6px 8px; border-radius: var(--r-sm); cursor: pointer; }
+.deck-item-del:hover { color: var(--danger, #b42318); background: color-mix(in srgb, var(--line) 50%, transparent); }
+.pres-box { max-width: 680px; width: min(94vw, 680px); }
+.pres-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: center; margin: 8px 0 12px; }
+.pres-card { width: 100%; height: auto; border-radius: var(--r-md); box-shadow: var(--shadow-md); border: 1px solid var(--line); background: #fff; }
+.pres-qr-wrap { grid-column: 1 / -1; display: flex; justify-content: center; padding: 10px; background: #fff; border-radius: var(--r-md); border: 1px solid var(--line); }
+.pres-qr { width: min(220px, 58vw); height: auto; image-rendering: pixelated; }
+@media (max-width: 600px) { .pres-grid { grid-template-columns: 1fr; } }
 @media (max-width: 880px) {
-  .top-actions { margin-left: auto; }
-  .top-actions + .help-btn { margin-left: 0; }
+  .top-actions { margin-inline-start: auto; }
+  .top-actions + .lang-switch, .top-actions + .help-btn, .lang-switch + .help-btn { margin-inline-start: 0; }
+  .lang-switch { height: 38px; padding: 0 8px; border-radius: 12px; gap: 4px; }
+  .lang-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  #langSelect { font-size: 13px; padding: 0 2px; max-width: 96px; height: 36px; }
   .help-btn { padding: 0; width: 38px; height: 38px; justify-content: center; border-radius: 12px; }
   .help-btn .help-txt { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .help-q { width: auto; height: auto; background: none; font-size: 17px; }
@@ -605,6 +651,23 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
 <header class="top">
   <h1 class="brand"><span class="brand-mark" aria-hidden="true"></span><span class="brand-name"><span class="brand-free">Free </span>Business Card Maker</span> <span class="brand-by">by AiInfos</span></h1>
   <div class="spec" id="spec">3.5 × 2 in · 3 mm bleed · 300 dpi export</div>
+  <label class="lang-switch" for="langSelect">
+    <svg class="lang-globe" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14.5 14.5 0 0 1 0 18 14.5 14.5 0 0 1 0-18Z"/></svg>
+    <span class="lang-label" id="langLabel">Language</span>
+    <select id="langSelect" aria-labelledby="langLabel">
+      <option value="en">English</option>
+      <option value="fr">Français</option>
+      <option value="de">Deutsch</option>
+      <option value="es">Español</option>
+      <option value="bn">বাংলা</option>
+      <option value="hi">हिन्दी</option>
+      <option value="ja">日本語</option>
+      <option value="zh">简体中文</option>
+      <option value="zh-Hant">繁體中文</option>
+      <option value="ar">العربية</option>
+      <option value="ru">Русский</option>
+    </select>
+  </label>
   <button class="help-btn" id="helpBtn" type="button" aria-haspopup="dialog" aria-controls="helpSheet"><span class="help-q" aria-hidden="true">?</span><span class="help-txt">About &amp; FAQ</span></button>
 </header>
 
@@ -614,6 +677,7 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
       <div class="side-toggle" role="group" aria-label="Card side">
         <button type="button" id="sideFront" aria-pressed="true">Front</button>
         <button type="button" id="sideBack" aria-pressed="false">Back</button>
+        <button type="button" id="sidePresent">Present</button>
       </div>
       <figure class="side-front">
         <figcaption><span>Front</span><span class="dim" id="dimF"></span></figcaption>
@@ -628,6 +692,7 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
         <button class="btn primary" id="exPdf" type="button">Download PDF</button>
         <button class="btn" id="exFront" type="button">Front PNG</button>
         <button class="btn" id="exBack" type="button">Back PNG</button>
+        <button class="btn" id="presentBtn" type="button">Present</button>
       </div>
       <p class="export-note" id="exportNote">300 dpi. The PDF holds both sides, one per page, ready for a print shop.</p>
     </div>
@@ -742,6 +807,7 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
         <button class="btn primary" type="button" data-proxy="exPdf">Download print PDF</button>
         <button class="btn" type="button" data-proxy="exFront">Front PNG</button>
         <button class="btn" type="button" data-proxy="exBack">Back PNG</button>
+        <button class="btn" type="button" data-proxy="presentBtn">Present</button>
       </div>
       <p class="hint">300 dpi images. The PDF holds both sides, one per page, ready for a print shop.</p>
     </div>
@@ -773,6 +839,17 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
 
     <div class="group" id="g-saved" data-tab="export">
       <div class="group-head"><h2>Saved design</h2></div>
+      <div class="deck-box" id="deckWrap">
+        <div class="group-head">
+          <h3 id="deckTitle">My cards</h3>
+          <div class="deck-actions">
+            <button class="linkbtn" id="deckUpdate" type="button" hidden>Update saved</button>
+            <button class="linkbtn" id="deckSaveNew" type="button">+ Save as new card</button>
+          </div>
+        </div>
+        <p class="hint" id="deckHint">Keep multiple cards on this device (personal, work, or another language) and switch between them anytime.</p>
+        <div class="deck-list" id="deckList"></div>
+      </div>
       <p class="hint" id="saveNote">Your design is saved in this browser as you edit and kept for 30 days after your last change.</p>
       <div class="forget-row">
         <button class="btn" id="forgetBtn" type="button">Delete saved design</button>
@@ -908,6 +985,24 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
     <div><button class="btn" id="viewerClose" type="button">Close</button></div>
   </div>
 </div>
+<div class="viewer" id="presentModal" hidden>
+  <div class="viewer-box pres-box" role="dialog" aria-modal="true" aria-labelledby="presTitle">
+    <div class="db-head">
+      <h3 id="presTitle">Present card</h3>
+      <button class="btn" id="presClose" type="button">Close</button>
+    </div>
+    <p class="hint" id="presSub">Show this screen so anyone can read your card or scan your contact QR code.</p>
+    <div class="pres-grid">
+      <canvas id="presFront" class="pres-card"></canvas>
+      <canvas id="presBack" class="pres-card"></canvas>
+      <div class="pres-qr-wrap" id="presQrWrap"><canvas id="presQr" class="pres-qr"></canvas></div>
+    </div>
+    <div class="fw-actions">
+      <button class="btn primary" id="presPdf" type="button">Share PDF</button>
+      <button class="btn" id="presVcf" type="button">Save contact (.vcf)</button>
+    </div>
+  </div>
+</div>
 
 <script>
 (() => {
@@ -988,10 +1083,27 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
     ov.style.setProperty("--anchor-y", y + "px");
     if (box) try { box.scrollIntoView({ block: "nearest" }); } catch { }
   }
-  // Optional translations, injected by the build for other-language editions
-  const L10N = window.CARD_L10N || null;
-  const FONT_SAMPLE = (L10N && L10N.fontSample) || "Aa0@";
-  const num = (n) => (L10N && L10N.digits) ? String(n).replace(/[0-9]/g, (c) => L10N.digits[c]) : String(n);
+  // Multi-language localization and IP-based automatic language switching
+  const I18N = window.CARD_I18N || {};
+  const SUPPORTED_LANGS = ["en", "fr", "de", "es", "bn", "hi", "ja", "zh", "zh-Hant", "ar", "ru"];
+  const LANGUAGE_NAMES = {
+    en: "English", fr: "Français", de: "Deutsch", es: "Español", bn: "বাংলা",
+    hi: "हिन्दी", ja: "日本語", zh: "简体中文", "zh-Hant": "繁體中文", ar: "العربية", ru: "Русский"
+  };
+  let curLang = "en";
+  const L = () => I18N[curLang] || I18N.en || {};
+  function t(key, vars) {
+    const ui = (L() && L().ui) || {};
+    const enUi = (I18N.en && I18N.en.ui) || {};
+    let str = Object.prototype.hasOwnProperty.call(ui, key) ? ui[key] : (Object.prototype.hasOwnProperty.call(enUi, key) ? enUi[key] : key);
+    if (vars && typeof str === "string") {
+      for (const [k, v] of Object.entries(vars)) str = str.split("{" + k + "}").join(String(v));
+    }
+    return str;
+  }
+  let FONT_SAMPLE = (L() && L().fontSample) || "Aa0@";
+  const num = (n) => (L() && L().digits) ? String(n).replace(/[0-9]/g, (c) => L().digits[c]) : String(n);
+  const longLabels = () => !(L() && L().shortContactLabels !== false);
   const FIELDS = ["name", "title", "company", "phone", "email", "website", "address", "tagline"];
   const BLEED = 3, SAFE = 3, DPI_S = 300 / 25.4;
 
@@ -1000,7 +1112,7 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
     eu: { w: 85, h: 55, label: "85 × 55 mm" },
     au: { w: 90, h: 55, label: "90 × 55 mm" }
   };
-  const PAIRS = {
+  let PAIRS = {
     // heading font (d) + body font (b). The first three are used by the 140 designs; keep their keys.
     geometric:    { name: "Syne",         d: '"Syne"', dw: 700, b: '"DM Sans"', bw: 400, dk: 0.92, dfb: "sans-serif" },
     classic:      { name: "Cormorant",    d: '"Cormorant Garamond"', dw: 600, b: '"Work Sans"', bw: 400, dk: 1.15, dfb: "Georgia, serif" },
@@ -1019,53 +1131,53 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
   };
   const DESIGN_PAIRS = ["geometric", "classic", "modern"];   // fonts the design previews need straight away
   const PRESETS = [
-    { id: "meghna",   name: "Meghna",   accent: "#1F5E78", paper: "#F7F5F0", ink: "#1B2228" },
-    { id: "shapla",   name: "Shapla",   accent: "#B03A5B", paper: "#FBF7F5", ink: "#241A1E" },
-    { id: "paddy",    name: "Paddy",    accent: "#4D7A2C", paper: "#F8F8F2", ink: "#1D2418" },
-    { id: "turmeric", name: "Turmeric", accent: "#D99A1E", paper: "#FFFDF8", ink: "#2A2216" },
-    { id: "graphite", name: "Graphite", accent: "#2E3236", paper: "#FFFFFF", ink: "#121416" },
-    { id: "brass",    name: "Brass",    accent: "#9C7A3C", paper: "#FBFAF6", ink: "#16181D" },
-    { id: "indigo",   name: "Indigo",   accent: "#3B3F9A", paper: "#F8F8FC", ink: "#181A2E" },
-    { id: "plum",     name: "Plum",     accent: "#6B2D5C", paper: "#FBF7FA", ink: "#22161F" },
-    { id: "lilac",    name: "Lilac",    accent: "#7A5BB5", paper: "#FAF8FD", ink: "#1E1830" },
-    { id: "ruby",     name: "Ruby",     accent: "#9E1B32", paper: "#FFFBFA", ink: "#1E1013" },
-    { id: "coral",    name: "Coral",    accent: "#E0584A", paper: "#FFFAF7", ink: "#2B1A17" },
-    { id: "rust",     name: "Rust",     accent: "#A4472A", paper: "#FBF8F4", ink: "#24170F" },
-    { id: "sand",     name: "Sand",     accent: "#B08850", paper: "#FBF6EE", ink: "#2A2218" },
-    { id: "olive",    name: "Olive",    accent: "#6B6B2A", paper: "#FAFAF3", ink: "#1F1F12" },
-    { id: "forest",   name: "Forest",   accent: "#1E4D3A", paper: "#F6F7F2", ink: "#142019" },
-    { id: "teal",     name: "Teal",     accent: "#0F7C7C", paper: "#F5FAF9", ink: "#122423" },
-    { id: "ocean",    name: "Ocean",    accent: "#1565C0", paper: "#F7FAFD", ink: "#0F1B2B" },
-    { id: "sky",      name: "Sky",      accent: "#2A9BD4", paper: "#FFFFFF", ink: "#10202B" },
-    { id: "midnight", name: "Midnight", accent: "#D4AF61", paper: "#15181E", ink: "#F1EDE4" },
-    { id: "onyx",     name: "Onyx",     accent: "#4FB3A9", paper: "#121417", ink: "#ECEFF1" }
+    { id: "meghna",   name: "Meghna",   nameEn: "Meghna",   accent: "#1F5E78", paper: "#F7F5F0", ink: "#1B2228" },
+    { id: "shapla",   name: "Shapla",   nameEn: "Shapla",   accent: "#B03A5B", paper: "#FBF7F5", ink: "#241A1E" },
+    { id: "paddy",    name: "Paddy",    nameEn: "Paddy",    accent: "#4D7A2C", paper: "#F8F8F2", ink: "#1D2418" },
+    { id: "turmeric", name: "Turmeric", nameEn: "Turmeric", accent: "#D99A1E", paper: "#FFFDF8", ink: "#2A2216" },
+    { id: "graphite", name: "Graphite", nameEn: "Graphite", accent: "#2E3236", paper: "#FFFFFF", ink: "#121416" },
+    { id: "brass",    name: "Brass",    nameEn: "Brass",    accent: "#9C7A3C", paper: "#FBFAF6", ink: "#16181D" },
+    { id: "indigo",   name: "Indigo",   nameEn: "Indigo",   accent: "#3B3F9A", paper: "#F8F8FC", ink: "#181A2E" },
+    { id: "plum",     name: "Plum",     nameEn: "Plum",     accent: "#6B2D5C", paper: "#FBF7FA", ink: "#22161F" },
+    { id: "lilac",    name: "Lilac",    nameEn: "Lilac",    accent: "#7A5BB5", paper: "#FAF8FD", ink: "#1E1830" },
+    { id: "ruby",     name: "Ruby",     nameEn: "Ruby",     accent: "#9E1B32", paper: "#FFFBFA", ink: "#1E1013" },
+    { id: "coral",    name: "Coral",    nameEn: "Coral",    accent: "#E0584A", paper: "#FFFAF7", ink: "#2B1A17" },
+    { id: "rust",     name: "Rust",     nameEn: "Rust",     accent: "#A4472A", paper: "#FBF8F4", ink: "#24170F" },
+    { id: "sand",     name: "Sand",     nameEn: "Sand",     accent: "#B08850", paper: "#FBF6EE", ink: "#2A2218" },
+    { id: "olive",    name: "Olive",    nameEn: "Olive",    accent: "#6B6B2A", paper: "#FAFAF3", ink: "#1F1F12" },
+    { id: "forest",   name: "Forest",   nameEn: "Forest",   accent: "#1E4D3A", paper: "#F6F7F2", ink: "#142019" },
+    { id: "teal",     name: "Teal",     nameEn: "Teal",     accent: "#0F7C7C", paper: "#F5FAF9", ink: "#122423" },
+    { id: "ocean",    name: "Ocean",    nameEn: "Ocean",    accent: "#1565C0", paper: "#F7FAFD", ink: "#0F1B2B" },
+    { id: "sky",      name: "Sky",      nameEn: "Sky",      accent: "#2A9BD4", paper: "#FFFFFF", ink: "#10202B" },
+    { id: "midnight", name: "Midnight", nameEn: "Midnight", accent: "#D4AF61", paper: "#15181E", ink: "#F1EDE4" },
+    { id: "onyx",     name: "Onyx",     nameEn: "Onyx",     accent: "#4FB3A9", paper: "#121417", ink: "#ECEFF1" }
   ];
   const TEMPLATES = [
-    { id: "ledger", name: "Ledger" },
-    { id: "split", name: "Split" },
-    { id: "monogram", name: "Monogram" },
-    { id: "band", name: "Band" },
-    { id: "frame", name: "Frame" },
-    { id: "corner", name: "Corner" },
-    { id: "centered", name: "Centered" },
-    { id: "bold", name: "Bold" }
+    { id: "ledger", name: "Ledger", nameEn: "Ledger" },
+    { id: "split", name: "Split", nameEn: "Split" },
+    { id: "monogram", name: "Monogram", nameEn: "Monogram" },
+    { id: "band", name: "Band", nameEn: "Band" },
+    { id: "frame", name: "Frame", nameEn: "Frame" },
+    { id: "corner", name: "Corner", nameEn: "Corner" },
+    { id: "centered", name: "Centered", nameEn: "Centered" },
+    { id: "bold", name: "Bold", nameEn: "Bold" }
   ];
   const BACKS = [
-    { id: "pro", name: "Professional", sub: "Logo, links and QR code" },
-    { id: "solid", name: "Solid" },
-    { id: "lines", name: "Lines" },
-    { id: "dots", name: "Dots" },
-    { id: "light", name: "Light" }
+    { id: "pro", name: "Professional", nameEn: "Professional", sub: "Logo, links and QR code", subEn: "Logo, links and QR code" },
+    { id: "solid", name: "Solid", nameEn: "Solid" },
+    { id: "lines", name: "Lines", nameEn: "Lines" },
+    { id: "dots", name: "Dots", nameEn: "Dots" },
+    { id: "light", name: "Light", nameEn: "Light" }
   ];
   // Social networks: a short neutral label (not the company's logo), the address people can type, and the URL path style.
   const SOCIALS = [
-    { id: "linkedin",  name: "LinkedIn",  code: "LI", host: "linkedin.com",  hosts: ["linkedin.com"], ph: "in/yourname" },
-    { id: "x",         name: "X (Twitter)", code: "X", host: "x.com",       hosts: ["x.com", "twitter.com"], ph: "@yourname" },
-    { id: "facebook",  name: "Facebook",  code: "FB", host: "facebook.com",  hosts: ["facebook.com", "fb.com"], ph: "yourpage" },
-    { id: "instagram", name: "Instagram", code: "IG", host: "instagram.com", hosts: ["instagram.com"], ph: "@yourname" },
-    { id: "youtube",   name: "YouTube",   code: "YT", host: "youtube.com",   hosts: ["youtube.com"], ph: "@yourchannel", at: true },
-    { id: "tiktok",    name: "TikTok",    code: "TT", host: "tiktok.com",    hosts: ["tiktok.com"], ph: "@yourname", at: true },
-    { id: "github",    name: "GitHub",    code: "GH", host: "github.com",    hosts: ["github.com"], ph: "yourname" }
+    { id: "linkedin",  name: "LinkedIn",    code: "LI", host: "linkedin.com",  hosts: ["linkedin.com"], ph: "in/yourname", phEn: "in/yourname" },
+    { id: "x",         name: "X (Twitter)", code: "X",  host: "x.com",         hosts: ["x.com", "twitter.com"], ph: "@yourname", phEn: "@yourname" },
+    { id: "facebook",  name: "Facebook",    code: "FB", host: "facebook.com",  hosts: ["facebook.com", "fb.com"], ph: "yourpage", phEn: "yourpage" },
+    { id: "instagram", name: "Instagram",   code: "IG", host: "instagram.com", hosts: ["instagram.com"], ph: "@yourname", phEn: "@yourname" },
+    { id: "youtube",   name: "YouTube",     code: "YT", host: "youtube.com",   hosts: ["youtube.com"], ph: "@yourchannel", phEn: "@yourchannel", at: true },
+    { id: "tiktok",    name: "TikTok",      code: "TT", host: "tiktok.com",    hosts: ["tiktok.com"], ph: "@yourname", phEn: "@yourname", at: true },
+    { id: "github",    name: "GitHub",      code: "GH", host: "github.com",    hosts: ["github.com"], ph: "yourname", phEn: "yourname" }
   ];
   // Sample details. Every edition replaces these with its own (build/editions.json); fictional on purpose.
   const EXAMPLE = {
@@ -1073,7 +1185,9 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
     phone: "+1 555 0100", email: "hello@example.com", website: "example.com",
     address: "123 Example Street, Springfield", tagline: "Good design, simply made."
   };
+  const INITIAL_EXAMPLE = Object.assign({}, EXAMPLE);
   const DEFAULTS = Object.assign({}, EXAMPLE, {
+    lang: "en", langSource: "auto", languageNoticeDismissed: false,
     template: "ledger", pair: "geometric", preset: "meghna",
     accent: PRESETS[0].accent, paper: PRESETS[0].paper, ink: PRESETS[0].ink,
     qr: "vcard", back: "pro", size: "us", mono: "",
@@ -1083,13 +1197,13 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
   });
   const clone = (o) => JSON.parse(JSON.stringify(o));
   const TEXT_EL = [
-    { id: "name", label: "Name", min: 70, max: 140 },
-    { id: "title", label: "Job title", min: 70, max: 135 },
-    { id: "company", label: "Company", min: 70, max: 135 },
-    { id: "contacts", label: "Contact details", min: 75, max: 125 },
-    { id: "tagline", label: "Tagline", min: 70, max: 135 }
+    { id: "name", label: "Name", labelEn: "Name", min: 70, max: 140 },
+    { id: "title", label: "Job title", labelEn: "Job title", min: 70, max: 135 },
+    { id: "company", label: "Company", labelEn: "Company", min: 70, max: 135 },
+    { id: "contacts", label: "Contact details", labelEn: "Contact details", min: 75, max: 125 },
+    { id: "tagline", label: "Tagline", labelEn: "Tagline", min: 70, max: 135 }
   ];
-  const WEIGHTS = [["", "Auto"], ["400", "Regular"], ["500", "Medium"], ["600", "Semibold"], ["700", "Bold"], ["800", "Extra bold"]];
+  let WEIGHTS = [["", "Auto"], ["400", "Regular"], ["500", "Medium"], ["600", "Semibold"], ["700", "Bold"], ["800", "Extra bold"]];
 
   // ---------- state ----------
   // Saved in this browser only (localStorage). Expires 30 days after the last change.
@@ -1104,10 +1218,12 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
     for (const k of Object.keys(DEFAULTS)) {
       if (!own(data, k) || k === "ts" || k === "show" || k === "social" || k === "logo") continue;
       const def = DEFAULTS[k], v = data[k];
-      if (typeof def === "string" || def === null) { if (v === null && k === "preset") out[k] = null; else { const t = str(v, 300); if (t !== undefined) out[k] = t; } }
+      if (typeof def === "string" || def === null) { if (v === null && k === "preset") out[k] = null; else { const s = str(v, 300); if (s !== undefined) out[k] = s; } }
       else if (typeof def === "boolean") { if (typeof v === "boolean") out[k] = v; }
       else if (typeof def === "number") { if (typeof v === "number" && isFinite(v)) out[k] = v; }
     }
+    if (!SUPPORTED_LANGS.includes(out.lang)) out.lang = "en";
+    if (out.langSource !== "user" && out.langSource !== "auto") out.langSource = "auto";
     if (typeof data.logo === "string" && /^data:image\/(png|jpe?g|webp|gif|svg\+xml);base64,[A-Za-z0-9+/=]+$/.test(data.logo) && data.logo.length < 3000000) out.logo = data.logo;
     for (const group of ["ts", "show", "social"]) {
       const src = data[group];
@@ -1117,7 +1233,7 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
         const def = DEFAULTS[group][k], v = src[k];
         if (group === "ts") { if (v && typeof v === "object") out.ts[k] = { k: Math.min(2, Math.max(0.5, Number(v.k) || 1)), w: [0, 400, 500, 600, 700, 800].includes(Number(v.w)) ? Number(v.w) : 0 }; }
         else if (typeof def === "boolean") { if (typeof v === "boolean") out[group][k] = v; }
-        else { const t = str(v, 300); if (t !== undefined) out[group][k] = t; }
+        else { const s = str(v, 300); if (s !== undefined) out[group][k] = s; }
       }
     }
     return out;
@@ -1135,26 +1251,31 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
       }
     }
   } catch (e) {}
+  curLang = state.lang || "en";
   let logoImg = null;
   let saveT = 0;
   let storageOk = true;
   function writeSave() {
     savedAt = Date.now();
-    try { localStorage.setItem(KEY, JSON.stringify({ savedAt, state })); storageOk = true; }
+    const payload = JSON.stringify({ savedAt, state });
+    try { localStorage.setItem(KEY, payload); storageOk = true; }
     catch (e) {
       // usually the logo is too big for the browser's quota: keep everything else
       try { localStorage.setItem(KEY, JSON.stringify({ savedAt, state: Object.assign({}, state, { logo: null }) })); storageOk = true; }
       catch (e2) { storageOk = false; }
     }
+    try { window.Capacitor?.Plugins?.Preferences?.set({ key: KEY, value: payload }); } catch (e) {}
     updateSaveNote();
   }
   function persist() { clearTimeout(saveT); saveT = setTimeout(writeSave, 300); }
   function updateSaveNote() {
     const el = document.getElementById("saveNote"); if (!el) return;
-    if (!storageOk) { el.textContent = "This browser isn't allowing saves, so your design will be lost when you close the page."; return; }
-    if (!savedAt) { el.textContent = "Your design is saved in this browser as you edit and kept for 30 days after your last change."; return; }
+    if (!storageOk) { el.textContent = t("saveNoteBlocked"); return; }
+    if (!savedAt) { el.textContent = t("saveNoteDefault"); return; }
     const exp = new Date(savedAt + KEEP_MS);
-    el.textContent = `Saved in this browser until ${exp.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })}. Each change extends it by 30 days. Nothing is sent to a server unless you add the card to a wallet.`;
+    const dateLocale = curLang === "bn" ? "bn-BD" : curLang;
+    const monthStyle = curLang === "bn" ? "long" : "short";
+    el.textContent = t("saveNoteUntil", { date: exp.toLocaleDateString(dateLocale, { day: "numeric", month: monthStyle, year: "numeric" }) });
   }
 
   // ---------- color helpers ----------
@@ -1164,10 +1285,11 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
 
   // ---------- text helpers ----------
   function makeF(pair) {
+    const fbFont = curLang === "bn" ? '"Noto Sans Bengali"' : '"Hind Siliguri"';
     return (role, size, weight) => {
       const isD = role === "d";
       const w = weight || (isD ? pair.dw : pair.bw);
-      return `${w} ${size.toFixed(3)}px ${isD ? pair.d : pair.b}, "Hind Siliguri", ${isD ? pair.dfb : "sans-serif"}`;
+      return `${w} ${size.toFixed(3)}px ${isD ? pair.d : pair.b}, ${fbFont}, ${isD ? pair.dfb : "sans-serif"}`;
     };
   }
   function fitText(ctx, text, maxW, fontFn, size, min) {
@@ -1258,7 +1380,7 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
     };
   }
 
-  function labelOf(k) { return (L10N && (L10N.contactLabels || {})[k]) || k; }
+  function labelOf(k) { return (L() && (L().contactLabels || {})[k]) || k; }
   function contactLines(ctx, d, list, x, yFirst, lineH, maxW, size, labelColor, valueColor, valueAlpha) {
     size *= d.k("contacts");
     list.forEach((c, i) => {
@@ -1267,7 +1389,7 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
       let vx = x;
       if (d.labels) {
         ctx.font = d.F("b", size * 0.84, 600); ctx.fillStyle = labelColor; ctx.fillText(labelOf(c.k), x, y);
-        vx = x + (L10N && L10N.contactLabels ? Math.max(...list.map(z => ctx.measureText(labelOf(z.k)).width)) + size * 0.7 : size * 1.55);
+        vx = x + (longLabels() ? Math.max(...list.map(z => ctx.measureText(labelOf(z.k)).width)) + size * 0.7 : size * 1.55);
       }
       ctx.fillStyle = valueColor; ctx.globalAlpha = valueAlpha || 1;
       const t = fitText(ctx, c.v, maxW - (vx - x), (s) => d.F("b", s, d.w("contacts")), size, size * 0.8);
@@ -1351,7 +1473,7 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
       d.contacts.slice(0, 4).forEach((c, i) => {
         const [x, y] = pos[i];
         let lw = 3.2;
-        if (d.labels) { ctx.save(); ctx.globalAlpha = 0.7; ctx.fillStyle = tc; ctx.font = d.F("b", 1.75 * d.k("contacts"), 600); ctx.fillText(labelOf(c.k), x, y); if (L10N && L10N.contactLabels) lw = ctx.measureText(labelOf(c.k)).width + 1.3; ctx.restore(); }
+        if (d.labels) { ctx.save(); ctx.globalAlpha = 0.7; ctx.fillStyle = tc; ctx.font = d.F("b", 1.75 * d.k("contacts"), 600); ctx.fillText(labelOf(c.k), x, y); if (longLabels()) lw = ctx.measureText(labelOf(c.k)).width + 1.3; ctx.restore(); }
         ctx.fillStyle = tc; ctx.fillText(fitText(ctx, c.v, colW - (d.labels ? lw : 0), d.fx("contacts", "b"), 2.05, 1.65), x + (d.labels ? lw : 0), y);
       });
     },
@@ -1735,7 +1857,7 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
       let vx = x;
       if (d.labels && align === "left") {
         ctx.font = d.F("b", cs * kc * 0.84, 600); ctx.fillStyle = sub; ctx.fillText(labelOf(cItem.k), x, y);
-        vx = x + (L10N && L10N.contactLabels ? Math.max(...d.contacts.map(z => ctx.measureText(labelOf(z.k)).width)) + cs * kc * 0.7 : cs * kc * 1.55);
+        vx = x + (longLabels() ? Math.max(...d.contacts.map(z => ctx.measureText(labelOf(z.k)).width)) + cs * kc * 0.7 : cs * kc * 1.55);
       }
       ctx.fillStyle = text; ctx.fillText(fitText(ctx, cItem.v, w - (vx - x), d.fx("contacts", "b"), cs, 1.6), vx, y);
     } });
@@ -1792,7 +1914,7 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
       ctx.fillStyle = "#FFFFFF"; rr(ctx, bx, by, box, box, 1.2); ctx.fill();
       drawQR(ctx, payload, bx + pad, by + pad, q, "#111111");
       ctx.save(); ctx.textAlign = "center"; ctx.fillStyle = sub; ctx.font = d.F("b", 1.6, 500);
-      ctx.fillText(state.qr === "url" ? "Scan to visit" : "Scan to save contact", bx + box / 2, by + box + 2.8); ctx.restore();
+      ctx.fillText(state.qr === "url" ? t("qrCapUrl") : t("qrCapVcard"), bx + box / 2, by + box + 2.8); ctx.restore();
       tw = bx - A.x - 5; align = "left";
       if (textOff) return;
     }
@@ -1871,7 +1993,7 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
   CATALOG.forEach(([motif, family, tones, layouts, cats, pals, pairs, names], mi) => {
     names.forEach((name, i) => {
       DESIGNS.push({
-        id: `${motif}-${i + 1}`, motif, name, family, seed: mi * 10 + i,
+        id: `${motif}-${i + 1}`, motif, name, nameEn: name, family, familyEn: family, seed: mi * 10 + i,
         tone: tones[i % tones.length], layout: layouts[i % layouts.length],
         palette: pals[i % pals.length], pair: pairs[i % pairs.length], cats
       });
@@ -1879,20 +2001,6 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
   });
   // Neon designs use different accents on the same dark ground
   const NEON_ACCENTS = { "neon-1": "#2EE6C5", "neon-2": "#F2C14E", "neon-3": "#E8E8E8", "neon-4": "#8AB4FF" };
-  // Translated names: "<style> · <palette>", numbered when two designs would share a name
-  if (L10N) {
-    const seen = {};
-    DESIGNS.forEach(x => {
-      x.nameEn = x.name; x.familyEn = x.family;
-      x.family = (L10N.families || {})[x.family] || x.family;
-      let nm = x.family + " · " + ((L10N.palettes || {})[x.palette] || x.palette);
-      seen[nm] = (seen[nm] || 0) + 1; if (seen[nm] > 1) nm += " " + num(seen[nm]);
-      x.name = nm;
-    });
-    TEMPLATES.forEach(t => { t.nameEn = t.name; t.name = (L10N.templates || {})[t.id] || t.name; });
-    PRESETS.forEach(p => { p.name = (L10N.palettes || {})[p.id] || p.name; });
-    BACKS.forEach(bk => { const tr = (L10N.backs || {})[bk.id]; if (tr) { bk.name = tr.name || bk.name; if (tr.sub) bk.sub = tr.sub; } });
-  }
   const DESIGN_MAP = Object.fromEntries(DESIGNS.map(x => [x.id, x]));
   function designColors(des) {
     const p = PRESETS.find(pp => pp.id === des.palette) || PRESETS[0];
@@ -1985,9 +2093,9 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
       ctx.fillStyle = "#FFFFFF"; rr(ctx, bx, by, box, box, 1.4); ctx.fill();
       drawQR(ctx, payload, bx + pad, by + pad, q, "#111111");
       ctx.save(); ctx.textAlign = "center"; ctx.fillStyle = onBase; ctx.font = d.F("b", 1.75, 600);
-      ctx.fillText(state.qr === "url" ? "Scan to visit" : "Scan to save contact", px + pw / 2, by + box + 3.6);
+      ctx.fillText(state.qr === "url" ? t("qrCapUrl") : t("qrCapVcard"), px + pw / 2, by + box + 3.6);
       ctx.globalAlpha = 0.75; ctx.font = d.F("b", 1.45, 400);
-      ctx.fillText(state.qr === "url" ? "" : "Point your phone camera here", px + pw / 2, by + box + 6.1); ctx.restore();
+      ctx.fillText(state.qr === "url" ? "" : t("qrCapSub"), px + pw / 2, by + box + 6.1); ctx.restore();
       right = px - 5;
     } else {
       ctx.fillStyle = base; ctx.fillRect(-b, H - 2.4, W + 2 * b, 2.4 + b);
@@ -2057,7 +2165,7 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
       if (style === "light") { ctx.save(); ctx.strokeStyle = tc; ctx.globalAlpha = 0.18; ctx.lineWidth = 0.2; ctx.stroke(); ctx.restore(); }
       drawQR(ctx, payload, bx + pad, by + pad, q, "#111111");
       ctx.save(); ctx.textAlign = "center"; ctx.globalAlpha = 0.85; ctx.fillStyle = tc; ctx.font = d.F("b", 1.75, 500);
-      ctx.fillText(state.qr === "url" ? "Scan to visit" : "Scan to save contact", bx + box / 2, by + box + 3.4); ctx.restore();
+      ctx.fillText(state.qr === "url" ? t("qrCapUrl") : t("qrCapVcard"), bx + box / 2, by + box + 3.4); ctx.restore();
       lx = 7; lw = bx - 7 - 5; align = "left";
     } else { lx = W / 2; lw = W - 16; align = "center"; }
 
@@ -2138,18 +2246,25 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
     tplWrap.appendChild(btn);
   });
   const pairWrap = $("pairs");
-  Object.entries(PAIRS).forEach(([id, p]) => {
-    const btn = document.createElement("button"); btn.type = "button"; btn.dataset.v = id;
-    const aa = document.createElement("span"); aa.className = "aa"; aa.textContent = p.sample || "Aa";
-    aa.dataset.font = `${p.d}, ${p.dfb}`; aa.style.fontWeight = p.dw;
-    const nm = document.createElement("span"); nm.textContent = p.name;
-    btn.title = p.d === p.b ? p.d.replace(/"/g, "") : `${p.d} + ${p.b}`.replace(/"/g, "");
-    btn.append(aa, nm); btn.addEventListener("click", () => { state.pair = id; changed(); syncControls(); });
-    pairWrap.appendChild(btn);
-  });
+  let pairsShown = false;
+  function rebuildPairs() {
+    pairWrap.textContent = "";
+    Object.entries(PAIRS).forEach(([id, p]) => {
+      const btn = document.createElement("button"); btn.type = "button"; btn.dataset.v = id;
+      const aa = document.createElement("span"); aa.className = "aa"; aa.textContent = p.sample || "Aa";
+      if (pairsShown) aa.style.fontFamily = `${p.d}, ${p.dfb}`;
+      else aa.dataset.font = `${p.d}, ${p.dfb}`;
+      aa.style.fontWeight = p.dw;
+      const nm = document.createElement("span"); nm.textContent = p.name;
+      btn.title = p.d === p.b ? p.d.replace(/"/g, "") : `${p.d} + ${p.b}`.replace(/"/g, "");
+      btn.append(aa, nm); btn.addEventListener("click", () => { state.pair = id; changed(); syncControls(); });
+      pairWrap.appendChild(btn);
+    });
+  }
+  rebuildPairs();
   // load the preview fonts when the typeface section comes into view
   (function lazyPairFonts() {
-    const show = () => pairWrap.querySelectorAll(".aa[data-font]").forEach(a => { a.style.fontFamily = a.dataset.font; delete a.dataset.font; });
+    const show = () => { pairsShown = true; pairWrap.querySelectorAll(".aa[data-font]").forEach(a => { a.style.fontFamily = a.dataset.font; delete a.dataset.font; }); };
     if (!("IntersectionObserver" in window)) { show(); return; }
     const io = new IntersectionObserver((es) => { if (es.some(e => e.isIntersecting)) { show(); io.disconnect(); } }, { rootMargin: "300px" });
     io.observe(pairWrap);
@@ -2157,18 +2272,26 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
   const swWrap = $("swatches");
   PRESETS.forEach(p => {
     const btn = document.createElement("button"); btn.type = "button"; btn.className = "sw"; btn.dataset.v = p.id;
-    btn.setAttribute("aria-label", p.name + " palette");
+    btn.setAttribute("aria-label", t("paletteAria", { name: p.name }));
     const chip = document.createElement("span"); chip.className = "chip"; chip.style.background = p.accent; chip.style.setProperty("--paper-c", p.paper);
     const nm = document.createElement("span"); nm.textContent = p.name;
     btn.append(chip, nm);
     btn.addEventListener("click", () => { Object.assign(state, { preset: p.id, accent: p.accent, paper: p.paper, ink: p.ink }); changed(); syncControls(); });
     swWrap.appendChild(btn);
   });
-  // phone layout shows one side at a time; editing a back-only setting flips to the back
+  //phone layout shows one side at a time; editing a back-only setting flips to the back
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
+  function haptic(style = "LIGHT") {
+    try {
+      const Haptics = window.Capacitor?.Plugins?.Haptics;
+      if (Haptics && typeof Haptics.impact === "function") { Haptics.impact({ style }); return; }
+      if (navigator.vibrate) navigator.vibrate(style === "MEDIUM" ? 12 : 6);
+    } catch (e) {}
+  }
   function setSide(side) {
     const was = $("stageInner").classList.contains("show-back") ? "back" : "front";
     $("stageInner").classList.toggle("show-back", side === "back");
+    if (was !== side) haptic("LIGHT");
     // a quick card flip on phones, where only one side is shown at a time
     if (was !== side && !reduceMotion.matches && matchMedia("(max-width: 880px)").matches && Element.prototype.animate) {
       $(side === "back" ? "cvBack" : "cvFront").animate(
@@ -2187,13 +2310,13 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
   // text size & weight
   const trows = $("trows");
   TEXT_EL.forEach(el => {
-    const row = document.createElement("div"); row.className = "trow";
+    const row = document.createElement("div"); row.className = "trow"; row.dataset.el = el.id;
     const lab = document.createElement("label"); lab.htmlFor = "ts-" + el.id + "-k"; lab.textContent = el.label;
     const rng = document.createElement("input"); rng.type = "range"; rng.id = "ts-" + el.id + "-k"; rng.min = el.min; rng.max = el.max; rng.step = 5;
     const out = document.createElement("output"); out.id = "ts-" + el.id + "-o"; out.htmlFor = rng.id;
-    const sel = document.createElement("select"); sel.id = "ts-" + el.id + "-w"; sel.setAttribute("aria-label", el.label + " weight");
-    WEIGHTS.forEach(([v, t]) => { const o = document.createElement("option"); o.value = v; o.textContent = t; sel.appendChild(o); });
-    rng.addEventListener("input", () => { state.ts[el.id].k = Number(rng.value) / 100; out.textContent = rng.value + "%"; changed(); });
+    const sel = document.createElement("select"); sel.id = "ts-" + el.id + "-w"; sel.setAttribute("aria-label", t("weightAria", { label: el.label }));
+    WEIGHTS.forEach(([v, tx]) => { const o = document.createElement("option"); o.value = v; o.textContent = tx; sel.appendChild(o); });
+    rng.addEventListener("input", () => { state.ts[el.id].k = Number(rng.value) / 100; out.textContent = num(rng.value) + "%"; changed(); });
     sel.addEventListener("change", () => { state.ts[el.id].w = Number(sel.value) || 0; changed(); });
     const toSide = () => setSide(el.id === "tagline" ? "back" : "front");
     rng.addEventListener("pointerdown", toSide); sel.addEventListener("focus", toSide);
@@ -2239,7 +2362,7 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
   function setLogo(dataUrl) {
     state.logo = dataUrl;
     if (!dataUrl) { logoImg = null; syncControls(); changed(); return; }
-    const img = new Image(); img.onload = () => { logoImg = img; syncControls(); changed(); }; img.onerror = () => { toast("That image couldn't be read. Try a PNG or JPG."); }; img.src = dataUrl;
+    const img = new Image(); img.onload = () => { logoImg = img; syncControls(); changed(); }; img.onerror = () => { toast(t("logoErr")); }; img.src = dataUrl;
   }
   $("logoFile").addEventListener("change", (e) => {
     const file = e.target.files && e.target.files[0]; if (!file) return;
@@ -2257,7 +2380,7 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
         } catch (err) { out = src; }
         setLogo(out);
       };
-      img.onerror = () => toast("That image couldn't be read. Try a PNG or JPG.");
+      img.onerror = () => toast(t("logoErr"));
       img.src = src;
     };
     reader.readAsDataURL(file); e.target.value = "";
@@ -2269,16 +2392,20 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
     SOCIALS.forEach(def => { const el = $("s-" + def.id), v = (state.social || {})[def.id] || ""; if (el && el.value !== v) el.value = v; });
     syncSocialUi();
     if ($("f-mono").value !== (state.mono || "")) $("f-mono").value = state.mono || "";
-    { const w = String(state.name || "").trim().split(/\s+/).filter(Boolean); $("f-mono").placeholder = w.length ? (Array.from(w[0])[0] + (w.length > 1 ? Array.from(w[w.length - 1])[0] : "")).toUpperCase() + " (from your name)" : "Your initials"; }
-    $("f-name").placeholder = "Your name"; $("f-email").placeholder = "you@company.com"; $("f-website").placeholder = "company.com";
+    {
+      const w = String(state.name || "").trim().split(/\s+/).filter(Boolean);
+      const initials = w.length ? (Array.from(w[0])[0] + (w.length > 1 ? Array.from(w[w.length - 1])[0] : "")).toUpperCase() : "";
+      $("f-mono").placeholder = initials ? t("phMonoFromName", { initials }) : t("phMono");
+    }
+    $("f-name").placeholder = t("phName"); $("f-email").placeholder = t("phEmail"); $("f-website").placeholder = t("phWebsite");
     document.querySelectorAll(".tpl").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === state.template)));
-    { const des = DESIGN_MAP[state.template], cl = TEMPLATES.find(t => t.id === state.template); $("curName").textContent = des ? des.name : (cl ? cl.name : "Ledger"); }
+    { const des = DESIGN_MAP[state.template], cl = TEMPLATES.find(tp => tp.id === state.template); $("curName").textContent = des ? des.name : (cl ? cl.name : TEMPLATES[0].name); }
     pairWrap.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === state.pair)));
     swWrap.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === state.preset)));
     backWrap.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === (state.back || "solid"))));
     TEXT_EL.forEach(el => {
-      const t = state.ts[el.id] || { k: 1, w: 0 }; const pct = Math.round((t.k || 1) * 100);
-      $("ts-" + el.id + "-k").value = pct; $("ts-" + el.id + "-o").textContent = pct + "%"; $("ts-" + el.id + "-w").value = t.w ? String(t.w) : "";
+      const ts = state.ts[el.id] || { k: 1, w: 0 }; const pct = Math.round((ts.k || 1) * 100);
+      $("ts-" + el.id + "-k").value = pct; $("ts-" + el.id + "-o").textContent = num(pct) + "%"; $("ts-" + el.id + "-w").value = ts.w ? String(ts.w) : "";
     });
     ["phone", "email", "website", "address"].forEach(k => { $("sh-" + k).checked = state.show[k] !== false; });
     $("sh-labels").checked = state.labels !== false;
@@ -2286,23 +2413,23 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
     $("c-accent").value = state.accent; $("c-paper").value = state.paper; $("c-ink").value = state.ink;
     $("p-size").value = state.size; $("p-guides").checked = !!state.guides; $("p-bleed").checked = !!state.bleed;
     const th = $("logoThumb"); th.textContent = "";
-    if (state.logo) { const i = document.createElement("img"); i.src = state.logo; i.alt = "Logo preview"; th.appendChild(i); } else th.textContent = "None";
+    if (state.logo) { const i = document.createElement("img"); i.src = state.logo; i.alt = t("logoAlt"); th.appendChild(i); } else th.textContent = t("logoNone");
     $("logoRemove").hidden = !state.logo;
     const sz = SIZES[state.size] || SIZES.us;
-    $("spec").textContent = `${sz.label} · ${state.bleed ? "3 mm bleed" : "no bleed"} · 300 dpi export`;
-    const dims = `${sz.w} × ${sz.h} mm`; $("dimF").textContent = dims; $("dimB").textContent = dims;
+    $("spec").textContent = t(state.bleed ? "specBleed" : "specNoBleed", { size: sz.label });
+    const dims = t("dimsMm", { w: num(sz.w), h: num(sz.h) }); $("dimF").textContent = dims; $("dimB").textContent = dims;
     $("legend").hidden = !state.guides;
     updateQrHint();
-    $("exportNote").textContent = `300 dpi${state.bleed ? " with 3 mm bleed" : ""}. The PDF holds both sides, one per page, ready for a print shop.`;
+    $("exportNote").textContent = t(state.bleed ? "exportNoteBleed" : "exportNoteNoBleed");
   }
 
   function updateQrHint() {
-      let dense = false;
+    let dense = false;
     try { const pl = qrPayload(); if (pl && typeof window.qrcode === "function") { dense = makeQr(pl).getModuleCount() > 73; } } catch (e) {}
-    $("qrHint").textContent = dense ? "Your QR code holds a lot of details, so it's very fine. Test-scan a printed copy, or remove a few links or details to make it easier to scan."
-      : state.qr === "vcard" ? "Scanning adds you straight to the phone's contacts, with your links (vCard)."
-      : state.qr === "url" ? (state.website ? "Scanning opens your website." : "Add a website above to fill this QR code.")
-      : "The back shows your logo, tagline and website.";
+    $("qrHint").textContent = dense ? t("qrHintDense")
+      : state.qr === "vcard" ? t("qrHintVcard")
+      : state.qr === "url" ? (state.website ? t("qrHintUrl") : t("qrHintUrlEmpty"))
+      : t("qrHintNone");
   }
   let raf = 0;
   function schedule() { cancelAnimationFrame(raf); raf = requestAnimationFrame(renderAll); }
@@ -2315,10 +2442,10 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
     // show the letters field when this design draws letters (or the visitor already set some)
     $("monoField").hidden = !lettersShown && !String(state.mono || "").trim();
     const label = [state.name, state.title, state.company].filter(Boolean).join(", ");
-    cvFront.setAttribute("aria-label", "Front of business card" + (label ? ": " + label : ""));
+    cvFront.setAttribute("aria-label", t("cvFrontAria") + (label ? ": " + label : ""));
     clearTimeout(thumbT);
     thumbT = setTimeout(() => {
-      TEMPLATES.forEach(t => renderTo(thumbs[t.id], "front", { scale: 3.2, bleed: false, guides: false, template: t.id }));
+      TEMPLATES.forEach(tp => renderTo(thumbs[tp.id], "front", { scale: 3.2, bleed: false, guides: false, template: tp.id }));
       renderTo($("curThumb"), "front", { scale: 2.6, bleed: false, guides: false });
       updateQrHint();
     }, 120);
@@ -2330,13 +2457,14 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
   function ensureFonts() {
     const txt = FIELDS.map(f => state[f] || "").join(" ");
     const bn = /[ঀ-৿]/.test(txt);
-    const key = state.pair + (bn ? "+bn:" + txt.length : "");
+    const key = curLang + ":" + state.pair + (bn ? "+bn:" + txt.length : "");
     if (loadedKeys.has(key) || !document.fonts || !document.fonts.load) return;
     loadedKeys.add(key);
     const p = PAIRS[state.pair] || PAIRS.geometric;
     const specs = [];
     [400, 500, 600, 700, 800].forEach(wt => specs.push(`${wt} 20px ${p.d}`, `${wt} 20px ${p.b}`));
-    if (bn) [400, 500, 600, 700].forEach(wt => specs.push(`${wt} 20px "Hind Siliguri"`));
+    const bnFace = curLang === "bn" ? '"Noto Sans Bengali"' : '"Hind Siliguri"';
+    if (bn) [400, 500, 600, 700].forEach(wt => specs.push(`${wt} 20px ${bnFace}`));
     Promise.all(specs.map(s => document.fonts.load(s, bn ? txt : FONT_SAMPLE))).then(schedule, schedule);
   }
 
@@ -2351,7 +2479,29 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
   function exportCanvas(side) { return renderTo(document.createElement("canvas"), side, { scale: DPI_S, bleed: !!state.bleed, guides: false }); }
   const toBlob = (cv) => new Promise((res) => cv.toBlob(res, "image/png"));
 
+  async function shareNativeFile(filename, blob) {
+    try {
+      const cap = window.Capacitor;
+      if (!cap || typeof cap.isNativePlatform !== "function" || !cap.isNativePlatform()) return false;
+      const FS = cap.Plugins && cap.Plugins.Filesystem;
+      const Share = cap.Plugins && cap.Plugins.Share;
+      if (!FS || !Share) return false;
+      const base64 = await new Promise((res, rej) => {
+        const r = new FileReader();
+        r.onload = () => res(String(r.result || "").split(",")[1] || "");
+        r.onerror = rej;
+        r.readAsDataURL(blob);
+      });
+      const written = await FS.writeFile({ path: filename, data: base64, directory: "CACHE" });
+      await Share.share({ title: filename, url: written.uri, dialogTitle: filename });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   async function offer(filename, blob, fallbackCanvases, kind) {
+    if (await shareNativeFile(filename, blob)) return;
     if (!(window.claude && typeof window.claude.use === "function")) {
       // Self-hosted: a normal browser download
       const url = URL.createObjectURL(blob);
@@ -2361,27 +2511,27 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
       if ("download" in a) a.click(); else window.open(url, "_blank");
       a.remove();
       setTimeout(() => URL.revokeObjectURL(url), 60000);
-      toast("Downloading " + filename);
+      toast(t("dlToast", { file: filename }));
       return;
     }
     const dl = await getDownloads();
     if (dl) {
-      try { const r = await dl.save({ filename, data: blob }); toast(r && r.status === "delivered" ? "Sent." : "Saved " + filename); return; }
+      try { const r = await dl.save({ filename, data: blob }); toast(r && r.status === "delivered" ? t("dlSent") : t("dlSaved", { file: filename })); return; }
       catch (e) {
         const code = e && e.code;
-        if (code === "declined") { toast("Download cancelled."); return; }
-        if (code === "rate_limited") { toast("A save prompt is already open. Finish that one first."); return; }
-        if (code === "extension_not_enabled" || code === "rejected_extension") { showViewer(fallbackCanvases, kind, "PDF files can't be saved from this view. Save the two 300 dpi images below instead, or use the copy hosted on your website."); return; }
+        if (code === "declined") { toast(t("dlCancelled")); return; }
+        if (code === "rate_limited") { toast(t("dlBusy")); return; }
+        if (code === "extension_not_enabled" || code === "rejected_extension") { showViewer(fallbackCanvases, kind, t("viewerMsgPdf")); return; }
       }
     }
     showViewer(fallbackCanvases, kind);
   }
   function showViewer(canvases, kind, msg) {
     const box = $("viewerImgs"); box.textContent = "";
-    canvases.forEach((cv, i) => { const img = document.createElement("img"); img.src = cv.toDataURL("image/png"); img.alt = i === 0 && canvases.length > 1 ? "Front of card" : canvases.length > 1 ? "Back of card" : "Card image"; box.appendChild(img); });
+    canvases.forEach((cv, i) => { const img = document.createElement("img"); img.src = cv.toDataURL("image/png"); img.alt = i === 0 && canvases.length > 1 ? t("imgFrontAlt") : canvases.length > 1 ? t("imgBackAlt") : t("imgCardAlt"); box.appendChild(img); });
     $("viewerMsg").textContent = msg ? msg : kind === "pdf"
-      ? "PDF downloads aren't available in this view. Right-click or long-press each image to save it as a 300 dpi PNG instead."
-      : "Downloads aren't available in this view. Right-click or long-press the image to save it.";
+      ? t("viewerMsgPdf")
+      : t("viewerMsgSingle");
     openModal($("viewer")); $("viewerClose").focus({ preventScroll: EMBED });
   }
   $("viewerClose").addEventListener("click", () => { $("viewer").hidden = true; });
@@ -2390,7 +2540,7 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
 
   async function exportPng(side) {
     const cv = exportCanvas(side); const blob = await toBlob(cv);
-    if (!blob) { toast("Couldn't render the image. Try again."); return; }
+    if (!blob) { toast(t("renderErr")); return; }
     offer(`${slug()}-${side}.png`, blob, [cv], "png");
   }
   $("exFront").addEventListener("click", () => exportPng("front"));
@@ -2400,31 +2550,69 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
   let pdfBusy = false;
   $("exPdf").addEventListener("click", async () => {
     if (pdfBusy) return; pdfBusy = true;
-    const btn = $("exPdf"); const label = btn.textContent; btn.textContent = "Preparing PDF…"; btn.disabled = true;
+    const btn = $("exPdf"); btn.textContent = t("pdfPrep"); btn.disabled = true;
     const f = exportCanvas("front"), bk = exportCanvas("back");
     try {
       const sz = SIZES[state.size] || SIZES.us; const b = state.bleed ? BLEED : 0;
       const [jf, jb] = await Promise.all([toJpeg(f), toJpeg(bk)]);
       const bytes = buildPdf([{ jpeg: jf, w: f.width, h: f.height }, { jpeg: jb, w: bk.width, h: bk.height }],
-        sz.w + 2 * b, sz.h + 2 * b, b, `${state.name || "Business card"} – business card`);
+        sz.w + 2 * b, sz.h + 2 * b, b, t("pdfTitle", { name: state.name || t("pdfDefaultName") }));
       await offer(`${slug()}-business-card.pdf`, new Blob([bytes], { type: "application/pdf" }), [f, bk], "pdf");
     } catch (e) {
       showViewer([f, bk], "pdf");
-    } finally { pdfBusy = false; btn.textContent = label; btn.disabled = false; }
+    } finally { pdfBusy = false; btn.textContent = t("exPdf"); btn.disabled = false; }
   });
 
   let toastT = 0;
-  function toast(msg) { const t = $("toast"); t.textContent = msg; if (EMBED) t.style.setProperty("--anchor-y", Math.max(16, anchorY + 48) + "px"); t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 2600); }
+  function toast(msg) {
+    const el = $("toast");
+    el.classList.remove("toast-language");
+    el.textContent = msg;
+    if (EMBED) el.style.setProperty("--anchor-y", Math.max(16, anchorY + 48) + "px");
+    el.hidden = false;
+    clearTimeout(toastT);
+    toastT = setTimeout(() => { el.hidden = true; }, 2600);
+  }
+  function notifyAutoLanguage(lang) {
+    if (state.languageNoticeDismissed || !lang || lang === "en") return;
+    const el = $("toast");
+    if (!el) return;
+    clearTimeout(toastT);
+    el.textContent = "";
+    el.classList.add("toast-language");
+    if (EMBED) el.style.setProperty("--anchor-y", Math.max(16, anchorY + 48) + "px");
+    const msg = document.createElement("span");
+    msg.textContent = t("lang.autoNotice", { language: LANGUAGE_NAMES[lang] || lang });
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "toast-close";
+    btn.setAttribute("aria-label", t("helpClose"));
+    btn.textContent = "×";
+    btn.addEventListener("click", () => {
+      state.languageNoticeDismissed = true;
+      el.hidden = true;
+      el.classList.remove("toast-language");
+      persist();
+    }, { once: true });
+    el.append(msg, btn);
+    el.hidden = false;
+    toastT = setTimeout(() => {
+      el.hidden = true;
+      el.classList.remove("toast-language");
+    }, 6000);
+  }
 
   $("forgetBtn").addEventListener("click", () => { $("forgetBtn").hidden = true; $("forgetConfirm").hidden = false; $("forgetNo").focus(); });
   $("forgetNo").addEventListener("click", () => { $("forgetConfirm").hidden = true; $("forgetBtn").hidden = false; });
   $("forgetYes").addEventListener("click", () => {
     clearTimeout(saveT);
     try { localStorage.removeItem(KEY); } catch (e) {}
-    state = clone(DEFAULTS); savedAt = 0; logoImg = null;
+    const keepLang = state.lang, keepSource = state.langSource;
+    state = Object.assign(clone(DEFAULTS), EXAMPLE, { lang: keepLang, langSource: keepSource });
+    savedAt = 0; logoImg = null;
     $("forgetConfirm").hidden = true; $("forgetBtn").hidden = false;
     syncControls(); ensureFonts(); schedule(); updateSaveNote();
-    toast("Saved design deleted.");
+    toast(t("forgetToast"));
   });
 
   // ---------- Apple Wallet / Google Wallet ----------
@@ -2497,12 +2685,12 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
   let walletBusy = false;
   async function addToWallet(kind, btn) {
     if (walletBusy) return;
-    if (!String(state.name || state.company || "").trim()) { toast("Add your name or company first."); return; }
+    if (!String(state.name || state.company || "").trim()) { toast(t("walletNeedName")); return; }
     await checkWallet();
     if ((kind === "apple" && !appleServer) || (kind === "google" && !googleServer)) { openFreeWallet(kind); return; }
     walletBusy = true;
     const label = btn.querySelector("span"), was = label.textContent;
-    label.textContent = "Creating pass…"; btn.disabled = true;
+    label.textContent = t("walletCreating"); btn.disabled = true;
     // Open the Google tab now, while the tap still counts, so pop-up blockers allow it.
     const tab = kind === "google" ? window.open("", "_blank") : null;
     if (tab) { try { tab.opener = null; } catch (e) {} }
@@ -2515,21 +2703,21 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
       try { out = await res.json(); } catch (e) {}
       if (!res.ok) {
         if ([404, 405, 503].includes(res.status)) { if (tab) tab.close(); openFreeWallet(kind); return; }
-        throw new Error(out.error || ((res.status === 404 || res.status === 405) ? "Wallet passes aren't available on this site yet." : "The wallet pass could not be created. Please try again."));
+        throw new Error(out.error || t("walletServerErr"));
       }
       if (kind === "apple") {
         const dl = new URL(String(out.downloadUrl || ""), new URL(WALLET.endpoint, location.href));
-        if (dl.origin !== location.origin) throw new Error("The wallet pass could not be created. Please try again.");
+        if (dl.origin !== location.origin) throw new Error(t("walletServerErr"));
         window.location.href = dl.href;
-        toast(/iphone|ipad|ipod|macintosh/i.test(navigator.userAgent) ? "Opening Apple Wallet…" : "Pass downloaded. Open it on an iPhone to add it to Wallet.");
+        toast(/iphone|ipad|ipod|macintosh/i.test(navigator.userAgent) ? t("walletOpeningApple") : t("walletDownloadedApple"));
       } else {
-        if (!/^https:\/\/pay\.google\.com\//.test(String(out.saveUrl || ""))) { if (tab) tab.close(); throw new Error("The wallet pass could not be created. Please try again."); }
+        if (!/^https:\/\/pay\.google\.com\//.test(String(out.saveUrl || ""))) { if (tab) tab.close(); throw new Error(t("walletServerErr")); }
         if (tab) tab.location.href = out.saveUrl; else window.location.href = out.saveUrl;
-        toast("Opening Google Wallet…");
+        toast(t("walletOpeningGoogle"));
       }
     } catch (e) {
       if (tab) tab.close();
-      toast(e && e.message ? e.message : "Couldn't reach the server. Check your connection and try again.");
+      toast(e && e.message ? e.message : t("walletServerErr"));
     } finally {
       walletBusy = false; label.textContent = was; btn.disabled = false;
     }
@@ -2555,12 +2743,12 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
     const sz = SIZES[state.size] || SIZES.us;
     const W = 1080, pad = 60, inner = W - pad * 2;
     const front = renderTo(document.createElement("canvas"), "front", { scale: inner / sz.w, bleed: false, guides: false });
-    const font = (w, px) => `${w} ${px}px "Geist", "Hind Siliguri", Arial, sans-serif`;
+    const font = (w, px) => curLang === "bn" ? `${w} ${px}px "Noto Sans Bengali", Arial, sans-serif` : `${w} ${px}px "Geist", "Hind Siliguri", Arial, sans-serif`;
     const lines = [];
     if (state.name) lines.push({ t: state.name.trim(), f: font(700, 60), gap: 76 });
     if (state.title) lines.push({ t: state.title.trim(), f: font(500, 38), gap: 52 });
     if (state.company) lines.push({ t: state.company.trim(), f: font(500, 38), gap: 64 });
-    [["Phone", state.phone], ["Email", state.email], ["Website", cleanUrl(state.website)], ["Address", state.address]]
+    [[t("lblPhone"), state.phone], [t("lblEmail"), state.email], [t("lblWebsite"), cleanUrl(state.website)], [t("lblAddress"), state.address]]
       .forEach(([k, v]) => { if (String(v || "").trim()) lines.push({ t: k + ": " + String(v).trim(), f: font(400, 34), gap: 50 }); });
     const qrSize = qr.width;   // drawn 1:1 so every module stays sharp and scannable
     const textH = lines.reduce((h, l) => h + l.gap, 0);
@@ -2573,9 +2761,9 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
     let y = pad + front.height + 56;
     ctx.fillStyle = "#111111"; ctx.textBaseline = "top";
     lines.forEach(l => {
-      ctx.font = l.f; let t = l.t;
-      while (t.length > 1 && ctx.measureText(t).width > inner) t = t.slice(0, -1);
-      ctx.fillText(t, pad, y); y += l.gap;
+      ctx.font = l.f; let tx = l.t;
+      while (tx.length > 1 && ctx.measureText(tx).width > inner) tx = tx.slice(0, -1);
+      ctx.fillText(tx, pad, y); y += l.gap;
     });
     ctx.imageSmoothingEnabled = false;
     ctx.drawImage(qr, (W - qrSize) / 2, y + 40, qrSize, qrSize);
@@ -2604,10 +2792,10 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
   };
   function openFreeWallet(kind = "apple") {
     fwCanvas = walletImageCanvas();
-    if (!fwCanvas) { toast("Add your name and phone or email first."); return; }
+    if (!fwCanvas) { toast(t("walletNeedContact")); return; }
     const g = FREE_GUIDE[kind] || FREE_GUIDE.apple;
     $("fwTitle").textContent = g.title; $("fwIntro").textContent = g.intro; $("fwNote").textContent = g.note;
-    $("fwSteps").innerHTML = g.steps.map(t => "<li>" + t + "</li>").join("");
+    $("fwSteps").innerHTML = g.steps.map(tx => "<li>" + tx + "</li>").join("");
     $("fwQr").src = fwCanvas.toDataURL("image/png");
     $("fwCap").textContent = g.onDevice.test(navigator.userAgent) ? g.here : g.elsewhere;
     openModal($("freeWallet")); $("fwClose").focus({ preventScroll: EMBED });
@@ -2620,16 +2808,135 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
     const blob = await toBlob(fwCanvas);
     if (blob) offer(`${slug()}-wallet-card.png`, blob, [fwCanvas], "png");
   });
-  function saveVcf() {
+  async function saveVcf() {
     const text = qrPayload("vcard");
-    if (!text) { toast("Add your name and phone or email first."); return; }
-    const url = URL.createObjectURL(new Blob([text + "\r\n"], { type: "text/vcard;charset=utf-8" }));
-    const a = document.createElement("a"); a.href = url; a.download = `${slug()}.vcf`; a.style.display = "none";
+    if (!text) { toast(t("walletNeedContact")); return; }
+    const blob = new Blob([text + "\r\n"], { type: "text/vcard;charset=utf-8" });
+    const filename = `${slug()}.vcf`;
+    if (await shareNativeFile(filename, blob)) return;
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = url; a.download = filename; a.style.display = "none";
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 60000);
-    toast("Contact file saved. Open it to add the contact.");
+    toast(t("vcfSaved"));
   }
   document.querySelectorAll("[data-vcf]").forEach(b => b.addEventListener("click", saveVcf));
+
+  // ---------- Present Mode (in-person sharing + full-screen QR) ----------
+  function openPresentMode() {
+    haptic("MEDIUM");
+    renderTo($("presFront"), "front", { scale: 6, bleed: false, guides: false });
+    renderTo($("presBack"), "back", { scale: 6, bleed: false, guides: false });
+    const qrCv = contactQrCanvas();
+    const qrWrap = $("presQrWrap");
+    if (qrCv && qrWrap) {
+      const target = $("presQr");
+      target.width = qrCv.width; target.height = qrCv.height;
+      target.getContext("2d").drawImage(qrCv, 0, 0);
+      qrWrap.hidden = false;
+    } else if (qrWrap) {
+      qrWrap.hidden = true;
+    }
+    openModal($("presentModal"));
+    $("presClose").focus({ preventScroll: EMBED });
+  }
+  if ($("presentBtn")) $("presentBtn").addEventListener("click", openPresentMode);
+  if ($("sidePresent")) $("sidePresent").addEventListener("click", openPresentMode);
+  if ($("presClose")) $("presClose").addEventListener("click", () => { $("presentModal").hidden = true; });
+  if ($("presentModal")) $("presentModal").addEventListener("click", (e) => { if (e.target === $("presentModal")) $("presentModal").hidden = true; });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && $("presentModal") && !$("presentModal").hidden) $("presentModal").hidden = true; });
+  if ($("presPdf")) $("presPdf").addEventListener("click", () => $("exPdf").click());
+  if ($("presVcf")) $("presVcf").addEventListener("click", saveVcf);
+
+  // ---------- My Cards deck (multiple saved cards on device) ----------
+  const DECK_KEY = KEY + ".deck";
+  let deck = [];
+  let activeDeckId = null;
+  try {
+    const raw = JSON.parse(localStorage.getItem(DECK_KEY) || "[]");
+    if (Array.isArray(raw)) deck = raw.filter(x => x && typeof x === "object" && x.id && x.state);
+  } catch (e) {}
+  function writeDeck() {
+    const payload = JSON.stringify(deck);
+    try { localStorage.setItem(DECK_KEY, payload); } catch (e) {}
+    try { window.Capacitor?.Plugins?.Preferences?.set({ key: DECK_KEY, value: payload }); } catch (e) {}
+  }
+  function cardDeckLabel(st) {
+    const nm = String(st.name || st.company || "").trim() || t("pdfDefaultName");
+    const sub = [st.title, st.company].map(s => String(s || "").trim()).filter(Boolean).join(" · ");
+    return { name: nm, sub };
+  }
+  function renderDeck() {
+    const list = $("deckList"), upd = $("deckUpdate");
+    if (!list) return;
+    list.textContent = "";
+    if (upd) upd.hidden = !deck.some(x => x.id === activeDeckId);
+    if (!deck.length) {
+      const p = document.createElement("p");
+      p.className = "deck-empty";
+      p.textContent = t("deckEmpty");
+      list.appendChild(p);
+      return;
+    }
+    deck.forEach(item => {
+      const row = document.createElement("div");
+      row.className = "deck-item" + (item.id === activeDeckId ? " is-active" : "");
+      const main = document.createElement("button");
+      main.type = "button";
+      main.className = "deck-item-main";
+      const lbl = cardDeckLabel(item.state || {});
+      const st = document.createElement("strong");
+      st.textContent = lbl.name;
+      main.appendChild(st);
+      if (lbl.sub) {
+        const sm = document.createElement("small");
+        sm.textContent = lbl.sub;
+        main.appendChild(sm);
+      }
+      main.addEventListener("click", () => {
+        activeDeckId = item.id;
+        const keepLang = state.lang, keepSource = state.langSource;
+        state = Object.assign(restoreState(item.state), { lang: keepLang, langSource: keepSource });
+        if (state.logo) setLogo(state.logo); else logoImg = null;
+        syncControls(); ensureFonts(); schedule(); persist(); renderDeck();
+        haptic("LIGHT");
+        toast(t("deckSwitchedToast", { name: lbl.name }));
+      });
+      const del = document.createElement("button");
+      del.type = "button";
+      del.className = "deck-item-del";
+      del.textContent = t("deckDelete");
+      del.addEventListener("click", () => {
+        deck = deck.filter(x => x.id !== item.id);
+        if (activeDeckId === item.id) activeDeckId = null;
+        writeDeck(); renderDeck();
+        toast(t("deckDeletedToast"));
+      });
+      row.append(main, del);
+      list.appendChild(row);
+    });
+  }
+  if ($("deckSaveNew")) {
+    $("deckSaveNew").addEventListener("click", () => {
+      const id = "c_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 6);
+      const snap = clone(state);
+      deck.unshift({ id, updatedAt: Date.now(), state: snap });
+      if (deck.length > 25) deck.length = 25;
+      activeDeckId = id;
+      writeDeck(); renderDeck(); haptic("MEDIUM");
+      toast(t("deckSavedToast", { name: cardDeckLabel(snap).name }));
+    });
+  }
+  if ($("deckUpdate")) {
+    $("deckUpdate").addEventListener("click", () => {
+      const idx = deck.findIndex(x => x.id === activeDeckId);
+      if (idx < 0) return;
+      deck[idx].state = clone(state);
+      deck[idx].updatedAt = Date.now();
+      writeDeck(); renderDeck(); haptic("LIGHT");
+      toast(t("deckSavedToast", { name: cardDeckLabel(state).name }));
+    });
+  }
 
   // Page numbers with gaps, e.g. 1 … 4 5 6 … 13
   function pageList(cur, last) {
@@ -2640,27 +2947,29 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
   }
 
   // ---------- design browser: classics + 100+ designs, search, categories, pagination ----------
-  const ALL_DESIGNS = TEMPLATES.map(t => ({ id: t.id, name: t.name, family: "Classic", cats: ["Classic"], classic: true }))
-    .concat(DESIGNS.map(x => ({ id: x.id, name: x.name, family: x.family, cats: x.cats, motif: x.motif })));
+  const ALL_DESIGNS = TEMPLATES.map(tp => ({ id: tp.id, name: tp.name, nameEn: tp.nameEn, family: "Classic", familyEn: "Classic", cats: ["Classic"], classic: true }))
+    .concat(DESIGNS.map(x => ({ id: x.id, name: x.name, nameEn: x.nameEn, family: x.family, familyEn: x.familyEn, cats: x.cats, motif: x.motif })));
   const DB_CATS = ["All", "Classic", "Corporate", "Minimal", "Elegant", "Luxury", "Creative", "Bold", "Nature", "Tech", "Playful"];
   const DB_PER = 12;
   let db = { cat: "All", q: "", page: 1 }, dbJob = 0;
-  $("browseBtn").textContent = `Browse all ${ALL_DESIGNS.length} designs`;
+  $("browseBtn").textContent = t("browseAll", { n: num(ALL_DESIGNS.length) });
   DB_CATS.forEach(cat => {
-    const b = document.createElement("button"); b.type = "button"; b.textContent = (L10N && (L10N.cats || {})[cat]) || cat; b.dataset.v = cat;
+    const b = document.createElement("button"); b.type = "button"; b.textContent = ((L().cats || {})[cat]) || cat; b.dataset.v = cat;
     b.addEventListener("click", () => { db.cat = cat; db.page = 1; renderBrowser(); });
     $("dbCats").appendChild(b);
   });
   function dbFiltered() {
     const words = db.q.toLowerCase().split(/\s+/).filter(Boolean);
+    const catsMap = L().cats || {};
     return ALL_DESIGNS.filter(x => (db.cat === "All" || x.cats.includes(db.cat)) &&
-      words.every(w => (x.name + " " + x.family + " " + x.cats.join(" ") + " " + (x.motif || "") + " " + (x.nameEn || "") + " " + (x.familyEn || "") + " " + (L10N ? x.cats.map(c => (L10N.cats || {})[c] || "").join(" ") : "")).toLowerCase().includes(w)));
+      words.every(w => (x.name + " " + x.family + " " + x.cats.join(" ") + " " + (x.motif || "") + " " + (x.nameEn || "") + " " + (x.familyEn || "") + " " + x.cats.map(c => catsMap[c] || "").join(" ")).toLowerCase().includes(w)));
   }
   function renderBrowser() {
     const list = dbFiltered(), pages = Math.max(1, Math.ceil(list.length / DB_PER));
     db.page = Math.min(db.page, pages);
+    const catsMap = L().cats || {};
     $("dbCats").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === db.cat)));
-    $("dbCount").textContent = list.length ? `${list.length} design${list.length === 1 ? "" : "s"}, shown with your details` : "No designs match. Try another word or category.";
+    $("dbCount").textContent = list.length ? t(list.length === 1 ? "dbCountOne" : "dbCountMany", { n: num(list.length) }) : t("dbCountZero");
     const grid = $("dbGrid"); grid.textContent = "";
     const job = ++dbJob, queue = [], sz = SIZES[state.size] || SIZES.us;
     list.slice((db.page - 1) * DB_PER, db.page * DB_PER).forEach((x, i) => {
@@ -2669,7 +2978,7 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
       const th = document.createElement("span"); th.className = "thumb"; th.style.aspectRatio = String(sz.w / sz.h);
       const cv = document.createElement("canvas"); cv.setAttribute("aria-hidden", "true"); th.appendChild(cv);
       const nm = document.createElement("strong"); nm.textContent = x.name;
-      const fam = document.createElement("span"); fam.textContent = x.classic ? "Classic layout" : x.family + " · " + x.cats.join(", ");
+      const fam = document.createElement("span"); fam.textContent = x.classic ? t("dbClassicLayout") : x.family + " · " + x.cats.map(c => catsMap[c] || c).join(", ");
       b.append(th, nm, fam); b.addEventListener("click", () => applyDesign(x.id));
       grid.appendChild(b);
       queue.push([th, cv, x.id]);
@@ -2694,14 +3003,14 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
         b.addEventListener("click", () => { db.page = page; renderBrowser(); dbToTop(); });
         nav.appendChild(b);
       };
-      btn("‹ Prev", db.page - 1, { disabled: db.page <= 1, aria: "Previous page" });
+      btn(t("dbPrev"), db.page - 1, { disabled: db.page <= 1, aria: t("dbPrevAria") });
       pageList(db.page, pages).forEach(p => {
         if (p === "gap") { const sp = document.createElement("span"); sp.className = "gap"; sp.textContent = "…"; nav.appendChild(sp); }
-        else btn(num(p), p, { current: p === db.page, aria: `Page ${p}` });
+        else btn(num(p), p, { current: p === db.page, aria: t("dbPageAria", { p: num(p) }) });
       });
-      btn("Next ›", db.page + 1, { disabled: db.page >= pages, aria: "Next page" });
+      btn(t("dbNext"), db.page + 1, { disabled: db.page >= pages, aria: t("dbNextAria") });
       const info = document.createElement("span"); info.className = "pager-info";
-      const from = (db.page - 1) * DB_PER + 1; info.textContent = `Showing ${from}–${Math.min(list.length, from + DB_PER - 1)} of ${list.length}`;
+      const from = (db.page - 1) * DB_PER + 1; info.textContent = t("dbShowing", { from: num(from), to: num(Math.min(list.length, from + DB_PER - 1)), total: num(list.length) });
       nav.appendChild(info);
     }
   }
@@ -2721,7 +3030,7 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
     changed(); syncControls(); setSide("front");
     $("designBrowser").hidden = true;
     const name = (ALL_DESIGNS.find(x => x.id === id) || {}).name || "Design";
-    toast(`“${name}” applied. You can still change colors and fonts.`);
+    toast(t("dbApplied", { name }));
   }
   function openBrowser() {
     const i = ALL_DESIGNS.findIndex(x => x.id === state.template);
@@ -2738,6 +3047,433 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
   // Read-only hook so the design catalog can be rendered outside the page (used for previews and tests)
   window.__cardDesigns = { list: DESIGNS.map(x => ({ id: x.id, name: x.name, cats: x.cats })),
     render: (canvas, side, id, scale) => { const des = DESIGN_MAP[id]; return renderTo(canvas, side, { scale: scale || 4, bleed: false, guides: false, template: id, over: des ? designColors(des) : {}, backStyle: "solid" }); } };
+
+  // ---------- Multi-language & IP-based automatic language switching ----------
+  function isDefaultExample() {
+    const allEx = [INITIAL_EXAMPLE, ...Object.values(I18N).map(l => l && l.example).filter(Boolean)];
+    return allEx.some(ex => FIELDS.every(f => (state[f] || "") === (ex[f] || "")));
+  }
+  function applyLocale() {
+    const loc = L();
+    document.documentElement.lang = curLang;
+    document.documentElement.dir = curLang === "ar" ? "rtl" : "ltr";
+    if (loc.meta && loc.meta.title) document.title = loc.meta.title;
+    if (loc.meta && loc.meta.fontUi) document.documentElement.style.setProperty("--f-ui", loc.meta.fontUi);
+    FONT_SAMPLE = loc.fontSample || "Aa0@";
+
+    const ex = curLang === "en" ? INITIAL_EXAMPLE : (loc.example || INITIAL_EXAMPLE);
+    const wasExample = isDefaultExample();
+    Object.assign(EXAMPLE, ex);
+    Object.assign(DEFAULTS, ex);
+    if (wasExample) FIELDS.forEach(f => { state[f] = ex[f] || ""; });
+
+    if (loc.pairs) {
+      PAIRS = loc.pairs;
+      if (!PAIRS[state.pair]) state.pair = "geometric";
+      rebuildPairs();
+    }
+
+    TEMPLATES.forEach(tp => {
+      tp.name = (loc.templates && loc.templates[tp.id]) || tp.nameEn;
+      const b = tplWrap.querySelector(`button[data-v="${tp.id}"] span`);
+      if (b) b.textContent = tp.name;
+    });
+    if (curLang === "en") {
+      DESIGNS.forEach(d => { d.family = d.familyEn; d.name = d.nameEn; });
+    } else {
+      const seen = {};
+      DESIGNS.forEach(d => {
+        d.family = (loc.families && loc.families[d.familyEn]) || d.familyEn;
+        let nm = d.family + " · " + ((loc.palettes && loc.palettes[d.palette]) || d.palette);
+        seen[nm] = (seen[nm] || 0) + 1;
+        if (seen[nm] > 1) nm += " " + num(seen[nm]);
+        d.name = nm;
+      });
+    }
+    ALL_DESIGNS.forEach(ad => {
+      if (ad.classic) {
+        ad.name = (loc.templates && loc.templates[ad.id]) || ad.nameEn;
+        ad.family = (loc.cats && loc.cats.Classic) || "Classic";
+      } else {
+        const des = DESIGN_MAP[ad.id];
+        if (des) { ad.family = des.family; ad.name = des.name; }
+      }
+    });
+    PRESETS.forEach(p => {
+      p.name = (loc.palettes && loc.palettes[p.id]) || p.nameEn;
+      const btn = swWrap.querySelector(`button[data-v="${p.id}"]`);
+      if (btn) {
+        btn.setAttribute("aria-label", t("paletteAria", { name: p.name }));
+        const sp = btn.querySelector("span:last-child");
+        if (sp) sp.textContent = p.name;
+      }
+    });
+    BACKS.forEach(bs => {
+      const tr = loc.backs && loc.backs[bs.id];
+      bs.name = (tr && tr.name) ? tr.name : bs.nameEn;
+      bs.sub = (tr && tr.sub) ? tr.sub : (bs.subEn && !tr ? bs.subEn : undefined);
+      const btn = backWrap.querySelector(`button[data-v="${bs.id}"]`);
+      if (btn) {
+        btn.textContent = "";
+        if (bs.sub) { const st = document.createElement("strong"); st.textContent = bs.name; const u = document.createElement("small"); u.textContent = bs.sub; btn.append(st, u); }
+        else btn.textContent = bs.name;
+      }
+    });
+    WEIGHTS = loc.weights || (I18N.en && I18N.en.weights) || WEIGHTS;
+    TEXT_EL.forEach(el => {
+      el.label = (loc.textEl && loc.textEl[el.id]) || el.labelEn;
+      const row = trows.querySelector(`.trow[data-el="${el.id}"]`);
+      if (row) {
+        const lab = row.querySelector("label"); if (lab) lab.textContent = el.label;
+        const sel = row.querySelector("select");
+        if (sel) {
+          sel.setAttribute("aria-label", t("weightAria", { label: el.label }));
+          const opts = sel.querySelectorAll("option");
+          WEIGHTS.forEach(([v, tx], i) => { if (opts[i]) opts[i].textContent = tx; });
+        }
+      }
+    });
+    SOCIALS.forEach(def => {
+      if (def.id === "x" && loc.socials && loc.socials.xName) {
+        def.name = loc.socials.xName;
+        const lab = document.querySelector(`label[for="s-x"]`);
+        if (lab) lab.textContent = def.name;
+      }
+      def.ph = (loc.socials && loc.socials.ph && loc.socials.ph[def.id]) || def.phEn;
+      const inp = $("s-" + def.id);
+      if (inp) inp.placeholder = def.ph;
+    });
+    if (loc.sizes) {
+      if (loc.sizes.usLabel) SIZES.us.label = loc.sizes.usLabel;
+      if (loc.sizes.euLabel) SIZES.eu.label = loc.sizes.euLabel;
+      if (loc.sizes.auLabel) SIZES.au.label = loc.sizes.auLabel;
+      const pSize = $("p-size");
+      if (pSize) {
+        [["us", "usOpt"], ["eu", "euOpt"], ["au", "auOpt"]].forEach(([k, ok]) => {
+          const o = pSize.querySelector(`option[value="${k}"]`);
+          if (o && loc.sizes[ok]) o.textContent = loc.sizes[ok];
+        });
+      }
+    }
+    if (loc.freeGuide) {
+      ["apple", "google"].forEach(k => {
+        if (loc.freeGuide[k]) Object.assign(FREE_GUIDE[k], loc.freeGuide[k]);
+      });
+    }
+
+    const setTxt = (sel, key, vars) => { const el = typeof sel === "string" ? document.querySelector(sel) : sel; if (el) el.textContent = t(key, vars); };
+    const setAttr = (sel, attr, key, vars) => { const el = typeof sel === "string" ? document.querySelector(sel) : sel; if (el) el.setAttribute(attr, t(key, vars)); };
+
+    setTxt(".skip", "skip");
+    const brandNameEl = document.querySelector(".brand-name");
+    if (brandNameEl) {
+      brandNameEl.textContent = "";
+      const bf = document.createElement("span"); bf.className = "brand-free"; bf.textContent = t("brandFree");
+      brandNameEl.append(bf, document.createTextNode(t("brandName")));
+    }
+    setTxt(".brand-by", "brandBy");
+    setTxt("#langLabel", "lang.label");
+    setAttr("#langSelect", "aria-label", "lang.label");
+    if ($("langSelect") && $("langSelect").value !== curLang) $("langSelect").value = curLang;
+
+    setTxt("#helpBtn .help-txt", "helpBtn");
+    setTxt("#helpTitle", "helpBtn");
+    setAttr("#helpClose", "aria-label", "helpClose");
+
+    setAttr(".stage", "aria-label", "stageAria");
+    setAttr(".side-toggle", "aria-label", "sideAria");
+    setTxt("#sideFront", "sideFront");
+    setTxt("#sideBack", "sideBack");
+    setTxt(".side-front figcaption > span:first-child", "figFront");
+    setTxt(".side-back figcaption > span:first-child", "figBack");
+    setAttr("#cvBack", "aria-label", "cvBackAria");
+
+    const legSpans = document.querySelectorAll("#legend > span");
+    if (legSpans[0]) { const tn = [...legSpans[0].childNodes].find(n => n.nodeType === 3); if (tn) tn.nodeValue = t("legendTrim"); }
+    if (legSpans[1]) { const tn = [...legSpans[1].childNodes].find(n => n.nodeType === 3); if (tn) tn.nodeValue = t("legendSafe"); }
+    if (legSpans[2]) legSpans[2].textContent = t("legendBleed");
+
+    if (!pdfBusy) setTxt("#exPdf", "exPdf");
+    setTxt("#exFront", "exFront");
+    setTxt("#exBack", "exBack");
+    setTxt("#presentBtn", "presentBtn");
+    setTxt("#sidePresent", "presentBtn");
+    setTxt('#g-export [data-proxy="presentBtn"]', "presentBtn");
+    setTxt("#presTitle", "presentTitle");
+    setTxt("#presSub", "presentSub");
+    setTxt("#presPdf", "presentSharePdf");
+    setTxt("#presVcf", "presentShareVcf");
+    setTxt("#presClose", "presentClose");
+    setTxt("#deckTitle", "deckTitle");
+    setTxt("#deckHint", "deckHint");
+    setTxt("#deckSaveNew", "deckSaveNew");
+    setTxt("#deckUpdate", "deckUpdate");
+    renderDeck();
+
+    setAttr("#panel", "aria-label", "panelAria");
+    setAttr("#secnav", "aria-label", "secnavAria");
+    setTxt('#secnav button[data-to="g-details"]', "navDetails");
+    setTxt('#secnav button[data-to="g-social"]', "navSocial");
+    setTxt('#secnav button[data-to="g-logo"]', "navLogo");
+    setTxt('#secnav button[data-to="g-design"]', "navDesign");
+    setTxt('#secnav button[data-to="g-type"]', "navType");
+    setTxt('#secnav button[data-to="g-color"]', "navColor");
+    setTxt('#secnav button[data-to="g-back"]', "navBack");
+    setTxt('#secnav button[data-to="g-print"]', "navPrint");
+    setTxt('#secnav button[data-to="walletGroup"]', "navWallet");
+    setTxt('#secnav button[data-to="g-saved"]', "navSaved");
+
+    setAttr("#tabbar", "aria-label", "tabbarAria");
+    setTxt('#tabbar button[data-tab="info"] .tl', "tabDetails");
+    setTxt('#tabbar button[data-tab="design"] .tl', "tabDesign");
+    setTxt('#tabbar button[data-tab="style"] .tl', "tabStyle");
+    setTxt('#tabbar button[data-tab="back"] .tl', "tabBack");
+    setTxt('#tabbar button[data-tab="export"] .tl', "tabDownload");
+
+    setTxt("#g-details h2", "hDetails");
+    setTxt("#loadExample", "loadExample");
+    setTxt("#clearAll", "clearAll");
+    setTxt('label[for="f-name"]', "lblName");
+    setTxt('label[for="f-title"]', "lblTitle");
+    setTxt('label[for="f-company"]', "lblCompany");
+    setTxt('label[for="f-phone"]', "lblPhone");
+    setTxt('label[for="f-email"]', "lblEmail");
+    setTxt('label[for="f-website"]', "lblWebsite");
+    setTxt('label[for="f-address"]', "lblAddress");
+    setTxt('label[for="f-tagline"]', "lblTagline");
+
+    setTxt("#g-social h2", "hSocial");
+    setTxt("#socialClear", "socialClear");
+    setTxt("#g-social > .hint", "socialHint");
+
+    setTxt("#g-logo h2", "hLogo");
+    const fileBtn = document.querySelector("#g-logo .file-btn");
+    if (fileBtn) {
+      const tn = [...fileBtn.childNodes].find(n => n.nodeType === 3);
+      if (tn) tn.nodeValue = t("logoUpload");
+    }
+    setAttr("#logoFile", "aria-label", "logoUploadAria");
+    setTxt("#logoRemove", "logoRemove");
+    setTxt("#g-logo > .hint", "logoHint");
+
+    setTxt("#g-design h2", "hDesign");
+    setTxt(".design-current-text > span", "curDesignLbl");
+    if ($("browseBtn")) $("browseBtn").textContent = t("browseAll", { n: num(ALL_DESIGNS.length) });
+    setTxt('label[for="f-mono"]', "lblMono");
+    setTxt("#monoHint", "monoHint");
+    setTxt("#g-design > .hint", "classicHint");
+
+    setTxt("#g-type h2", "hType");
+    setTxt("#g-text h2", "hText");
+    setTxt("#tsReset", "tsReset");
+
+    const setCheckLabel = (inputId, key) => {
+      const inp = $(inputId);
+      if (inp && inp.parentElement) {
+        const nodes = [...inp.parentElement.childNodes].filter(n => n.nodeType === 3);
+        if (nodes.length) nodes[nodes.length - 1].nodeValue = t(key);
+      }
+    };
+    setTxt("#g-text .showlabel", "showOnFront");
+    setCheckLabel("sh-phone", "shPhone");
+    setCheckLabel("sh-email", "shEmail");
+    setCheckLabel("sh-website", "shWebsite");
+    setCheckLabel("sh-address", "shAddress");
+    setCheckLabel("sh-labels", "shLabels");
+    setTxt("#g-text > .hint", "showHint");
+
+    setTxt("#g-color h2", "hColor");
+    setCheckLabel("c-accent", "cAccent");
+    setCheckLabel("c-paper", "cPaper");
+    setCheckLabel("c-ink", "cInk");
+
+    setTxt("#g-back h2", "hBack");
+    setTxt("#g-qr h2", "hQr");
+    setTxt('#qrSeg button[data-v="vcard"]', "qrVcard");
+    setTxt('#qrSeg button[data-v="url"]', "qrUrl");
+    setTxt('#qrSeg button[data-v="none"]', "qrNone");
+
+    setTxt("#g-export h2", "hExport");
+    setTxt('#g-export [data-proxy="exPdf"]', "mExPdf");
+    setTxt('#g-export [data-proxy="exFront"]', "mExFront");
+    setTxt('#g-export [data-proxy="exBack"]', "mExBack");
+    setTxt("#g-export > .hint", "mExportHint");
+
+    setTxt("#g-print h2", "hPrint");
+    setTxt('label[for="p-size"]', "lblSize");
+    setCheckLabel("p-guides", "pGuides");
+    setCheckLabel("p-bleed", "pBleed");
+    setTxt("#g-print > .hint", "printHint");
+
+    setTxt("#walletGroup h2", "hWallet");
+    document.querySelectorAll(".wallet-btn.apple span").forEach(s => { s.textContent = t("walletApple"); });
+    document.querySelectorAll(".wallet-btn.google span").forEach(s => { s.textContent = t("walletGoogle"); });
+    document.querySelectorAll(".vcf-btn span").forEach(s => { s.textContent = t("walletVcf"); });
+    setTxt("#walletGroup > .hint", "walletHint");
+
+    setTxt("#g-saved h2", "hSaved");
+    setTxt("#forgetBtn", "forgetBtn");
+    setTxt("#forgetConfirm > span", "forgetConfirm");
+    setTxt("#forgetYes", "forgetYes");
+    setTxt("#forgetNo", "forgetNo");
+
+    setAttr("#fwQr", "alt", "fwQrAlt");
+    setTxt("#fwSave", "fwSave");
+    setTxt("#fwVcf", "walletVcf");
+    setTxt("#fwClose", "fwClose");
+
+    setTxt("#viewerTitle", "viewerTitle");
+    setTxt("#viewerMsg", "viewerMsg");
+    setTxt("#viewerClose", "viewerClose");
+
+    setTxt("#dbTitle", "dbTitle");
+    setTxt("#dbClose", "dbClose");
+    setAttr("#dbSearch", "placeholder", "dbSearchPh");
+    setAttr("#dbSearch", "aria-label", "dbSearchAria");
+    setAttr("#dbCats", "aria-label", "dbCatsAria");
+    setAttr("#dbPager", "aria-label", "dbPagerAria");
+    $("dbCats").querySelectorAll("button").forEach(b => {
+      const cat = b.dataset.v;
+      b.textContent = ((loc.cats || {})[cat]) || cat;
+    });
+
+    if (loc.aboutHtml && $("about")) $("about").innerHTML = loc.aboutHtml;
+    const footP = document.querySelector(".site-foot p");
+    if (footP && loc.ui && loc.ui.footerHtml) footP.innerHTML = loc.ui.footerHtml;
+
+    const ibBtn = $("installBtn");
+    if (ibBtn && loc.ui && loc.ui.pwaInstallHtml) {
+      const oldTxt = ibBtn.querySelector(".ib-txt");
+      if (oldTxt) oldTxt.outerHTML = loc.ui.pwaInstallHtml;
+    }
+    if ($("ihTitle")) setTxt("#ihTitle", "pwaIhTitle");
+    const ihP = document.querySelector("#installHint p");
+    if (ihP && loc.ui && loc.ui.pwaIhBodyHtml) ihP.innerHTML = loc.ui.pwaIhBodyHtml;
+    if ($("ihClose")) setTxt("#ihClose", "pwaIhClose");
+
+    updateSaveNote();
+    syncControls();
+    if (!$("designBrowser").hidden) renderBrowser();
+  }
+
+  function setLanguage(lang, opts = {}) {
+    const next = SUPPORTED_LANGS.includes(lang) ? lang : "en";
+    const source = opts.source || state.langSource || "auto";
+    const prev = curLang;
+    curLang = next;
+    state.lang = next;
+    state.langSource = source;
+    if (source === "user") state.languageNoticeDismissed = true;
+    applyLocale();
+    loadCardFonts();
+    ensureFonts();
+    schedule();
+    if (opts.persist !== false) persist();
+    if (opts.notify && prev !== next) notifyAutoLanguage(next);
+  }
+
+  if ($("langSelect")) {
+    $("langSelect").addEventListener("change", (e) => {
+      setLanguage(e.target.value, { source: "user", persist: true });
+    });
+  }
+
+  // IP-based automatic language switching (following idea/assets/js/app.js)
+  const LANG_BY_COUNTRY = {
+    US: "en", GB: "en", CA: "en", AU: "en", NZ: "en", IE: "en", ZA: "en", SG: "en",
+    FR: "fr", BE: "fr", MC: "fr", LU: "fr", SN: "fr", CI: "fr",
+    DE: "de", AT: "de", CH: "de", LI: "de",
+    ES: "es", MX: "es", AR: "es", CO: "es", CL: "es", PE: "es", VE: "es", EC: "es", GT: "es", CU: "es", BO: "es", DO: "es", HN: "es", PY: "es", SV: "es", NI: "es", CR: "es", PA: "es", UY: "es",
+    BD: "bn",
+    IN: "hi",
+    JP: "ja",
+    CN: "zh",
+    TW: "zh-Hant", HK: "zh-Hant", MO: "zh-Hant",
+    SA: "ar", AE: "ar", EG: "ar", IQ: "ar", JO: "ar", KW: "ar", LB: "ar", LY: "ar", MA: "ar", OM: "ar", QA: "ar", SY: "ar", TN: "ar", YE: "ar", DZ: "ar", BH: "ar",
+    RU: "ru", BY: "ru", KZ: "ru", KG: "ru"
+  };
+  const REGION_CACHE_KEY = "cardpress.region.v1";
+  const REGION_CACHE_TTL = 30 * 60 * 1000;
+  const REGION_ENDPOINTS = [
+    { url: "https://api.country.is/", parse: d => d && d.country },
+    { url: "https://get.geojs.io/v1/ip/country.json", parse: d => d && d.country }
+  ];
+  function normalizeLangTag(tag) {
+    if (!tag) return null;
+    const raw = String(tag).trim();
+    const lower = raw.toLowerCase();
+    if (lower.startsWith("zh-hant") || lower.startsWith("zh-tw") || lower.startsWith("zh-hk") || lower.startsWith("zh-mo")) return "zh-Hant";
+    if (lower.startsWith("zh")) return "zh";
+    const base = lower.split(/[-_]/)[0];
+    return SUPPORTED_LANGS.includes(base) ? base : null;
+  }
+  function detectBrowserLanguage() {
+    const list = Array.isArray(navigator.languages) && navigator.languages.length ? navigator.languages : [navigator.language || "en"];
+    for (const item of list) {
+      const m = normalizeLangTag(item);
+      if (m) return m;
+    }
+    return "en";
+  }
+  function readCachedCountry() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(REGION_CACHE_KEY) || "null");
+      if (raw && raw.country && (Date.now() - Number(raw.ts || 0) < REGION_CACHE_TTL)) return String(raw.country).toUpperCase();
+    } catch (e) {}
+    return null;
+  }
+  function writeCachedCountry(cc) {
+    try { localStorage.setItem(REGION_CACHE_KEY, JSON.stringify({ country: cc, ts: Date.now() })); } catch (e) {}
+  }
+  async function fetchCountryWithTimeout(endpoint, timeoutMs = 1500) {
+    if (typeof fetch !== "function") return null;
+    const ctl = typeof AbortController === "function" ? new AbortController() : null;
+    const timer = ctl ? setTimeout(() => ctl.abort(), timeoutMs) : 0;
+    try {
+      const res = await fetch(endpoint.url, Object.assign({ cache: "no-store", headers: { Accept: "application/json" } }, ctl ? { signal: ctl.signal } : {}));
+      if (!res.ok) return null;
+      const data = await res.json();
+      const cc = endpoint.parse(data);
+      return cc && /^[A-Z]{2}$/i.test(cc) ? cc.toUpperCase() : null;
+    } catch (e) {
+      return null;
+    } finally {
+      if (timer) clearTimeout(timer);
+    }
+  }
+  async function detectRegionLanguage(forceRefresh = false) {
+    if (!forceRefresh) {
+      const cached = readCachedCountry();
+      if (cached && LANG_BY_COUNTRY[cached]) return LANG_BY_COUNTRY[cached];
+    }
+    for (const ep of REGION_ENDPOINTS) {
+      const cc = await fetchCountryWithTimeout(ep, 1500);
+      if (cc) {
+        writeCachedCountry(cc);
+        if (LANG_BY_COUNTRY[cc]) return LANG_BY_COUNTRY[cc];
+      }
+    }
+    return detectBrowserLanguage();
+  }
+  function setupAutoLanguageRefresh() {
+    let busy = false;
+    const checkNow = async (force) => {
+      if (busy || state.langSource === "user") return;
+      busy = true;
+      try {
+        const detected = await detectRegionLanguage(force);
+        if (state.langSource !== "user" && detected && detected !== curLang) {
+          setLanguage(detected, { source: "auto", persist: true, notify: true });
+        }
+      } finally {
+        busy = false;
+      }
+    };
+    window.addEventListener("online", () => checkNow(true));
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") checkNow(false);
+    });
+  }
 
   // ---------- section bar: jump to a section, highlight the one in view ----------
   (function sectionNav() {
@@ -2797,7 +3533,7 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
       const y = $("panel").getBoundingClientRect().top + window.scrollY - pinned;
       if (Math.abs(window.scrollY - y) > 2) window.scrollTo({ top: Math.max(0, y), behavior: "auto" });
     }
-    btns.forEach(b => b.addEventListener("click", () => show(b.dataset.tab, true)));
+    btns.forEach(b => b.addEventListener("click", () => { haptic("LIGHT"); show(b.dataset.tab, true); }));
     // tab bar keyboard support: arrow keys move between tabs
     bar.addEventListener("keydown", (e) => {
       const i = btns.indexOf(document.activeElement); if (i < 0) return;
@@ -2879,8 +3615,20 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
   })();
 
   // ---------- boot ----------
-  updateSaveNote();
-  syncControls();
+  const urlLang = normalizeLangTag(new URLSearchParams(location.search).get("lang"));
+  if (urlLang) {
+    curLang = urlLang;
+    state.lang = urlLang;
+    state.langSource = "user";
+    state.languageNoticeDismissed = true;
+  } else if (state.langSource !== "user" && !savedAt) {
+    const browserLang = detectBrowserLanguage();
+    curLang = browserLang;
+    state.lang = browserLang;
+  } else {
+    curLang = SUPPORTED_LANGS.includes(state.lang) ? state.lang : "en";
+  }
+  applyLocale();
   if (state.logo) setLogo(state.logo);
   // The font stylesheet loads without blocking the first paint; once it arrives, load the card faces and redraw.
   function loadCardFonts() {
@@ -2903,5 +3651,13 @@ html.sheet-lock, html.sheet-lock body { overflow: hidden; }
   })();
   ensureFonts();
   renderAll();
+  if (state.langSource !== "user") {
+    detectRegionLanguage(false).then(detected => {
+      if (state.langSource !== "user" && detected && detected !== curLang) {
+        setLanguage(detected, { source: "auto", persist: true, notify: true });
+      }
+    });
+    setupAutoLanguageRefresh();
+  }
 })();
 </script>
