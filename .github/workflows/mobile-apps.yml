@@ -1,0 +1,297 @@
+name: Build iOS & Android Mobile Apps
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Optional version tag (e.g. v1.0.0) to attach .ipa and .apk to a GitHub Release"
+        required: false
+        default: ""
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  # ============================================================================
+  # 1. ANDROID BUILD (.apk & .aab) — Runs on Ubuntu Linux
+  # ============================================================================
+  build-android:
+    name: Build Android (.apk / .aab)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Setup Java 21 (required by Capacitor Android / Gradle)
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "21"
+
+      - name: Install project dependencies
+        run: npm ci
+
+      - name: Build offline mobile web bundle (dist/mobile)
+        run: python3 build/build_mobile.py
+
+      - name: Install Capacitor Android & Native Plugins
+        run: |
+          npm install --no-save \
+            @capacitor/core@^6.0.0 \
+            @capacitor/cli@^6.0.0 \
+            @capacitor/android@^6.0.0 \
+            @capacitor/filesystem@^6.0.0 \
+            @capacitor/share@^6.0.0 \
+            @capacitor/haptics@^6.0.0 \
+            @capacitor/preferences@^6.0.0 \
+            @capacitor/status-bar@^6.0.0 \
+            @capacitor/splash-screen@^6.0.0 \
+            @capacitor/assets@^3.0.0
+
+      - name: Add & sync Capacitor Android platform
+        run: |
+          if [ ! -d "android" ]; then
+            npx cap add android
+          fi
+          npx cap sync android
+
+      - name: Generate Android icons & splash screens
+        run: |
+          mkdir -p assets
+          cp public/icons/icon-512.png assets/icon-only.png
+          cp public/icons/icon-512.png assets/icon-foreground.png
+          cp public/icons/icon-512.png assets/splash.png
+          cp public/icons/icon-512.png assets/splash-dark.png
+          npx capacitor-assets generate --android --iconBackgroundColor '#2E5A4D' --iconBackgroundColorDark '#162821' --splashBackgroundColor '#F6F3EC' --splashBackgroundColorDark '#141716'
+
+      - name: Build Debug APK (installable on any Android phone)
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+          cp app/build/outputs/apk/debug/app-debug.apk ../BusinessCardMaker-debug.apk
+
+      - name: Build Signed Release APK & AAB (if Android Keystore secrets are configured)
+        if: ${{ env.ANDROID_KEYSTORE_BASE64 != '' }}
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        working-directory: android
+        run: |
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > release-key.jks
+          ./gradlew assembleRelease bundleRelease \
+            -Pandroid.injected.signing.store.file="$PWD/release-key.jks" \
+            -Pandroid.injected.signing.store.password="$ANDROID_KEYSTORE_PASSWORD" \
+            -Pandroid.injected.signing.key.alias="$ANDROID_KEY_ALIAS" \
+            -Pandroid.injected.signing.key.password="$ANDROID_KEY_PASSWORD"
+          cp app/build/outputs/apk/release/app-release.apk ../BusinessCardMaker-release.apk
+          cp app/build/outputs/bundle/release/app-release.aab ../BusinessCardMaker-release.aab
+
+      - name: Upload Android Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Android-App-Packages
+          path: |
+            BusinessCardMaker-debug.apk
+            BusinessCardMaker-release.apk
+            BusinessCardMaker-release.aab
+          if-no-files-found: warn
+
+  # ============================================================================
+  # 2. iOS BUILD (.ipa & Simulator .app) — Runs on macOS 14 with Xcode
+  # ============================================================================
+  build-ios:
+    name: Build iOS (.ipa / Simulator .app)
+    runs-on: macos-14
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install project dependencies
+        run: npm ci
+
+      - name: Build offline mobile web bundle (dist/mobile)
+        run: python3 build/build_mobile.py
+
+      - name: Install Capacitor iOS & Native Plugins
+        run: |
+          npm install --no-save \
+            @capacitor/core@^6.0.0 \
+            @capacitor/cli@^6.0.0 \
+            @capacitor/ios@^6.0.0 \
+            @capacitor/filesystem@^6.0.0 \
+            @capacitor/share@^6.0.0 \
+            @capacitor/haptics@^6.0.0 \
+            @capacitor/preferences@^6.0.0 \
+            @capacitor/status-bar@^6.0.0 \
+            @capacitor/splash-screen@^6.0.0 \
+            @capacitor/assets@^3.0.0
+
+      - name: Add & sync Capacitor iOS platform
+        run: |
+          if [ ! -d "ios" ]; then
+            npx cap add ios
+          fi
+          npx cap sync ios
+
+      - name: Generate iOS icons & splash screens
+        run: |
+          mkdir -p assets
+          cp public/icons/icon-512.png assets/icon-only.png
+          cp public/icons/icon-512.png assets/icon-foreground.png
+          cp public/icons/icon-512.png assets/splash.png
+          cp public/icons/icon-512.png assets/splash-dark.png
+          npx capacitor-assets generate --ios --iconBackgroundColor '#2E5A4D' --iconBackgroundColorDark '#162821' --splashBackgroundColor '#F6F3EC' --splashBackgroundColorDark '#141716'
+
+      - name: Configure iOS Info.plist privacy descriptions
+        run: |
+          PLIST="ios/App/App/Info.plist"
+          /usr/libexec/PlistBuddy -c "Add :NSPhotoLibraryAddUsageDescription string 'Save your business card image and contact QR code to Photos.'" "$PLIST" || \
+          /usr/libexec/PlistBuddy -c "Set :NSPhotoLibraryAddUsageDescription 'Save your business card image and contact QR code to Photos.'" "$PLIST"
+          /usr/libexec/PlistBuddy -c "Add :NSPhotoLibraryUsageDescription string 'Choose a logo image for your business card.'" "$PLIST" || \
+          /usr/libexec/PlistBuddy -c "Set :NSPhotoLibraryUsageDescription 'Choose a logo image for your business card.'" "$PLIST"
+          /usr/libexec/PlistBuddy -c "Add :ITSAppUsesNonExemptEncryption bool false" "$PLIST" || \
+          /usr/libexec/PlistBuddy -c "Set :ITSAppUsesNonExemptEncryption false" "$PLIST"
+
+      - name: Resolve Swift Package / CocoaPods dependencies
+        working-directory: ios/App
+        run: |
+          if [ -f "Podfile" ]; then
+            pod install
+          fi
+
+      - name: Build Unsigned iOS Archive & Package .ipa (works without Apple Developer account via Sideloadly / AltStore)
+        run: |
+          WORKSPACE_ARGS="-project ios/App/App.xcodeproj"
+          if [ -d "ios/App/App.xcworkspace" ]; then
+            WORKSPACE_ARGS="-workspace ios/App/App.xcworkspace"
+          fi
+          xcodebuild $WORKSPACE_ARGS \
+            -scheme App \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath ios/build/DerivedData \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            clean build
+
+          mkdir -p ios/build/Payload
+          cp -R ios/build/DerivedData/Build/Products/Release-iphoneos/App.app ios/build/Payload/
+          cd ios/build
+          zip -qry ../../BusinessCardMaker-unsigned.ipa Payload
+
+      - name: Build iOS Simulator .app Bundle
+        run: |
+          WORKSPACE_ARGS="-project ios/App/App.xcodeproj"
+          if [ -d "ios/App/App.xcworkspace" ]; then
+            WORKSPACE_ARGS="-workspace ios/App/App.xcworkspace"
+          fi
+          xcodebuild $WORKSPACE_ARGS \
+            -scheme App \
+            -configuration Release \
+            -sdk iphonesimulator \
+            -derivedDataPath ios/build/SimDerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+          cd ios/build/SimDerivedData/Build/Products/Release-iphonesimulator
+          zip -qry ../../../../../../BusinessCardMaker-Simulator.app.zip App.app
+
+      - name: Build Signed App Store / TestFlight .ipa (if Apple Developer secrets are configured)
+        if: ${{ env.IOS_P12_BASE64 != '' && env.IOS_MOBILEPROVISION_BASE64 != '' }}
+        env:
+          IOS_P12_BASE64: ${{ secrets.IOS_P12_BASE64 }}
+          IOS_P12_PASSWORD: ${{ secrets.IOS_P12_PASSWORD }}
+          IOS_MOBILEPROVISION_BASE64: ${{ secrets.IOS_MOBILEPROVISION_BASE64 }}
+          IOS_TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
+        run: |
+          KEYCHAIN_PASS="temp_keychain_pass_123"
+          security create-keychain -p "$KEYCHAIN_PASS" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "$KEYCHAIN_PASS" build.keychain
+          security set-keychain-settings -t 3600 -u build.keychain
+
+          echo "$IOS_P12_BASE64" | base64 --decode > cert.p12
+          security import cert.p12 -k build.keychain -P "$IOS_P12_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASS" build.keychain
+
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          echo "$IOS_MOBILEPROVISION_BASE64" | base64 --decode > profile.mobileprovision
+          UUID=$(/usr/libexec/PlistBuddy -c "Print UUID" /dev/stdin <<< $(/usr/bin/security cms -D -i profile.mobileprovision))
+          cp profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/$UUID.mobileprovision
+
+          cat <<EOF > ExportOptions.plist
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store</string>
+            <key>teamID</key>
+            <string>${IOS_TEAM_ID}</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>com.aiinfos.businesscardmaker</key>
+              <string>${UUID}</string>
+            </dict>
+          </dict>
+          </plist>
+          EOF
+
+          WORKSPACE_ARGS="-project ios/App/App.xcodeproj"
+          if [ -d "ios/App/App.xcworkspace" ]; then
+            WORKSPACE_ARGS="-workspace ios/App/App.xcworkspace"
+          fi
+          xcodebuild $WORKSPACE_ARGS \
+            -scheme App \
+            -configuration Release \
+            -sdk iphoneos \
+            -archivePath ios/build/App.xcarchive \
+            DEVELOPMENT_TEAM="$IOS_TEAM_ID" \
+            PROVISIONING_PROFILE_SPECIFIER="$UUID" \
+            CODE_SIGN_STYLE=Manual \
+            archive
+
+          xcodebuild -exportArchive \
+            -archivePath ios/build/App.xcarchive \
+            -exportOptionsPlist ExportOptions.plist \
+            -exportPath ios/build/SignedExport
+
+          cp ios/build/SignedExport/*.ipa BusinessCardMaker-signed.ipa
+
+      - name: Upload iOS Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: iOS-App-Packages
+          path: |
+            BusinessCardMaker-unsigned.ipa
+            BusinessCardMaker-Simulator.app.zip
+            BusinessCardMaker-signed.ipa
+          if-no-files-found: warn
