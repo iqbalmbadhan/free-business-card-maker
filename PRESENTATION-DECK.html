@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+</head>
+<body class="bg-transparent text-[var(--foreground)] antialiased p-0 m-0">
+  <div class="py-2 space-y-3">
+    <!-- Top Bar: Slide Selector & Progress -->
+    <div class="flex items-center justify-between gap-2 pb-2 border-b border-[var(--card-border)]">
+      <div class="flex items-center gap-1.5 flex-wrap" id="tabs"></div>
+      <div class="flex items-center gap-1.5 text-xs font-mono tabular-nums text-[var(--muted-foreground)]">
+        <button id="prevBtn" type="button" class="px-2 py-1 rounded border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] hover:opacity-80">← Prev</button>
+        <span id="counter">1 / 6</span>
+        <button id="nextBtn" type="button" class="px-2 py-1 rounded border border-[var(--border)] bg-[var(--primary)] text-[var(--primary-foreground)] hover:opacity-90">Next →</button>
+      </div>
+    </div>
+
+    <!-- Slide Viewport (compact <= 360px height) -->
+    <div id="slideBody" class="rounded-lg border border-[var(--card-border)] bg-[var(--card)] p-4 space-y-3"></div>
+  </div>
+
+  <script>
+    const SLIDES = [
+      {
+        badge: "1. Executive Summary",
+        title: "Free Business Card Maker — Web to Global iOS & Android App",
+        subtitle: "Zero-server privacy, 11 global languages, IP auto-detection, and cloud-built native mobile apps from a Windows PC.",
+        kpis: [
+          { val: "148", lbl: "Vector Card Designs (35 Styles)" },
+          { val: "11", lbl: "Languages + RTL & Bangla Shaping" },
+          { val: "300 DPI", lbl: "CMYK-Grade Print PDF + 3mm Bleed" },
+          { val: "138 / 138", lbl: "Automated E2E Browser Checks" }
+        ],
+        bullets: [
+          "100% Client-Side Privacy: Zero database cost, zero sign-up friction, and instant rendering via HTML5 Canvas + custom binary PDF generator.",
+          "Unified Global Codebase: Consolidated separate English and Bangla codebases into a single multi-language engine supporting 11 languages.",
+          "Native iOS & Android Apps from Windows: Built an automated GitHub Actions macOS + Linux pipeline that compiles .ipa and .apk packages in the cloud."
+        ]
+      },
+      {
+        badge: "2. Core Architecture",
+        title: "How I Built the Print-Ready Card Engine",
+        subtitle: "A zero-dependency studio engine engineered in pure JavaScript, Canvas 2D, and a custom PDF 1.4 binary writer.",
+        kpis: [
+          { val: "3 Sizes", lbl: "US (3.5×2\"), EU (85×55mm), AU (90×55mm)" },
+          { val: "27 Fonts", lbl: "13 Curated Latin + 6 Bangla Pairings" },
+          { val: "SHA-256", lbl: "Strict Content-Security-Policy" },
+          { val: "0 KB", lbl: "External Runtime Frameworks" }
+        ],
+        bullets: [
+          "Procedural Vector Motifs: 8 classic layouts + 140 procedural designs across 35 families (waves, botanical, geometric, gold frames, circuit) drawn at 300 DPI.",
+          "Smart Contact vCard QR & Social Links: Encodes UTF-8 vCard 3.0 with LinkedIn, X, Facebook, Instagram, YouTube, TikTok, and GitHub directly into the QR code.",
+          "Apple Wallet & Google Wallet Integration: Supports both one-tap server-signed passes and free on-device iOS/Android pass creation + .vcf export."
+        ]
+      },
+      {
+        badge: "3. Global Localization",
+        title: "Unifying Bangla + 11 Global Languages in One App",
+        subtitle: "Merged the standalone Bangla edition into the main app and scaled to 11 languages with automatic RTL & numeral shaping.",
+        kpis: [
+          { val: "11 Locales", lbl: "EN, BN, FR, DE, ES, HI, JA, ZH, ZH-Hant, AR, RU" },
+          { val: "RTL + LTR", lbl: "Dynamic Arabic RTL Layout Flip" },
+          { val: "বাংলা", lbl: "Native Bengali Numerals & 6 Typefaces" },
+          { val: "Instant", lbl: "Zero-Reload Language Switching" }
+        ],
+        bullets: [
+          "Single-Page Multi-Language Architecture: Eliminated duplicate repositories by creating a unified locale dictionary (src/i18n/locales.js) injected at build time.",
+          "Script-Aware Typography: Automatically activates Bengali typefaces (Noto Sans/Serif Bengali, Hind Siliguri, Anek Bangla, Baloo Da 2, Tiro Bangla, Galada) and Bengali digits (০-৯) when Bangla is selected.",
+          "Full UI + SEO + FAQ Translation: Translates all 148 design names, 20 color palettes, controls, tooltips, and the entire About & FAQ sheet on the fly."
+        ]
+      },
+      {
+        badge: "4. Smart IP Geolocation",
+        title: "IP-Based Automatic Language Switching",
+        subtitle: "Zero-friction onboarding that greets every visitor in their local language while respecting manual choices.",
+        kpis: [
+          { val: "3-Tier", lbl: "URL/User Pref → Geo-IP → Browser Locale" },
+          { val: "1500 ms", lbl: "Non-Blocking AbortController Timeout" },
+          { val: "6 Hours", lbl: "LocalStorage Country Cache TTL" },
+          { val: "Dual API", lbl: "api.country.is + get.geojs.io Failover" }
+        ],
+        bullets: [
+          "Non-Blocking First Paint: The app renders immediately in the cached or browser language, then queries api.country.is (with get.geojs.io fallback) asynchronously.",
+          "Respects User Intent: If a user manually selects a language from the top-bar globe selector, langSource is locked to 'user' and never overridden by IP checks.",
+          "Dismissible Toast Notification: When IP detection switches the UI (e.g. a visitor in Bangladesh -> বাংলা), a localized toast explains the switch with a one-click dismiss."
+        ]
+      },
+      {
+        badge: "5. Native Mobile UX",
+        title: "Turning a Web Tool into a True Mobile App Experience",
+        subtitle: "Added four mobile-first features tailored for iOS & Android users and in-person networking.",
+        kpis: [
+          { val: "Present Mode", lbl: "Full-Screen Card + Scannable QR Modal" },
+          { val: "My Cards", lbl: "Save & Switch Up to 25 Cards on Phone" },
+          { val: "146 .woff2", lbl: "100% Offline Bundled Font Files" },
+          { val: "Native APIs", lbl: "Share Sheet, Filesystem & Haptics" }
+        ],
+        bullets: [
+          "Full-Screen Present Card / QR Mode (#presentModal): One tap shows both sides of the card and a large vCard QR code for in-person scanning, plus quick Share PDF / .vcf buttons.",
+          "My Cards Deck (#deckWrap): Lets professionals store multiple cards on their phone (Personal, Work, English, Bangla) and switch between them with one tap.",
+          "100% Offline Bundle (build/build_mobile.py): Bundles all 146 Latin & Bengali .woff2 font files into dist/mobile/fonts/ so the app works on airplanes with zero internet."
+        ]
+      },
+      {
+        badge: "6. Windows → iOS & Android CI/CD",
+        title: "Building iOS (.ipa) & Android (.apk) from a Windows PC",
+        titleSub: "Solved Apple's macOS/Xcode requirement from Windows using Capacitor 6 + GitHub Actions cloud runners.",
+        subtitle: "Solved Apple's macOS/Xcode requirement on a Windows PC using Capacitor 6 + GitHub Actions cloud runners.",
+        kpis: [
+          { val: "Windows PC", lbl: "Local Authoring & Playwright Testing" },
+          { val: "macos-14", lbl: "Cloud Xcode Runner for iOS .ipa" },
+          { val: "ubuntu-latest", lbl: "Cloud Gradle/Java 21 for Android .apk" },
+          { val: "$0 Cost", lbl: "Unsigned .ipa Sideloading + Optional Signing" }
+        ],
+        bullets: [
+          "Why GitHub Actions from Windows? Apple requires macOS + Xcode to compile iOS apps. Instead of buying a Mac, .github/workflows/mobile-apps.yml spins up macos-14 in the cloud on every push.",
+          "Auto-Generated Native Assets: Uses @capacitor/assets in CI to generate all iOS AppIcon.appiconset and Android adaptive launcher icons & splash screens from public/icons/icon-512.png.",
+          "Dual Signing Strategy: Produces an installable BusinessCardMaker-debug.apk and BusinessCardMaker-unsigned.ipa (for Sideloadly/AltStore from Windows) by default, and automatically builds signed App Store / Play Store releases when secrets are added."
+        ]
+      }
+    ];
+
+    let idx = 0;
+    const tabsEl = document.getElementById("tabs");
+    const bodyEl = document.getElementById("slideBody");
+    const counterEl = document.getElementById("counter");
+
+    function render() {
+      const s = SLIDES[idx];
+      counterEl.textContent = `${idx + 1} / ${SLIDES.length}`;
+      tabsEl.innerHTML = SLIDES.map((sl, i) => `
+        <button type="button" data-i="${i}" class="px-2.5 py-1 rounded text-xs font-medium transition ${
+          i === idx
+            ? "bg-[var(--primary)] text-[var(--primary-foreground)]"
+            : "bg-[var(--card)] text-[var(--muted-foreground)] border border-[var(--border)] hover:text-[var(--foreground)]"
+        }">${sl.badge.split(".")[0]}. ${sl.badge.split(". ")[1]}</button>
+      `).join("");
+
+      tabsEl.querySelectorAll("button").forEach(b => {
+        b.addEventListener("click", () => { idx = Number(b.dataset.i); render(); });
+      });
+
+      bodyEl.innerHTML = `
+        <div class="space-y-1">
+          <div class="text-xs font-semibold uppercase tracking-wider text-[var(--primary)]">${s.badge}</div>
+          <h2 class="text-base font-bold text-[var(--foreground)]">${s.title}</h2>
+          <p class="text-xs text-[var(--muted-foreground)]">${s.subtitle}</p>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+          ${s.kpis.map(k => `
+            <div class="p-2.5 rounded border border-[var(--border)] bg-[var(--background)]">
+              <div class="text-sm font-bold font-mono text-[var(--foreground)]">${k.val}</div>
+              <div class="text-xs text-[var(--muted-foreground)] leading-tight mt-0.5">${k.lbl}</div>
+            </div>
+          `).join("")}
+        </div>
+        <ul class="space-y-1.5 pt-1 text-xs text-[var(--foreground)]">
+          ${s.bullets.map(b => {
+            const [head, rest] = b.split(": ");
+            return `<li class="flex items-start gap-2 leading-relaxed">
+              <span class="text-[var(--primary)] font-bold mt-0.5">▸</span>
+              <span><strong class="font-semibold">${head}:</strong> ${rest || ""}</span>
+            </li>`;
+          }).join("")}
+        </ul>
+      `;
+    }
+
+    document.getElementById("prevBtn").addEventListener("click", () => { idx = (idx - 1 + SLIDES.length) % SLIDES.length; render(); });
+    document.getElementById("nextBtn").addEventListener("click", () => { idx = (idx + 1) % SLIDES.length; render(); });
+    render();
+  </script>
+</body>
+</html>
