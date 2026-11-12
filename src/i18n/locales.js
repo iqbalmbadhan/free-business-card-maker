@@ -537,7 +537,20 @@ window.CARD_I18N = {
       "nfcScanning": "Ready to tap… Hold phone near NFC tag",
       "nfcSuccess": "Contact written to NFC tag!",
       "nfcUnsupported": "Direct NFC tag writing requires Android. On iPhone, tap Contact (.vcf) to share via AirDrop or scan the QR code.",
-      "nfcError": "NFC tap cancelled or failed. Try again."
+      "nfcError": "NFC tap cancelled or failed. Try again.",
+      "nfcSaveBtn": "Save NFC File (.vcf)",
+      "nfcFileSaved": "NFC contact file (.vcf) saved & ready for tags",
+      "exitDoubleTapToast": "Press back again to exit",
+      "tabUserPanel": "User Panel",
+      "hUserPanel": "User Panel & Share Hub",
+      "hStudio": "Download & Print Studio",
+      "lblUserNfc": "NFC Tap & Share",
+      "lblUserNfcSave": "Save NFC File (.vcf)",
+      "lblUserWallet": "Phone Wallet",
+      "lblUserPhoto": "Share Photo",
+      "lblUserVcf": "Contact (.vcf)",
+      "lblUserCopy": "Copy info",
+      "userPanelBadge": "Ready"
     }
   },
   "fr": {
@@ -1078,7 +1091,20 @@ window.CARD_I18N = {
       "nfcScanning": "Prêt… Approchez la puce NFC du téléphone",
       "nfcSuccess": "Contact enregistré sur la puce NFC !",
       "nfcUnsupported": "L'écriture NFC directe nécessite Android. Sur iPhone, utilisez Contact (.vcf) via AirDrop ou le QR code.",
-      "nfcError": "Échec ou annulation du NFC. Réessayez."
+      "nfcError": "Échec ou annulation du NFC. Réessayez.",
+      "nfcSaveBtn": "Enregistrer fichier NFC (.vcf)",
+      "nfcFileSaved": "Fichier contact NFC (.vcf) enregistré et prêt",
+      "exitDoubleTapToast": "Appuyez à nouveau sur retour pour quitter",
+      "tabUserPanel": "Espace utilisateur",
+      "hUserPanel": "Espace utilisateur et partage",
+      "hStudio": "Studio de téléchargement et impression",
+      "lblUserNfc": "NFC et partage",
+      "lblUserNfcSave": "Enregistrer NFC (.vcf)",
+      "lblUserWallet": "Portefeuille mobile",
+      "lblUserPhoto": "Partager photo",
+      "lblUserVcf": "Contact (.vcf)",
+      "lblUserCopy": "Copier infos",
+      "userPanelBadge": "Prêt"
     }
   },
   "de": {
@@ -1619,7 +1645,20 @@ window.CARD_I18N = {
       "nfcScanning": "Bereit… NFC-Tag an das Smartphone halten",
       "nfcSuccess": "Kontakt auf NFC-Tag geschrieben!",
       "nfcUnsupported": "NFC-Schreiben erfordert Android. Nutzen Sie auf dem iPhone Kontakt (.vcf) per AirDrop oder den QR-Code.",
-      "nfcError": "NFC-Vorgang abgebrochen oder fehlgeschlagen."
+      "nfcError": "NFC-Vorgang abgebrochen oder fehlgeschlagen.",
+      "nfcSaveBtn": "NFC-Datei speichern (.vcf)",
+      "nfcFileSaved": "NFC-Kontaktdatei (.vcf) gespeichert",
+      "exitDoubleTapToast": "Drücken Sie erneut Zurück zum Beenden",
+      "tabUserPanel": "Benutzerbereich",
+      "hUserPanel": "Benutzerbereich & Teilen",
+      "hStudio": "Download- & Druckstudio",
+      "lblUserNfc": "NFC-Tap & Teilen",
+      "lblUserNfcSave": "NFC-Datei speichern (.vcf)",
+      "lblUserWallet": "Handy-Wallet",
+      "lblUserPhoto": "Foto teilen",
+      "lblUserVcf": "Kontakt (.vcf)",
+      "lblUserCopy": "Infos kopieren",
+      "userPanelBadge": "Bereit"
     }
   },
   "es": {
@@ -2160,7 +2199,20 @@ window.CARD_I18N = {
       "nfcScanning": "Listo… Acerca la etiqueta NFC al teléfono",
       "nfcSuccess": "¡Contacto guardado en la etiqueta NFC!",
       "nfcUnsupported": "La escritura NFC requiere Android. En iPhone, usa Contacto (.vcf) por AirDrop o escanea el código QR.",
-      "nfcError": "Toque NFC cancelado o fallido."
+      "nfcError": "Toque NFC cancelado o fallido.",
+      "nfcSaveBtn": "Guardar archivo NFC (.vcf)",
+      "nfcFileSaved": "Archivo de contacto NFC (.vcf) guardado",
+      "exitDoubleTapToast": "Pulsa volver otra vez para salir",
+      "tabUserPanel": "Panel de usuario",
+      "hUserPanel": "Panel de usuario y centro de compartir",
+      "hStudio": "Estudio de descarga e impresión",
+      "lblUserNfc": "NFC y compartir",
+      "lblUserNfcSave": "Guardar archivo NFC (.vcf)",
+      "lblUserWallet": "Billetera móvil",
+      "lblUserPhoto": "Compartir foto",
+      "lblUserVcf": "Contacto (.vcf)",
+      "lblUserCopy": "Copiar datos",
+      "userPanelBadge": "Listo"
     }
   },
   "bn": {
@@ -2645,7 +2697,20 @@ window.CARD_I18N = {
       "nfcScanning": "ট্যাপের জন্য প্রস্তুত… ফোনের কাছে NFC ট্যাগ ধরুন",
       "nfcSuccess": "NFC ট্যাগে কন্টাক্ট লেখা হয়েছে!",
       "nfcUnsupported": "সরাসরি NFC ট্যাগ রাইট করতে Android প্রয়োজন। iPhone-এ কন্টাক্ট (.vcf) দিয়ে AirDrop করুন বা QR স্ক্যান করুন।",
-      "nfcError": "NFC ট্যাপ বাতিল বা ব্যর্থ হয়েছে। আবার চেষ্টা করুন।"
+      "nfcError": "NFC ট্যাপ বাতিল বা ব্যর্থ হয়েছে। আবার চেষ্টা করুন।",
+      "nfcSaveBtn": "NFC ফাইল সেভ করুন (.vcf)",
+      "nfcFileSaved": "NFC কনট্যাক্ট ফাইল (.vcf) সংরক্ষিত হয়েছে",
+      "exitDoubleTapToast": "অ্যাপ থেকে বের হতে আবার ব্যাক চাপুন",
+      "tabUserPanel": "ইউজার প্যানেল",
+      "hUserPanel": "ইউজার প্যানেল ও শেয়ার হাব",
+      "hStudio": "ডাউনলোড ও প্রিন্ট স্টুডিও",
+      "lblUserNfc": "NFC ট্যাপ ও শেয়ার",
+      "lblUserNfcSave": "NFC ফাইল সেভ করুন (.vcf)",
+      "lblUserWallet": "ফোন ওয়ালেট",
+      "lblUserPhoto": "ছবি শেয়ার করুন",
+      "lblUserVcf": "কনট্যাক্ট (.vcf)",
+      "lblUserCopy": "তথ্য কপি করুন",
+      "userPanelBadge": "প্রস্তুত"
     }
   },
   "hi": {
@@ -3119,7 +3184,20 @@ window.CARD_I18N = {
       "nfcScanning": "तैयार… फ़ोन के पास NFC टैग लाएँ",
       "nfcSuccess": "NFC टैग में संपर्क सेव हो गया!",
       "nfcUnsupported": "NFC टैग राइट के लिए Android आवश्यक है। iPhone पर AirDrop या QR कोड का उपयोग करें।",
-      "nfcError": "NFC टैप विफल या रद्द हुआ। पुनः प्रयास करें।"
+      "nfcError": "NFC टैप विफल या रद्द हुआ। पुनः प्रयास करें।",
+      "nfcSaveBtn": "NFC फ़ाइल सहेजें (.vcf)",
+      "nfcFileSaved": "NFC संपर्क फ़ाइल (.vcf) सहेजी गई",
+      "exitDoubleTapToast": "बाहर निकलने के लिए फिर से बैक दबाएं",
+      "tabUserPanel": "उपयोगकर्ता पैनल",
+      "hUserPanel": "उपयोगकर्ता पैनल व शेयर हब",
+      "hStudio": "डाउनलोड और प्रिंट स्टूडियो",
+      "lblUserNfc": "NFC टैप व शेयर",
+      "lblUserNfcSave": "NFC फ़ाइल सहेजें (.vcf)",
+      "lblUserWallet": "फ़ोन वॉलेट",
+      "lblUserPhoto": "फ़ोटो शेयर करें",
+      "lblUserVcf": "संपर्क (.vcf)",
+      "lblUserCopy": "जानकारी कॉपी करें",
+      "userPanelBadge": "तैयार"
     }
   },
   "ja": {
@@ -3593,7 +3671,20 @@ window.CARD_I18N = {
       "nfcScanning": "待機中… NFCタグをスマホにかざしてください",
       "nfcSuccess": "NFCタグに連絡先を書き込みました！",
       "nfcUnsupported": "NFC書き込みにはAndroidが必要です。iPhoneではAirDropまたはQRコードをご利用ください。",
-      "nfcError": "NFCタッチがキャンセルまたは失敗しました。"
+      "nfcError": "NFCタッチがキャンセルまたは失敗しました。",
+      "nfcSaveBtn": "NFCファイルを保存 (.vcf)",
+      "nfcFileSaved": "NFC連絡先ファイル(.vcf)を保存しました",
+      "exitDoubleTapToast": "終了するにはもう一度「戻る」を押してください",
+      "tabUserPanel": "ユーザーパネル",
+      "hUserPanel": "ユーザーパネル＆共有ハブ",
+      "hStudio": "ダウンロード＆印刷スタジオ",
+      "lblUserNfc": "NFCタッチ＆共有",
+      "lblUserNfcSave": "NFCファイルを保存 (.vcf)",
+      "lblUserWallet": "スマホウォレット",
+      "lblUserPhoto": "写真を共有",
+      "lblUserVcf": "連絡先 (.vcf)",
+      "lblUserCopy": "情報をコピー",
+      "userPanelBadge": "準備完了"
     }
   },
   "zh": {
@@ -4067,7 +4158,20 @@ window.CARD_I18N = {
       "nfcScanning": "已就绪… 请将 NFC 标签贴近手机背面",
       "nfcSuccess": "联系方式已成功写入 NFC 标签！",
       "nfcUnsupported": "直接写入 NFC 需要 Android 设备。iPhone 请使用隔空投送 (.vcf) 或扫描二维码。",
-      "nfcError": "NFC 感应已取消或失败，请重试。"
+      "nfcError": "NFC 感应已取消或失败，请重试。",
+      "nfcSaveBtn": "保存 NFC 文件 (.vcf)",
+      "nfcFileSaved": "NFC 联系人文件 (.vcf) 已保存",
+      "exitDoubleTapToast": "再次按返回键退出应用",
+      "tabUserPanel": "用户面板",
+      "hUserPanel": "用户面板与分享中心",
+      "hStudio": "下载与打印中心",
+      "lblUserNfc": "NFC 碰一碰分享",
+      "lblUserNfcSave": "保存 NFC 文件 (.vcf)",
+      "lblUserWallet": "手机卡包",
+      "lblUserPhoto": "分享图片",
+      "lblUserVcf": "名片联系人 (.vcf)",
+      "lblUserCopy": "复制信息",
+      "userPanelBadge": "就绪"
     }
   },
   "zh-Hant": {
@@ -4541,7 +4645,20 @@ window.CARD_I18N = {
       "nfcScanning": "準備就緒… 請將 NFC 標籤靠近手機背面",
       "nfcSuccess": "聯絡資訊已寫入 NFC 標籤！",
       "nfcUnsupported": "直接寫入 NFC 需要 Android 裝置。iPhone 請透過 AirDrop 分享 (.vcf) 或掃描 QR Code。",
-      "nfcError": "NFC 感應已取消或失敗，請重試。"
+      "nfcError": "NFC 感應已取消或失敗，請重試。",
+      "nfcSaveBtn": "儲存 NFC 檔案 (.vcf)",
+      "nfcFileSaved": "NFC 聯絡人檔案 (.vcf) 已儲存",
+      "exitDoubleTapToast": "再次按返回鍵退出應用程式",
+      "tabUserPanel": "使用者面板",
+      "hUserPanel": "使用者面板與分享中心",
+      "hStudio": "下載與列印中心",
+      "lblUserNfc": "NFC 感應分享",
+      "lblUserNfcSave": "儲存 NFC 檔案 (.vcf)",
+      "lblUserWallet": "手機錢包",
+      "lblUserPhoto": "分享圖片",
+      "lblUserVcf": "名片聯絡人 (.vcf)",
+      "lblUserCopy": "複製資訊",
+      "userPanelBadge": "就緒"
     }
   },
   "ar": {
@@ -5015,7 +5132,20 @@ window.CARD_I18N = {
       "nfcScanning": "جاهز… قرّب شريحة NFC من الهاتف",
       "nfcSuccess": "تمت كتابة جهة الاتصال على شريحة NFC!",
       "nfcUnsupported": "تتطلب كتابة NFC المباشرة نظام Android. على iPhone استخدم AirDrop أو امسح رمز QR.",
-      "nfcError": "تم إلغاء أو فشل اتصال NFC. حاول مجددًا."
+      "nfcError": "تم إلغاء أو فشل اتصال NFC. حاول مجددًا.",
+      "nfcSaveBtn": "حفظ ملف NFC (.vcf)",
+      "nfcFileSaved": "تم حفظ ملف جهة اتصال NFC (.vcf)",
+      "exitDoubleTapToast": "اضغط رجوع مرة أخرى للخروج",
+      "tabUserPanel": "لوحة المستخدم",
+      "hUserPanel": "لوحة المستخدم ومركز المشاركة",
+      "hStudio": "استوديو التنزيل والطباعة",
+      "lblUserNfc": "نقر ومشاركة NFC",
+      "lblUserNfcSave": "حفظ ملف NFC (.vcf)",
+      "lblUserWallet": "محفظة الهاتف",
+      "lblUserPhoto": "مشاركة الصورة",
+      "lblUserVcf": "جهة اتصال (.vcf)",
+      "lblUserCopy": "نسخ البيانات",
+      "userPanelBadge": "جاهز"
     }
   },
   "ru": {
@@ -5539,7 +5669,20 @@ window.CARD_I18N = {
       "nfcScanning": "Готово… Поднесите NFC-метку к телефону",
       "nfcSuccess": "Контакт записан на NFC-метку!",
       "nfcUnsupported": "Запись NFC требует Android. На iPhone поделитесь файлом (.vcf) через AirDrop или отсканируйте QR-код.",
-      "nfcError": "Запись NFC отменена или не удалась."
+      "nfcError": "Запись NFC отменена или не удалась.",
+      "nfcSaveBtn": "Сохранить NFC-файл (.vcf)",
+      "nfcFileSaved": "Файл контакта NFC (.vcf) сохранён",
+      "exitDoubleTapToast": "Нажмите «Назад» ещё раз для выхода",
+      "tabUserPanel": "Панель пользователя",
+      "hUserPanel": "Панель пользователя и центр обмена",
+      "hStudio": "Студия загрузки и печати",
+      "lblUserNfc": "NFC-касание и обмен",
+      "lblUserNfcSave": "Сохранить NFC-файл (.vcf)",
+      "lblUserWallet": "Кошелёк смартфона",
+      "lblUserPhoto": "Поделиться фото",
+      "lblUserVcf": "Контакт (.vcf)",
+      "lblUserCopy": "Копировать данные",
+      "userPanelBadge": "Готово"
     }
   }
 };
